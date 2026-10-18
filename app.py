@@ -536,6 +536,93 @@ def confirm_move_in():
         print("confirm_move_in xatosi:", e)
         return jsonify({"success": False, "error": str(e)}), 500
 
+@app.route("/api/my-bookings/inspection", methods=["POST"])
+def submit_move_in_inspection():
+    try:
+        payload = request.json
+        escrow_id = payload.get("escrow_id")
+        photos = payload.get("photos", [])
+        tenant_notes = payload.get("tenant_notes", "Xonadon ko'zdan kechirildi va kalit qabul qilindi.").strip()
+        
+        escrows = supabase_get(f"escrow_transactions?id=eq.{escrow_id}")
+        if not escrows:
+            return jsonify({"success": False, "error": "Bandlik topilmadi"}), 404
+        escrow = escrows[0]
+        
+        now_iso = datetime.datetime.now(datetime.timezone.utc).isoformat()
+        
+        # 1. Dalolatnoma (move_in_inspections) jadvaliga saqlash
+        inspection_data = {
+            "application_id": escrow["application_id"],
+            "tenant_confirmed": True,
+            "landlord_confirmed": True,
+            "inspection_photos": photos,
+            "tenant_notes": tenant_notes,
+            "confirmed_at": now_iso
+        }
+        try:
+            supabase_post("move_in_inspections", inspection_data)
+        except Exception as ie:
+            print("Inspection saqlashda eslatma:", ie)
+            
+        # 2. Escrow statusini 'released_to_landlord' ga o'tkazish
+        supabase_patch(f"escrow_transactions?id=eq.{escrow_id}", {
+            "status": "released_to_landlord",
+            "released_at": now_iso
+        })
+        supabase_patch(f"properties?id=eq.{escrow['property_id']}", {"status": "rented"})
+        
+        props = supabase_get(f"properties?id=eq.{escrow['property_id']}")
+        prop = props[0] if props else {}
+        landlords = supabase_get(f"users?id=eq.{escrow['landlord_id']}")
+        landlord = landlords[0] if landlords else {}
+        tenants = supabase_get(f"users?id=eq.{escrow['tenant_id']}")
+        tenant = tenants[0] if tenants else {}
+        amount = escrow.get("amount_uzs", 300000)
+        
+        # 3. Telegram bildirishnomalar:
+        # A) Uy egasiga
+        if landlord.get("telegram_id"):
+            msg_landlord = (
+                f"📋 <b>KO'CHIB KIRISH DALOLATNOMASI TASDIQLANDI!</b>\n\n"
+                f"🏠 <b>Xonadon:</b> {prop.get('title')}\n"
+                f"👤 <b>Ijarachi:</b> {tenant.get('full_name')}\n"
+                f"📸 <b>Qayd etilgan kamchilik suratlari:</b> {len(photos)} ta\n"
+                f"📝 <b>Ijarachi izohi:</b> {tenant_notes}\n\n"
+                f"💰 <b>Escrow to'lovi:</b> {int(amount):,} so'm hisobingizga o'tkazildi!\n"
+                f"🤝 RentTrust UZ kafolati ostida xavfsiz ijara rasmiylashtirildi."
+            )
+            send_telegram_notification(landlord["telegram_id"], msg_landlord)
+            
+        # B) Ijarachiga
+        tenant_tg = tenant.get("telegram_id") or get_admin_chat_id()
+        if tenant_tg:
+            msg_tenant = (
+                f"🎉 <b>KO'CHIB KIRISH VA DALOLATNOMA RASMIYLASHTIRILDI!</b>\n\n"
+                f"🏠 <b>Xonadon:</b> {prop.get('title')}\n"
+                f"📍 <b>Manzil:</b> {prop.get('address')}\n"
+                f"📸 <b>Qayd etilgan fotosuratlar:</b> {len(photos)} ta rasmiy dalolatnomaga biriktirildi.\n"
+                f"🛡 <b>Depozit xavfsizligi:</b> Ko'chib chiqayotganingizda ushbu fotodalillar depozitni to'liq qaytarib olishingiz uchun xizmat qiladi.\n\n"
+                f"🔑 Yangi uyingiz qutlug' bo'lsin!"
+            )
+            send_telegram_notification(tenant_tg, msg_tenant)
+            
+        # C) Platforma adminiga
+        admin_id = get_admin_chat_id()
+        if admin_id and admin_id != landlord.get("telegram_id") and admin_id != tenant_tg:
+            msg_admin = (
+                f"⚡️ <b>Yangi Move-in Dalolatnoma:</b>\n"
+                f"🏠 {prop.get('title')}\n"
+                f"👤 {tenant.get('full_name')}\n"
+                f"📸 Fotosuratlar: {len(photos)} ta"
+            )
+            send_telegram_notification(admin_id, msg_admin)
+            
+        return jsonify({"success": True})
+    except Exception as e:
+        print("submit_move_in_inspection xatosi:", e)
+        return jsonify({"success": False, "error": str(e)}), 500
+
 @app.route("/api/my-bookings/cancel", methods=["POST"])
 def cancel_booking():
     try:
