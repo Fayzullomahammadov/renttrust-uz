@@ -429,6 +429,14 @@ def get_districts():
 def index():
     return render_template("index.html", districts=TASHKENT_DISTRICTS)
 
+@app.after_request
+def add_cache_headers(response):
+    if response.content_type and "text/html" in response.content_type:
+        response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+        response.headers["Pragma"] = "no-cache"
+        response.headers["Expires"] = "0"
+    return response
+
 @app.route("/admin")
 def admin_panel():
     return render_template("admin.html")

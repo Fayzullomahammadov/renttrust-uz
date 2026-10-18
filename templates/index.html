@@ -73,7 +73,7 @@
 
             <div class="flex items-center space-x-1.5">
                 <button id="lang-toggle-btn" onclick="toggleLanguage()" class="px-2 py-1 rounded-lg text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 transition flex items-center space-x-0.5 active:scale-95" title="Tilni almashtirish / Сменить язык">
-                    <span id="lang-btn-text">🇺🇿 UZ</span>
+                    <span id="lang-btn-text">UZ</span>
                 </button>
                 <button onclick="openFavoritesModal()" class="relative inline-flex items-center space-x-1 bg-rose-50 border border-rose-200/80 text-rose-700 px-2 py-1 rounded-lg text-xs font-bold active:scale-95 transition shadow-sm" title="Sevimlilar">
                     <i data-lucide="heart" class="w-3.5 h-3.5 fill-rose-500 text-rose-500"></i>
@@ -207,7 +207,10 @@
                 <span class="text-[11px] text-emerald-600 font-semibold" id="properties-count">Yuklanmoqda...</span>
             </div>
             <div id="district-pills-container" class="flex items-center space-x-2 overflow-x-auto hide-scrollbar py-1 text-xs">
-                <!-- Dynamically populated from TASHKENT_DISTRICTS single source of truth -->
+                <button onclick="filterDistrict('Barchasi')" class="district-btn px-3 py-1.5 rounded-full font-bold bg-emerald-600 text-white shrink-0 transition active:scale-95 shadow-sm" id="district-pill-all">Barchasi</button>
+                {% for d in districts %}
+                <button onclick="filterDistrict('{{ d }}')" class="district-btn px-3 py-1.5 rounded-full font-medium bg-white text-slate-700 hover:bg-slate-100 shrink-0 transition active:scale-95 border border-slate-200/60">{{ d }}</button>
+                {% endfor %}
             </div>
         </div>
 
@@ -337,7 +340,9 @@
                     <div class="space-y-1">
                         <label class="font-bold text-slate-700 block">Tuman *</label>
                         <select id="prop-district" class="w-full px-3 py-2 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-xs bg-white">
-                            <!-- Dynamically populated from TASHKENT_DISTRICTS -->
+                            {% for d in districts %}
+                            <option value="{{ d }}">{{ d }}</option>
+                            {% endfor %}
                         </select>
                     </div>
                     <div class="space-y-1">
@@ -943,6 +948,367 @@
             "Yunusobod": [41.3650, 69.2885],
             "Yangihayot": [41.2050, 69.2200]
         };
+
+// ---------------------------------------------------------
+        // FEATURE 4: i18n Translation Dictionary (UZ / RU)
+        // ---------------------------------------------------------
+        let storedLang = localStorage.getItem('renttrust_lang');
+        if (!storedLang && window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe && window.Telegram.WebApp.initDataUnsafe.user) {
+            const userLang = window.Telegram.WebApp.initDataUnsafe.user.language_code || 'uz';
+            storedLang = (userLang.startsWith('ru')) ? 'ru' : 'uz';
+        }
+        let currentLang = storedLang || 'uz';
+
+        const I18N = {
+            uz: {
+                flag: "UZ",
+                slogan: "Ishonch va Himoyalangan to'lov tizimi",
+                quick_fav: "Sevimlilar",
+                quick_calc: "🧮 Tejamkorlik",
+                quick_alert: "🔔 Uylarga obuna",
+                ai_placeholder: "AI: masalan, 'Chilonzorda 2 xona 400$ gacha'...",
+                ai_btn: "Topish",
+                add_prop: "E'lon",
+                banner_tag: "Himoyalangan to'lov",
+                banner_title: "Siz ko'chib kirib, uyni tasdiqlamaguningizcha mablag' RentTrust nazoratida saqlanadi.",
+                banner_desc: "Siz ko'chib kirib, uyni tasdiqlamaguningizcha mablag' RentTrust nazoratida saqlanadi. Xizmat haqi: ijarachidan 2%, uy egasidan 2%.",
+                banner_b1: "Tekshirilgan uy",
+                banner_b2: "Depozit dalolatnomasi",
+                btn_filter: "Narx & Xonalar",
+                view_list: "📋 Ro'yxat",
+                view_map: "🗺️ Xarita",
+                filter_rooms: "Xonalar soni bo'yicha:",
+                filter_price: "Maksimal oylik narx:",
+                room_all: "Barchasi",
+                districts_header: "Toshkent tumanlari",
+                district_all: "Barchasi",
+                nav_home: "Uylar",
+                nav_bookings: "Arizalarim",
+                nav_add: "E'lon berish",
+                nav_rules: "Qoidalar",
+                nav_help: "Yordam",
+                prop_rooms_label: "xona",
+                prop_floor_label: "-qavat",
+                prop_month: "/oy",
+                prop_fee_label: "Xizmat haqi (2%):",
+                prop_saved_label: "Tejov: ~",
+                prop_escrow_badge: "Himoyalangan to'lov",
+                prop_verified_badge: "Tekshirilgan uy",
+                prop_student_badge: "Talabalar uchun",
+                prop_empty_title: "Hozircha uy yo'q",
+                prop_empty_desc: "Ushbu parametrlar bo'yicha e'lon topilmadi.",
+                prop_empty_btn: "Filtrni tozalash",
+                prop_retry_btn: "Qayta urinish",
+                prop_detail_rent: "Oylik ijara narxi",
+                prop_detail_book_btn: "Ariza & Band qilish",
+                prop_detail_deposit: "Depozit (Himoyalangan to'lov):",
+                prop_detail_fee: "Sizdan platforma haqi (2%):",
+                prop_detail_old_fee: "Maklerlar ko'pincha oylik ijaraning yarmigacha olishadi:",
+                prop_detail_saved: "Cho'ntakda tejalgan summa:",
+                prop_detail_legal_title: "Ijara shartnomasi va soliq",
+                prop_detail_legal_desc: "Talabaga ijaraga bersangiz va shartnoma soliq organida ro'yxatdan o'tgan bo'lsa, ijaradan olingan daromad daromad solig'idan ozod bo'ladi. Bu yuridik maslahat emas.",
+                prop_detail_reviews_title: "Sharhlar va Reyting",
+                prop_detail_write_review: "+ Sharh qoldirish",
+                prop_detail_verified_landlord: "Tasdiqlangan mulk egasi",
+                prop_report_btn: "Shikoyat qilish",
+                fav_title: "Sevimlilar ro'yxati",
+                fav_subtitle: "Saqlangan xonadonlar",
+                calc_title: "Tejamkorlik Kalkulyatori",
+                calc_subtitle: "Maklerlar ko'pincha oylik ijaraning yarmigacha olishadi",
+                calc_rent_lbl: "Mo'ljaldagi oylik ijara:",
+                calc_old_fee: "Makler to'lovi (50%)",
+                calc_rt_fee: "RentTrust (2%)",
+                calc_savings_hdr: "Sizning cho'ntagingizda qoladi:",
+                calc_view_btn: "Tejamkor uylarni ko'rish",
+                alert_title: "Yangi Uylarga Obuna",
+                alert_subtitle: "Mos variant chiqishi bilan xabar beramiz",
+                alert_btn: "🔔 Xabarnomalarni yoqish",
+                comp_title: "Xonadonlarni taqqoslash",
+                comp_subtitle: "Yonma-yon solishtiring",
+                escrow_modal_title: "Himoyalangan to'lov",
+                escrow_modal_sub: "Uyni 24 soatga band qilish",
+                escrow_hold_label: "Bron (Depozitdan oldindan):",
+                escrow_fee_label: "Platforma xizmat haqi (2%):",
+                escrow_total_label: "Jami hozir to‘lanadi:",
+                escrow_rent_basis: "Oylik ijaraning 2% komissiyasi",
+                escrow_note: "Bu pul to'g'ridan-to'g'ri uy egasiga o'tmaydi, RentTrust nazoratida saqlanadi. Uy egasi tasdiqlamasa yoki ko'chib kirish bo'lmasa, qoidalarga muvofiq qaytariladi.",
+                escrow_pay_btn: "Click / Payme orqali to'lash",
+                escrow_cancel_btn: "Bekor qilish",
+                add_modal_title: "Yangi e'lon joylashtirish",
+                add_tax_title: "12% Soliq Imtiyozi!",
+                add_tax_desc: "Talabaga ijaraga bersangiz va shartnoma soliq organida ro'yxatdan o'tgan bo'lsa, ijaradan olingan daromad daromad solig'idan ozod bo'ladi. Bu yuridik maslahat emas.",
+                add_student_chk: "Talabalarga ijaraga beraman (12% soliq imtiyozi)",
+                add_doc_lbl: "Kadastr yoki mulk huquqini tasdiqlovchi hujjat (ixtiyoriy, xavfsiz saqlanadi):",
+                add_submit_btn: "E'lonni platformaga joylash",
+                insp_modal_title: "Ko'chib kirish dalolatnomasi",
+                insp_modal_sub: "Depozit dalolatnomasi akti",
+                insp_why_title: "Nima uchun bu suratlar kerak?",
+                insp_why_desc: "Xonadondagi mavjud nuqsonlarni (devor tirnalgani, mebel yoki texnika holati) rasmga olib ilova qiling. Ko'chib chiqayotganingizda ushbu akt depozit bo'yicha asosiy dalil bo'ladi.",
+                insp_photos_lbl: "Nuqsonlar fotosuratlari",
+                insp_upload_btn: "Rasm olish",
+                insp_notes_lbl: "Qo'shimcha izoh yoki hisoblagich ko'rsatkichlari",
+                insp_notes_ph: "Masalan: Gaz hisoblagich: 12450, Svet: 04820. Zaldagi stol oyog'ida kichik tirnalish bor...",
+                insp_agree_lbl: "Xonadonni ko'zdan kechirdim va kalitlarni qabul qildim. To'langan mablag' uy egasiga o'tkazilishiga roziman.",
+                insp_submit_btn: "Dalolatnomani imzolash va Kalitni olish",
+                terms_modal_title: "Foydalanish Qoidalari va Oferta",
+                terms_safe_title: "🛡️ Himoyalangan to'lov",
+                terms_safe_desc: "Siz to'lagan ijara va depozit to'g'ridan-to'g'ri uy egasiga o'tmaydi. Ko'chib kirib, uyni tasdiqlamaguningizcha RentTrust nazoratidagi hisobda turadi. To'liq tartib ofertada yozilgan.",
+                ref_modal_title: "Do'st taklif qiling: komissiyaning 30% i sizga",
+                ref_banner_title: "Do'st taklif qiling: komissiyaning 30% i sizga",
+                ref_banner_desc: "Keshbek do'stingiz ko'chib kirishni tasdiqlab, nizo muddati tugagach hisoblanadi.",
+                ref_stat_lbl_invited: "Takliflar",
+                ref_stat_lbl_deals: "Bitimlar",
+                ref_stat_lbl_cashback: "Keshbek",
+                ref_link_lbl: "Sizning shaxsiy taklif havolangiz:",
+                ref_copy_btn: "Nusxa",
+                ref_share_btn: "Telegram orqali do'stlarga yuborish",
+                ref_how_title: "Qanday ishlaydi?",
+                bookings_modal_title: "Mening Arizalarim va Bandlarim",
+                bookings_empty_title: "Faol band qilingan uylar yo'q",
+                bookings_empty_desc: "Platformadagi xonadonlarni ko'ring va arzon komissiya bilan uyni xavfsiz band qiling.",
+                bookings_browse_btn: "Uylarni ko'rish"
+            },
+            // needs native review
+            ru: {
+                flag: "RU",
+                slogan: "Система доверия и защищенной оплаты",
+                quick_fav: "Избранное",
+                quick_calc: "🧮 Калькулятор",
+                quick_alert: "🔔 Подписка",
+                ai_placeholder: "AI: например, '2-комн на Чиланзаре до $400'...",
+                ai_btn: "Найти",
+                add_prop: "Подать",
+                banner_tag: "Защищенная оплата",
+                banner_title: "Деньги хранятся под контролем RentTrust до подтверждения заселения обеими сторонами.",
+                banner_desc: "Защищенная оплата: деньги хранятся под контролем RentTrust до подтверждения заселения обеими сторонами. Комиссия: 2% с арендатора, 2% с арендодателя.",
+                banner_b1: "Проверенное жилье",
+                banner_b2: "Акт приема-передачи",
+                btn_filter: "Цена & Комнаты",
+                view_list: "📋 Список",
+                view_map: "🗺️ Карта",
+                filter_rooms: "Количество комнат:",
+                filter_price: "Максимальная цена в месяц:",
+                room_all: "Все",
+                districts_header: "Районы Ташкента",
+                district_all: "Все районы",
+                nav_home: "Квартиры",
+                nav_bookings: "Заявки",
+                nav_add: "Разместить",
+                nav_rules: "Правила",
+                nav_help: "Помощь",
+                prop_rooms_label: "комн.",
+                prop_floor_label: "-этаж",
+                prop_month: "/мес",
+                prop_fee_label: "Комиссия сервиса (2%):",
+                prop_saved_label: "Экономия: ~",
+                prop_escrow_badge: "Защищенная оплата",
+                prop_verified_badge: "Проверенное жилье",
+                prop_student_badge: "Для студентов",
+                prop_empty_title: "Пока нет квартир",
+                prop_empty_desc: "По заданным фильтрам объявлений не найдено.",
+                prop_empty_btn: "Сбросить фильтры",
+                prop_retry_btn: "Повторить попытку",
+                prop_detail_rent: "Стоимость аренды в месяц",
+                prop_detail_book_btn: "Подать заявку & Забронировать",
+                prop_detail_deposit: "Обеспечительный депозит:",
+                prop_detail_fee: "Комиссия платформе (2%):",
+                prop_detail_old_fee: "Маклеры часто берут до половины месячной аренды:",
+                prop_detail_saved: "Сэкономлено в вашем бюджете:",
+                prop_detail_legal_title: "Договор аренды и налог",
+                prop_detail_legal_desc: "При сдаче студентам и регистрации договора доход освобождается от подоходного налога. Не является юридической консультацией.",
+                prop_detail_reviews_title: "Отзывы и Рейтинг",
+                prop_detail_write_review: "+ Оставить отзыв",
+                prop_detail_verified_landlord: "Проверенный собственник",
+                prop_report_btn: "Пожаловаться",
+                fav_title: "Избранные квартиры",
+                fav_subtitle: "Сохраненные варианты",
+                calc_title: "Калькулятор Экономии",
+                calc_subtitle: "Маклеры часто берут до половины месячной аренды",
+                calc_rent_lbl: "Планируемая аренда в месяц:",
+                calc_old_fee: "Комиссия маклера (50%)",
+                calc_rt_fee: "RentTrust (2%)",
+                calc_savings_hdr: "Останется в вашем кармане:",
+                calc_view_btn: "Смотреть выгодные квартиры",
+                alert_title: "Подписка на новые квартиры",
+                alert_subtitle: "Уведомим, как только появится подходящий вариант",
+                alert_btn: "🔔 Включить уведомления",
+                comp_title: "Сравнение квартир",
+                comp_subtitle: "Сравните характеристики рядом",
+                escrow_modal_title: "Защищенная оплата",
+                escrow_modal_sub: "Бронирование квартиры на 24 часа",
+                escrow_hold_label: "Бронь (Аванс из депозита):",
+                escrow_fee_label: "Комиссия платформы (2%):",
+                escrow_total_label: "Итого к оплате сейчас:",
+                escrow_rent_basis: "Комиссия 2% от месячной аренды",
+                escrow_note: "Защищенная оплата: деньги хранятся под контролем RentTrust до подтверждения заселения обеими сторонами. Комиссия: 2% с арендатора, 2% с арендодателя. Если владелец не подтвердит или заселение не состоится, средства возвращаются согласно правилам.",
+                escrow_pay_btn: "Оплатить через Click / Payme",
+                escrow_cancel_btn: "Отмена",
+                add_modal_title: "Разместить объявление",
+                add_tax_title: "Льгота по подоходному налогу!",
+                add_tax_desc: "При сдаче студентам и регистрации договора доход освобождается от подоходного налога. Не является юридической консультацией.",
+                add_student_chk: "Сдаю студентам (налоговая льгота)",
+                add_doc_lbl: "Кадастр или документ о праве собственности (необязательно, хранится приватно):",
+                add_submit_btn: "Опубликовать объявление",
+                insp_modal_title: "Акт приема-передачи жилья",
+                insp_modal_sub: "Акт осмотра для депозита",
+                insp_why_title: "Зачем нужны эти фотографии?",
+                insp_why_desc: "Сфотографируйте имеющиеся дефекты (царапины, состояние мебели/техники). При выезде данный акт будет основным доказательством по депозиту.",
+                insp_photos_lbl: "Фотографии дефектов",
+                insp_upload_btn: "Сделать фото",
+                insp_notes_lbl: "Примечания или показания счетчиков",
+                insp_notes_ph: "Например: Газ: 12450, Свет: 04820. Царапина на ножке стола...",
+                insp_agree_lbl: "Я осмотрел квартиру и принял ключи. Согласен на перевод оплаченных средств владельцу.",
+                insp_submit_btn: "Подписать акт и получить ключи",
+                terms_modal_title: "Правила сервиса и Оферта",
+                terms_safe_title: "🛡️ Защищенная оплата",
+                terms_safe_desc: "Защищенная оплата: деньги хранятся под контролем RentTrust до подтверждения заселения обеими сторонами. Комиссия: 2% с арендатора, 2% с арендодателя.",
+                ref_modal_title: "Пригласите друга: 30% комиссии вам",
+                ref_banner_title: "Пригласите друга: 30% комиссии вам",
+                ref_banner_desc: "Кэшбэк начисляется после подтверждения заселения вашим другом и истечения срока спора.",
+                ref_stat_lbl_invited: "Приглашено",
+                ref_stat_lbl_deals: "Сделки",
+                ref_stat_lbl_cashback: "Кэшбэк",
+                ref_link_lbl: "Ваша личная ссылка-приглашение:",
+                ref_copy_btn: "Копия",
+                ref_share_btn: "Отправить друзьям в Telegram",
+                ref_how_title: "Как это работает?",
+                bookings_modal_title: "Мои заявки и бронирования",
+                bookings_empty_title: "Нет активных бронирований",
+                bookings_empty_desc: "Просмотрите квартиры на платформе и забронируйте с комиссией всего 2%.",
+                bookings_browse_btn: "Искать квартиры"
+            }
+        };
+
+        function toggleLanguage() {
+            currentLang = (currentLang === 'uz') ? 'ru' : 'uz';
+            localStorage.setItem('renttrust_lang', currentLang);
+            applyLanguage();
+        }
+
+        function applyLanguage() {
+            try {
+                const t = (typeof I18N !== 'undefined' && I18N[currentLang]) ? I18N[currentLang] : (typeof I18N !== 'undefined' ? I18N.uz : {});
+                if (!t) return;
+
+                const setTxt = (id, val) => { const el = document.getElementById(id); if (el && val !== undefined) el.innerText = val; };
+                const setHtml = (id, val) => { const el = document.getElementById(id); if (el && val !== undefined) el.innerHTML = val; };
+
+                setTxt('lang-btn-text', t.flag);
+                setTxt('header-slogan', t.slogan);
+                setTxt('header-add-text', t.add_prop);
+                setTxt('quick-fav-label', t.quick_fav);
+                setTxt('quick-calc-label', t.quick_calc);
+                setTxt('quick-alert-label', t.quick_alert);
+
+                const aiInput = document.getElementById('ai-search-input');
+                if (aiInput && t.ai_placeholder) aiInput.placeholder = t.ai_placeholder;
+                setTxt('ai-btn-text', t.ai_btn);
+
+                setTxt('banner-tag', t.banner_tag);
+                setTxt('banner-title', t.banner_title);
+                if (t.banner_desc) setHtml('banner-desc', t.banner_desc);
+                setTxt('banner-b1', t.banner_b1);
+                setTxt('banner-b2', t.banner_b2);
+
+                setTxt('btn-filter-text', t.btn_filter);
+                setTxt('btn-view-list-text', t.view_list);
+                setTxt('btn-view-map-text', t.view_map);
+                setTxt('filter-rooms-title', t.filter_rooms);
+                setTxt('filter-price-title', t.filter_price);
+                setTxt('room-btn-all', t.room_all);
+                setTxt('districts-header-title', t.districts_header);
+                setTxt('district-pill-all', t.district_all);
+
+                setTxt('nav-home', t.nav_home);
+                setTxt('nav-bookings', t.nav_bookings);
+                setTxt('nav-add', t.nav_add);
+                setTxt('nav-rules', t.nav_rules);
+                setTxt('nav-help', t.nav_help);
+
+                setTxt('fav-modal-title', t.fav_title);
+                setTxt('fav-modal-subtitle', t.fav_subtitle);
+                setTxt('calc-modal-title', t.calc_title);
+                setTxt('calc-modal-subtitle', t.calc_subtitle);
+                setTxt('calc-input-label', t.calc_rent_lbl);
+                setTxt('calc-savings-header', t.calc_savings_hdr);
+                setTxt('calc-view-props-btn', t.calc_view_btn);
+                setTxt('alert-modal-title', t.alert_title);
+                setTxt('alert-modal-subtitle', t.alert_subtitle);
+                setTxt('alert-btn-text', t.alert_btn);
+                setTxt('comp-modal-title', t.comp_title);
+                setTxt('comp-modal-subtitle', t.comp_subtitle);
+                setTxt('modal-book-btn-text', t.prop_detail_book_btn);
+
+                // Modals
+                setTxt('escrow-modal-title', t.escrow_modal_title);
+                setTxt('escrow-modal-sub', t.escrow_modal_sub);
+                setTxt('escrow-hold-lbl', t.escrow_hold_label);
+                setTxt('escrow-fee-lbl', t.escrow_fee_label);
+                setTxt('escrow-total-lbl', t.escrow_total_label);
+                setTxt('escrow-rent-basis-note', t.escrow_rent_basis);
+                setTxt('escrow-note-text', t.escrow_note);
+                setTxt('escrow-pay-btn-text', t.escrow_pay_btn);
+                setTxt('escrow-cancel-btn-text', t.escrow_cancel_btn);
+
+                setTxt('add-modal-title', t.add_modal_title);
+                setTxt('add-submit-text', t.add_submit_btn);
+
+                setTxt('insp-modal-title', t.insp_modal_title);
+                setTxt('insp-modal-sub', t.insp_modal_sub);
+                setTxt('insp-why-title', t.insp_why_title);
+                setTxt('insp-why-desc', t.insp_why_desc);
+                setTxt('insp-photos-label', t.insp_photos_lbl);
+                setTxt('insp-upload-label', t.insp_upload_btn);
+                setTxt('insp-notes-label', t.insp_notes_lbl);
+                const inspNotes = document.getElementById('insp-notes');
+                if (inspNotes && t.insp_notes_ph) inspNotes.placeholder = t.insp_notes_ph;
+                setTxt('insp-agree-label', t.insp_agree_lbl);
+                setTxt('insp-submit-text', t.insp_submit_btn);
+
+                setTxt('terms-modal-title', t.terms_modal_title);
+                setTxt('terms-safe-title', t.terms_safe_title);
+                setTxt('terms-safe-desc', t.terms_safe_desc);
+
+                setTxt('ref-modal-title', t.ref_modal_title);
+                setTxt('ref-banner-title', t.ref_banner_title);
+                setTxt('ref-banner-desc', t.ref_banner_desc);
+                setTxt('ref-stat-lbl-invited', t.ref_stat_lbl_invited);
+                setTxt('ref-stat-lbl-deals', t.ref_stat_lbl_deals);
+                setTxt('ref-stat-lbl-cashback', t.ref_stat_lbl_cashback);
+                setTxt('ref-link-lbl', t.ref_link_lbl);
+                setTxt('copy-ref-text', t.ref_copy_btn);
+                setTxt('ref-share-btn-text', t.ref_share_btn);
+                setTxt('ref-how-title', t.ref_how_title);
+
+                setTxt('bookings-modal-title', t.bookings_modal_title);
+
+                // Re-render feed cards to update card badges, fee texts and counters
+                if (typeof filteredProperties !== 'undefined' && filteredProperties && filteredProperties.length > 0) {
+                    renderPropertiesList(filteredProperties);
+                    const countEl = document.getElementById('properties-count');
+                    if (countEl) {
+                        countEl.innerText = (currentLang === 'ru') 
+                            ? `${filteredProperties.length} кв.`
+                            : `${filteredProperties.length} ta xonadon`;
+                    }
+                }
+
+                // If property modal is open, re-render its details
+                if (selectedProperty && typeof openPropertyModal === 'function') {
+                    const pModal = document.getElementById('property-modal');
+                    if (pModal && !pModal.classList.contains('hidden')) {
+                        openPropertyModal(selectedProperty.id);
+                    }
+                }
+
+                if (window.lucide) {
+                    lucide.createIcons();
+                }
+            } catch (err) {
+                console.error("applyLanguage error:", err);
+            }
+        }
+
 
         const TASHKENT_DISTRICTS = [
             "Bektemir",
@@ -2424,365 +2790,7 @@
             window.open(shareUrl, '_blank');
         }
 
-        // ---------------------------------------------------------
-        // FEATURE 4: i18n Translation Dictionary (UZ / RU)
-        // ---------------------------------------------------------
-        let storedLang = localStorage.getItem('renttrust_lang');
-        if (!storedLang && window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe && window.Telegram.WebApp.initDataUnsafe.user) {
-            const userLang = window.Telegram.WebApp.initDataUnsafe.user.language_code || 'uz';
-            storedLang = (userLang.startsWith('ru')) ? 'ru' : 'uz';
-        }
-        let currentLang = storedLang || 'uz';
-
-        const I18N = {
-            uz: {
-                flag: "🇺🇿 UZ",
-                slogan: "Ishonch va Himoyalangan to'lov tizimi",
-                quick_fav: "Sevimlilar",
-                quick_calc: "🧮 Tejamkorlik",
-                quick_alert: "🔔 Uylarga obuna",
-                ai_placeholder: "AI: masalan, 'Chilonzorda 2 xona 400$ gacha'...",
-                ai_btn: "Topish",
-                add_prop: "E'lon",
-                banner_tag: "Himoyalangan to'lov",
-                banner_title: "Siz ko'chib kirib, uyni tasdiqlamaguningizcha mablag' RentTrust nazoratida saqlanadi.",
-                banner_desc: "Siz ko'chib kirib, uyni tasdiqlamaguningizcha mablag' RentTrust nazoratida saqlanadi. Xizmat haqi: ijarachidan 2%, uy egasidan 2%.",
-                banner_b1: "Tekshirilgan uy",
-                banner_b2: "Depozit dalolatnomasi",
-                btn_filter: "Narx & Xonalar",
-                view_list: "📋 Ro'yxat",
-                view_map: "🗺️ Xarita",
-                filter_rooms: "Xonalar soni bo'yicha:",
-                filter_price: "Maksimal oylik narx:",
-                room_all: "Barchasi",
-                districts_header: "Toshkent tumanlari",
-                district_all: "Barchasi",
-                nav_home: "Uylar",
-                nav_bookings: "Arizalarim",
-                nav_add: "E'lon berish",
-                nav_rules: "Qoidalar",
-                nav_help: "Yordam",
-                prop_rooms_label: "xona",
-                prop_floor_label: "-qavat",
-                prop_month: "/oy",
-                prop_fee_label: "Xizmat haqi (2%):",
-                prop_saved_label: "Tejov: ~",
-                prop_escrow_badge: "Himoyalangan to'lov",
-                prop_verified_badge: "Tekshirilgan uy",
-                prop_student_badge: "Talabalar uchun",
-                prop_empty_title: "Hozircha uy yo'q",
-                prop_empty_desc: "Ushbu parametrlar bo'yicha e'lon topilmadi.",
-                prop_empty_btn: "Filtrni tozalash",
-                prop_retry_btn: "Qayta urinish",
-                prop_detail_rent: "Oylik ijara narxi",
-                prop_detail_book_btn: "Ariza & Band qilish",
-                prop_detail_deposit: "Depozit (Himoyalangan to'lov):",
-                prop_detail_fee: "Sizdan platforma haqi (2%):",
-                prop_detail_old_fee: "Maklerlar ko'pincha oylik ijaraning yarmigacha olishadi:",
-                prop_detail_saved: "Cho'ntakda tejalgan summa:",
-                prop_detail_legal_title: "Ijara shartnomasi va soliq",
-                prop_detail_legal_desc: "Talabaga ijaraga bersangiz va shartnoma soliq organida ro'yxatdan o'tgan bo'lsa, ijaradan olingan daromad daromad solig'idan ozod bo'ladi. Bu yuridik maslahat emas.",
-                prop_detail_reviews_title: "Sharhlar va Reyting",
-                prop_detail_write_review: "+ Sharh qoldirish",
-                prop_detail_verified_landlord: "Tasdiqlangan mulk egasi",
-                prop_report_btn: "Shikoyat qilish",
-                fav_title: "Sevimlilar ro'yxati",
-                fav_subtitle: "Saqlangan xonadonlar",
-                calc_title: "Tejamkorlik Kalkulyatori",
-                calc_subtitle: "Maklerlar ko'pincha oylik ijaraning yarmigacha olishadi",
-                calc_rent_lbl: "Mo'ljaldagi oylik ijara:",
-                calc_old_fee: "Makler to'lovi (50%)",
-                calc_rt_fee: "RentTrust (2%)",
-                calc_savings_hdr: "Sizning cho'ntagingizda qoladi:",
-                calc_view_btn: "Tejamkor uylarni ko'rish",
-                alert_title: "Yangi Uylarga Obuna",
-                alert_subtitle: "Mos variant chiqishi bilan xabar beramiz",
-                alert_btn: "🔔 Xabarnomalarni yoqish",
-                comp_title: "Xonadonlarni taqqoslash",
-                comp_subtitle: "Yonma-yon solishtiring",
-                escrow_modal_title: "Himoyalangan to'lov",
-                escrow_modal_sub: "Uyni 24 soatga band qilish",
-                escrow_hold_label: "Bron (Depozitdan oldindan):",
-                escrow_fee_label: "Platforma xizmat haqi (2%):",
-                escrow_total_label: "Jami hozir to‘lanadi:",
-                escrow_rent_basis: "Oylik ijaraning 2% komissiyasi",
-                escrow_note: "Bu pul to'g'ridan-to'g'ri uy egasiga o'tmaydi, RentTrust nazoratida saqlanadi. Uy egasi tasdiqlamasa yoki ko'chib kirish bo'lmasa, qoidalarga muvofiq qaytariladi.",
-                escrow_pay_btn: "Click / Payme orqali to'lash",
-                escrow_cancel_btn: "Bekor qilish",
-                add_modal_title: "Yangi e'lon joylashtirish",
-                add_tax_title: "12% Soliq Imtiyozi!",
-                add_tax_desc: "Talabaga ijaraga bersangiz va shartnoma soliq organida ro'yxatdan o'tgan bo'lsa, ijaradan olingan daromad daromad solig'idan ozod bo'ladi. Bu yuridik maslahat emas.",
-                add_student_chk: "Talabalarga ijaraga beraman (12% soliq imtiyozi)",
-                add_doc_lbl: "Kadastr yoki mulk huquqini tasdiqlovchi hujjat (ixtiyoriy, xavfsiz saqlanadi):",
-                add_submit_btn: "E'lonni platformaga joylash",
-                insp_modal_title: "Ko'chib kirish dalolatnomasi",
-                insp_modal_sub: "Depozit dalolatnomasi akti",
-                insp_why_title: "Nima uchun bu suratlar kerak?",
-                insp_why_desc: "Xonadondagi mavjud nuqsonlarni (devor tirnalgani, mebel yoki texnika holati) rasmga olib ilova qiling. Ko'chib chiqayotganingizda ushbu akt depozit bo'yicha asosiy dalil bo'ladi.",
-                insp_photos_lbl: "Nuqsonlar fotosuratlari",
-                insp_upload_btn: "Rasm olish",
-                insp_notes_lbl: "Qo'shimcha izoh yoki hisoblagich ko'rsatkichlari",
-                insp_notes_ph: "Masalan: Gaz hisoblagich: 12450, Svet: 04820. Zaldagi stol oyog'ida kichik tirnalish bor...",
-                insp_agree_lbl: "Xonadonni ko'zdan kechirdim va kalitlarni qabul qildim. To'langan mablag' uy egasiga o'tkazilishiga roziman.",
-                insp_submit_btn: "Dalolatnomani imzolash va Kalitni olish",
-                terms_modal_title: "Foydalanish Qoidalari va Oferta",
-                terms_safe_title: "🛡️ Himoyalangan to'lov",
-                terms_safe_desc: "Siz to'lagan ijara va depozit to'g'ridan-to'g'ri uy egasiga o'tmaydi. Ko'chib kirib, uyni tasdiqlamaguningizcha RentTrust nazoratidagi hisobda turadi. To'liq tartib ofertada yozilgan.",
-                ref_modal_title: "Do'st taklif qiling: komissiyaning 30% i sizga",
-                ref_banner_title: "Do'st taklif qiling: komissiyaning 30% i sizga",
-                ref_banner_desc: "Keshbek do'stingiz ko'chib kirishni tasdiqlab, nizo muddati tugagach hisoblanadi.",
-                ref_stat_lbl_invited: "Takliflar",
-                ref_stat_lbl_deals: "Bitimlar",
-                ref_stat_lbl_cashback: "Keshbek",
-                ref_link_lbl: "Sizning shaxsiy taklif havolangiz:",
-                ref_copy_btn: "Nusxa",
-                ref_share_btn: "Telegram orqali do'stlarga yuborish",
-                ref_how_title: "Qanday ishlaydi?",
-                bookings_modal_title: "Mening Arizalarim va Bandlarim",
-                bookings_empty_title: "Faol band qilingan uylar yo'q",
-                bookings_empty_desc: "Platformadagi xonadonlarni ko'ring va arzon komissiya bilan uyni xavfsiz band qiling.",
-                bookings_browse_btn: "Uylarni ko'rish"
-            },
-            // needs native review
-            ru: {
-                flag: "🇷🇺 RU",
-                slogan: "Система доверия и защищенной оплаты",
-                quick_fav: "Избранное",
-                quick_calc: "🧮 Калькулятор",
-                quick_alert: "🔔 Подписка",
-                ai_placeholder: "AI: например, '2-комн на Чиланзаре до $400'...",
-                ai_btn: "Найти",
-                add_prop: "Подать",
-                banner_tag: "Защищенная оплата",
-                banner_title: "Деньги хранятся под контролем RentTrust до подтверждения заселения обеими сторонами.",
-                banner_desc: "Защищенная оплата: деньги хранятся под контролем RentTrust до подтверждения заселения обеими сторонами. Комиссия: 2% с арендатора, 2% с арендодателя.",
-                banner_b1: "Проверенное жилье",
-                banner_b2: "Акт приема-передачи",
-                btn_filter: "Цена & Комнаты",
-                view_list: "📋 Список",
-                view_map: "🗺️ Карта",
-                filter_rooms: "Количество комнат:",
-                filter_price: "Максимальная цена в месяц:",
-                room_all: "Все",
-                districts_header: "Районы Ташкента",
-                district_all: "Все районы",
-                nav_home: "Квартиры",
-                nav_bookings: "Заявки",
-                nav_add: "Разместить",
-                nav_rules: "Правила",
-                nav_help: "Помощь",
-                prop_rooms_label: "комн.",
-                prop_floor_label: "-этаж",
-                prop_month: "/мес",
-                prop_fee_label: "Комиссия сервиса (2%):",
-                prop_saved_label: "Экономия: ~",
-                prop_escrow_badge: "Защищенная оплата",
-                prop_verified_badge: "Проверенное жилье",
-                prop_student_badge: "Для студентов",
-                prop_empty_title: "Пока нет квартир",
-                prop_empty_desc: "По заданным фильтрам объявлений не найдено.",
-                prop_empty_btn: "Сбросить фильтры",
-                prop_retry_btn: "Повторить попытку",
-                prop_detail_rent: "Стоимость аренды в месяц",
-                prop_detail_book_btn: "Подать заявку & Забронировать",
-                prop_detail_deposit: "Обеспечительный депозит:",
-                prop_detail_fee: "Комиссия платформе (2%):",
-                prop_detail_old_fee: "Маклеры часто берут до половины месячной аренды:",
-                prop_detail_saved: "Сэкономлено в вашем бюджете:",
-                prop_detail_legal_title: "Договор аренды и налог",
-                prop_detail_legal_desc: "При сдаче студентам и регистрации договора доход освобождается от подоходного налога. Не является юридической консультацией.",
-                prop_detail_reviews_title: "Отзывы и Рейтинг",
-                prop_detail_write_review: "+ Оставить отзыв",
-                prop_detail_verified_landlord: "Проверенный собственник",
-                prop_report_btn: "Пожаловаться",
-                fav_title: "Избранные квартиры",
-                fav_subtitle: "Сохраненные варианты",
-                calc_title: "Калькулятор Экономии",
-                calc_subtitle: "Маклеры часто берут до половины месячной аренды",
-                calc_rent_lbl: "Планируемая аренда в месяц:",
-                calc_old_fee: "Комиссия маклера (50%)",
-                calc_rt_fee: "RentTrust (2%)",
-                calc_savings_hdr: "Останется в вашем кармане:",
-                calc_view_btn: "Смотреть выгодные квартиры",
-                alert_title: "Подписка на новые квартиры",
-                alert_subtitle: "Уведомим, как только появится подходящий вариант",
-                alert_btn: "🔔 Включить уведомления",
-                comp_title: "Сравнение квартир",
-                comp_subtitle: "Сравните характеристики рядом",
-                escrow_modal_title: "Защищенная оплата",
-                escrow_modal_sub: "Бронирование квартиры на 24 часа",
-                escrow_hold_label: "Бронь (Аванс из депозита):",
-                escrow_fee_label: "Комиссия платформы (2%):",
-                escrow_total_label: "Итого к оплате сейчас:",
-                escrow_rent_basis: "Комиссия 2% от месячной аренды",
-                escrow_note: "Защищенная оплата: деньги хранятся под контролем RentTrust до подтверждения заселения обеими сторонами. Комиссия: 2% с арендатора, 2% с арендодателя. Если владелец не подтвердит или заселение не состоится, средства возвращаются согласно правилам.",
-                escrow_pay_btn: "Оплатить через Click / Payme",
-                escrow_cancel_btn: "Отмена",
-                add_modal_title: "Разместить объявление",
-                add_tax_title: "Льгота по подоходному налогу!",
-                add_tax_desc: "При сдаче студентам и регистрации договора доход освобождается от подоходного налога. Не является юридической консультацией.",
-                add_student_chk: "Сдаю студентам (налоговая льгота)",
-                add_doc_lbl: "Кадастр или документ о праве собственности (необязательно, хранится приватно):",
-                add_submit_btn: "Опубликовать объявление",
-                insp_modal_title: "Акт приема-передачи жилья",
-                insp_modal_sub: "Акт осмотра для депозита",
-                insp_why_title: "Зачем нужны эти фотографии?",
-                insp_why_desc: "Сфотографируйте имеющиеся дефекты (царапины, состояние мебели/техники). При выезде данный акт будет основным доказательством по депозиту.",
-                insp_photos_lbl: "Фотографии дефектов",
-                insp_upload_btn: "Сделать фото",
-                insp_notes_lbl: "Примечания или показания счетчиков",
-                insp_notes_ph: "Например: Газ: 12450, Свет: 04820. Царапина на ножке стола...",
-                insp_agree_lbl: "Я осмотрел квартиру и принял ключи. Согласен на перевод оплаченных средств владельцу.",
-                insp_submit_btn: "Подписать акт и получить ключи",
-                terms_modal_title: "Правила сервиса и Оферта",
-                terms_safe_title: "🛡️ Защищенная оплата",
-                terms_safe_desc: "Защищенная оплата: деньги хранятся под контролем RentTrust до подтверждения заселения обеими сторонами. Комиссия: 2% с арендатора, 2% с арендодателя.",
-                ref_modal_title: "Пригласите друга: 30% комиссии вам",
-                ref_banner_title: "Пригласите друга: 30% комиссии вам",
-                ref_banner_desc: "Кэшбэк начисляется после подтверждения заселения вашим другом и истечения срока спора.",
-                ref_stat_lbl_invited: "Приглашено",
-                ref_stat_lbl_deals: "Сделки",
-                ref_stat_lbl_cashback: "Кэшбэк",
-                ref_link_lbl: "Ваша личная ссылка-приглашение:",
-                ref_copy_btn: "Копия",
-                ref_share_btn: "Отправить друзьям в Telegram",
-                ref_how_title: "Как это работает?",
-                bookings_modal_title: "Мои заявки и бронирования",
-                bookings_empty_title: "Нет активных бронирований",
-                bookings_empty_desc: "Просмотрите квартиры на платформе и забронируйте с комиссией всего 2%.",
-                bookings_browse_btn: "Искать квартиры"
-            }
-        };
-
-        function toggleLanguage() {
-            currentLang = (currentLang === 'uz') ? 'ru' : 'uz';
-            localStorage.setItem('renttrust_lang', currentLang);
-            applyLanguage();
-        }
-
-        function applyLanguage() {
-            try {
-                const t = (typeof I18N !== 'undefined' && I18N[currentLang]) ? I18N[currentLang] : (typeof I18N !== 'undefined' ? I18N.uz : {});
-                if (!t) return;
-
-                const setTxt = (id, val) => { const el = document.getElementById(id); if (el && val !== undefined) el.innerText = val; };
-                const setHtml = (id, val) => { const el = document.getElementById(id); if (el && val !== undefined) el.innerHTML = val; };
-
-                setTxt('lang-btn-text', t.flag);
-                setTxt('header-slogan', t.slogan);
-                setTxt('header-add-text', t.add_prop);
-                setTxt('quick-fav-label', t.quick_fav);
-                setTxt('quick-calc-label', t.quick_calc);
-                setTxt('quick-alert-label', t.quick_alert);
-
-                const aiInput = document.getElementById('ai-search-input');
-                if (aiInput && t.ai_placeholder) aiInput.placeholder = t.ai_placeholder;
-                setTxt('ai-btn-text', t.ai_btn);
-
-                setTxt('banner-tag', t.banner_tag);
-                setTxt('banner-title', t.banner_title);
-                if (t.banner_desc) setHtml('banner-desc', t.banner_desc);
-                setTxt('banner-b1', t.banner_b1);
-                setTxt('banner-b2', t.banner_b2);
-
-                setTxt('btn-filter-text', t.btn_filter);
-                setTxt('btn-view-list-text', t.view_list);
-                setTxt('btn-view-map-text', t.view_map);
-                setTxt('filter-rooms-title', t.filter_rooms);
-                setTxt('filter-price-title', t.filter_price);
-                setTxt('room-btn-all', t.room_all);
-                setTxt('districts-header-title', t.districts_header);
-                setTxt('district-pill-all', t.district_all);
-
-                setTxt('nav-home', t.nav_home);
-                setTxt('nav-bookings', t.nav_bookings);
-                setTxt('nav-add', t.nav_add);
-                setTxt('nav-rules', t.nav_rules);
-                setTxt('nav-help', t.nav_help);
-
-                setTxt('fav-modal-title', t.fav_title);
-                setTxt('fav-modal-subtitle', t.fav_subtitle);
-                setTxt('calc-modal-title', t.calc_title);
-                setTxt('calc-modal-subtitle', t.calc_subtitle);
-                setTxt('calc-input-label', t.calc_rent_lbl);
-                setTxt('calc-savings-header', t.calc_savings_hdr);
-                setTxt('calc-view-props-btn', t.calc_view_btn);
-                setTxt('alert-modal-title', t.alert_title);
-                setTxt('alert-modal-subtitle', t.alert_subtitle);
-                setTxt('alert-btn-text', t.alert_btn);
-                setTxt('comp-modal-title', t.comp_title);
-                setTxt('comp-modal-subtitle', t.comp_subtitle);
-                setTxt('modal-book-btn-text', t.prop_detail_book_btn);
-
-                // Modals
-                setTxt('escrow-modal-title', t.escrow_modal_title);
-                setTxt('escrow-modal-sub', t.escrow_modal_sub);
-                setTxt('escrow-hold-lbl', t.escrow_hold_label);
-                setTxt('escrow-fee-lbl', t.escrow_fee_label);
-                setTxt('escrow-total-lbl', t.escrow_total_label);
-                setTxt('escrow-rent-basis-note', t.escrow_rent_basis);
-                setTxt('escrow-note-text', t.escrow_note);
-                setTxt('escrow-pay-btn-text', t.escrow_pay_btn);
-                setTxt('escrow-cancel-btn-text', t.escrow_cancel_btn);
-
-                setTxt('add-modal-title', t.add_modal_title);
-                setTxt('add-submit-text', t.add_submit_btn);
-
-                setTxt('insp-modal-title', t.insp_modal_title);
-                setTxt('insp-modal-sub', t.insp_modal_sub);
-                setTxt('insp-why-title', t.insp_why_title);
-                setTxt('insp-why-desc', t.insp_why_desc);
-                setTxt('insp-photos-label', t.insp_photos_lbl);
-                setTxt('insp-upload-label', t.insp_upload_btn);
-                setTxt('insp-notes-label', t.insp_notes_lbl);
-                const inspNotes = document.getElementById('insp-notes');
-                if (inspNotes && t.insp_notes_ph) inspNotes.placeholder = t.insp_notes_ph;
-                setTxt('insp-agree-label', t.insp_agree_lbl);
-                setTxt('insp-submit-text', t.insp_submit_btn);
-
-                setTxt('terms-modal-title', t.terms_modal_title);
-                setTxt('terms-safe-title', t.terms_safe_title);
-                setTxt('terms-safe-desc', t.terms_safe_desc);
-
-                setTxt('ref-modal-title', t.ref_modal_title);
-                setTxt('ref-banner-title', t.ref_banner_title);
-                setTxt('ref-banner-desc', t.ref_banner_desc);
-                setTxt('ref-stat-lbl-invited', t.ref_stat_lbl_invited);
-                setTxt('ref-stat-lbl-deals', t.ref_stat_lbl_deals);
-                setTxt('ref-stat-lbl-cashback', t.ref_stat_lbl_cashback);
-                setTxt('ref-link-lbl', t.ref_link_lbl);
-                setTxt('copy-ref-text', t.ref_copy_btn);
-                setTxt('ref-share-btn-text', t.ref_share_btn);
-                setTxt('ref-how-title', t.ref_how_title);
-
-                setTxt('bookings-modal-title', t.bookings_modal_title);
-
-                // Re-render feed cards to update card badges, fee texts and counters
-                if (typeof filteredProperties !== 'undefined' && filteredProperties && filteredProperties.length > 0) {
-                    renderPropertiesList(filteredProperties);
-                    const countEl = document.getElementById('properties-count');
-                    if (countEl) {
-                        countEl.innerText = (currentLang === 'ru') 
-                            ? `${filteredProperties.length} кв.`
-                            : `${filteredProperties.length} ta xonadon`;
-                    }
-                }
-
-                // If property modal is open, re-render its details
-                if (selectedProperty && typeof openPropertyModal === 'function') {
-                    const pModal = document.getElementById('property-modal');
-                    if (pModal && !pModal.classList.contains('hidden')) {
-                        openPropertyModal(selectedProperty.id);
-                    }
-                }
-
-                if (window.lucide) {
-                    lucide.createIcons();
-                }
-            } catch (err) {
-                console.error("applyLanguage error:", err);
-            }
-        }
+        // I18N moved to top of script
 
         // ---------------------------------------------------------
         // FEATURE 1: Favorites & Comparison Engine
@@ -3187,10 +3195,13 @@
 
         // Safe Initial Load
         function initApp() {
-            try { setupTelegramNavigation(); } catch(e){console.error(e);} try { authenticateTelegramSession(); } catch(e){console.error(e);} try { updateFavoritesBadges(); } catch (e) { console.error("Fav init error:", e); }
-            try { renderDistrictOptions(); } catch(e){console.error(e);} try { applyLanguage(); } catch (e) { console.error("Lang init error:", e); }
-            try { fetchProperties(); } catch (e) { console.error("Fetch init error:", e); }
-            try { if (window.lucide) lucide.createIcons(); } catch (e) { console.error("Lucide init error:", e); }
+            try { if (window.lucide) lucide.createIcons(); } catch(e){ console.error("Lucide init error:", e); }
+            try { setupTelegramNavigation(); } catch(e){ console.error("Nav init error:", e); }
+            try { renderDistrictOptions(); } catch(e){ console.error("Districts init error:", e); }
+            try { applyLanguage(); } catch(e){ console.error("Lang init error:", e); }
+            try { updateFavoritesBadges(); } catch(e){ console.error("Fav init error:", e); }
+            try { fetchProperties(); } catch(e){ console.error("Fetch init error:", e); }
+            try { authenticateTelegramSession(); } catch(e){ console.error("Auth init error:", e); }
         }
 
         if (document.readyState === 'loading') {
