@@ -426,15 +426,18 @@
                     <textarea id="prop-desc" rows="2" placeholder="Uydagi qulayliklar, kimlarga ijaraga berilishi va talablar..." class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs"></textarea>
                 </div>
 
-                <!-- Uy egasi ma'lumotlari -->
-                <div class="border-t border-slate-100 pt-3 grid grid-cols-2 gap-2">
-                    <div class="space-y-1">
-                        <label class="font-bold text-slate-700 block">Ismingiz *</label>
-                        <input type="text" id="prop-landlord-name" required placeholder="Ism va familiyangiz" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs">
-                    </div>
-                    <div class="space-y-1">
-                        <label class="font-bold text-slate-700 block">Telefon raqamingiz *</label>
-                        <input type="tel" id="prop-landlord-phone" required placeholder="+998 90 123 45 67" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs">
+                <!-- Uy egasi ma'lumotlari (Telegram orqali avtomatik) -->
+                <div class="border-t border-slate-100 pt-3 bg-slate-50 p-3 rounded-xl flex items-center justify-between">
+                    <div class="flex items-center space-x-2.5">
+                        <div class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-xs" id="landlord-profile-avatar">
+                            U
+                        </div>
+                        <div>
+                            <span class="font-bold text-slate-800 text-xs block" id="landlord-profile-name">Telegram orqali tasdiqlangan</span>
+                            <span class="text-[10px] text-emerald-600 font-medium flex items-center">
+                                <i data-lucide="shield-check" class="w-3 h-3 mr-1"></i> Telegram hisobingiz biriktiriladi
+                            </span>
+                        </div>
                     </div>
                 </div>
 
@@ -1476,7 +1479,7 @@
                 </div>
             `;
 
-            modal.classList.remove('hidden');
+            modal.classList.remove('hidden'); if(window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.BackButton) window.Telegram.WebApp.BackButton.show();
             setTimeout(() => {
                 container.classList.remove('translate-y-full');
             }, 10);
@@ -1546,7 +1549,7 @@
             try {
                 const res = await fetch('/api/escrow/hold', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: getAuthHeaders({ 'Content-Type': 'application/json' }),
                     body: JSON.stringify(payload)
                 });
                 const resData = await res.json();
@@ -1587,7 +1590,7 @@
                 }
             }
 
-            modal.classList.remove('hidden');
+            modal.classList.remove('hidden'); if(window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.BackButton) window.Telegram.WebApp.BackButton.show();
             setTimeout(() => {
                 container.classList.remove('translate-y-full');
             }, 10);
@@ -1631,7 +1634,7 @@
             try {
                 const res = await fetch('/api/properties', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: getAuthHeaders({ 'Content-Type': 'application/json' }),
                     body: JSON.stringify(payload)
                 });
                 const resData = await res.json();
@@ -1654,7 +1657,7 @@
         function openTermsModal() {
             const modal = document.getElementById('terms-modal');
             const container = document.getElementById('terms-modal-container');
-            modal.classList.remove('hidden');
+            modal.classList.remove('hidden'); if(window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.BackButton) window.Telegram.WebApp.BackButton.show();
             setTimeout(() => {
                 container.classList.remove('translate-y-full');
             }, 10);
@@ -1675,7 +1678,7 @@
             const modal = document.getElementById('bookings-modal');
             const container = document.getElementById('bookings-modal-container');
             container.scrollTop = 0;
-            modal.classList.remove('hidden');
+            modal.classList.remove('hidden'); if(window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.BackButton) window.Telegram.WebApp.BackButton.show();
             setTimeout(() => {
                 container.classList.remove('translate-y-full');
             }, 10);
@@ -1724,7 +1727,7 @@
             const tgId = tgUser ? tgUser.id : '';
 
             try {
-                const res = await fetch(`/api/my-bookings?telegram_id=${tgId}`);
+                const res = await fetch(`/api/my-bookings?telegram_id=${tgId}`, { headers: getAuthHeaders() });
                 if (!res.ok) throw new Error("Arizalarni yuklashda server xatoligi: " + res.status);
                 const data = await res.json();
                 const list = (data.success && data.data) ? data.data : [];
@@ -1914,7 +1917,7 @@
             
             const modal = document.getElementById('inspection-modal');
             const container = document.getElementById('inspection-modal-container');
-            modal.classList.remove('hidden');
+            modal.classList.remove('hidden'); if(window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.BackButton) window.Telegram.WebApp.BackButton.show();
             setTimeout(() => {
                 container.classList.remove('translate-y-full');
             }, 10);
@@ -2137,7 +2140,7 @@
             const modal = document.getElementById('referral-modal');
             const container = document.getElementById('referral-modal-container');
             if (modal && container) {
-                modal.classList.remove('hidden');
+                modal.classList.remove('hidden'); if(window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.BackButton) window.Telegram.WebApp.BackButton.show();
                 setTimeout(() => {
                     container.classList.remove('translate-y-full');
                 }, 10);
@@ -2585,7 +2588,7 @@
                 content.innerHTML = html;
             }
 
-            modal.classList.remove('hidden');
+            modal.classList.remove('hidden'); if(window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.BackButton) window.Telegram.WebApp.BackButton.show();
             setTimeout(() => {
                 container.classList.remove('translate-y-full');
             }, 10);
@@ -2658,7 +2661,7 @@
             html += `</div></div>`;
             content.innerHTML = html;
 
-            modal.classList.remove('hidden');
+            modal.classList.remove('hidden'); if(window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.BackButton) window.Telegram.WebApp.BackButton.show();
             setTimeout(() => {
                 container.classList.remove('translate-y-full');
             }, 10);
@@ -2678,7 +2681,7 @@
         // ---------------------------------------------------------
         function openCalculatorModal() {
             const modal = document.getElementById('calculator-modal');
-            modal.classList.remove('hidden');
+            modal.classList.remove('hidden'); if(window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.BackButton) window.Telegram.WebApp.BackButton.show();
             const slider = document.getElementById('calc-rent-slider');
             updateCalculator(slider ? slider.value : 6000000);
             lucide.createIcons();
@@ -2714,7 +2717,7 @@
         // ---------------------------------------------------------
         function openAlertModal() {
             const modal = document.getElementById('alert-modal');
-            modal.classList.remove('hidden');
+            modal.classList.remove('hidden'); if(window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.BackButton) window.Telegram.WebApp.BackButton.show();
 
             if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe && window.Telegram.WebApp.initDataUnsafe.user) {
                 const u = window.Telegram.WebApp.initDataUnsafe.user;
@@ -2872,7 +2875,7 @@
 
         // Safe Initial Load
         function initApp() {
-            try { updateFavoritesBadges(); } catch (e) { console.error("Fav init error:", e); }
+            try { setupTelegramNavigation(); } catch(e){console.error(e);} try { authenticateTelegramSession(); } catch(e){console.error(e);} try { updateFavoritesBadges(); } catch (e) { console.error("Fav init error:", e); }
             try { renderDistrictOptions(); } catch(e){console.error(e);} try { applyLanguage(); } catch (e) { console.error("Lang init error:", e); }
             try { fetchProperties(); } catch (e) { console.error("Fetch init error:", e); }
             try { if (window.lucide) lucide.createIcons(); } catch (e) { console.error("Lucide init error:", e); }

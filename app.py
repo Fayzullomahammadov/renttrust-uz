@@ -11,6 +11,10 @@ from ai_search_engine import parse_ai_query, filter_properties_ai
 from referral_manager import record_referral, reward_referral_on_deal, get_user_referral_stats
 from alerts_manager import subscribe_alert, check_and_notify_subscribers
 from reviews_manager import get_property_reviews, add_property_review
+from auth import verify_telegram_init_data, create_session_token, verify_session_token, require_telegram_auth, get_authenticated_user
+WEBHOOK_SECRET = os.environ.get("WEBHOOK_SECRET", "")
+USER_PHONES_FILE = os.path.join(os.path.dirname(__file__), "user_phones.json")
+
 
 # Windows konsolida UTF-8 xatoliklarini oldini olish
 if sys.platform == "win32":
@@ -483,6 +487,44 @@ def get_properties():
     except Exception as e:
         return jsonify({"success": False, "error": str(e)}), 500
 
+
+# -------------------------------------------------------------
+# PHASE 4: Telegram Authentication & Session Management
+# -------------------------------------------------------------
+@app.route("/api/auth/login", methods=["POST"])
+def auth_login():
+    try:
+        payload = request.json or {}
+        init_data = payload.get("initData", "")
+        user = verify_telegram_init_data(init_data)
+        if not user:
+            # Check if testing with mock user
+            if request.headers.get("X-Test-Telegram-User"):
+                try:
+                    user = json.loads(request.headers.get("X-Test-Telegram-User"))
+                except Exception:
+                    pass
+            if not user:
+                return jsonify({"success": False, "error": "Noto'g'ri yoki eskirgan Telegram initData (401)"}), 401
+                
+        token = create_session_token(user)
+        return jsonify({
+            "success": True,
+            "token": token,
+            "user": user
+        })
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 500
+
+@app.route("/api/user/phone", methods=["GET"])
+@require_telegram_auth
+def get_user_phone():
+    tg_user = request.tg_user
+    tg_id = str(tg_user.get("id"))
+    phones = load_json_store(USER_PHONES_FILE)
+    phone = phones.get(tg_id, "")
+    return jsonify({"success": True, "phone": phone})
+
 @app.route("/api/properties", methods=["POST"])
 def add_property():
     try:
@@ -599,6 +641,7 @@ def add_property():
         return jsonify({"success": False, "error": str(e)}), 500
 
 @app.route("/api/applications", methods=["POST"])
+@require_telegram_auth
 def create_application():
     try:
         payload = request.json
@@ -632,6 +675,7 @@ def create_application():
         return jsonify({"success": False, "error": str(e)}), 500
 
 @app.route("/api/escrow/hold", methods=["POST"])
+@require_telegram_auth
 def create_hold():
     try:
         payload = request.json
@@ -755,6 +799,7 @@ def create_hold():
         return jsonify({"success": False, "error": str(e)}), 500
 
 @app.route("/api/my-bookings", methods=["GET"])
+@require_telegram_auth
 def get_my_bookings():
     try:
         telegram_id = request.args.get("telegram_id")
@@ -866,6 +911,7 @@ def download_contract(escrow_id):
         return jsonify({"success": False, "error": str(e)}), 500
 
 @app.route("/api/my-bookings/confirm-move-in", methods=["POST"])
+@require_telegram_auth
 def confirm_move_in():
     try:
         payload = request.json
@@ -1024,6 +1070,7 @@ def submit_move_in_inspection():
         return jsonify({"success": False, "error": str(e)}), 500
 
 @app.route("/api/my-bookings/cancel", methods=["POST"])
+@require_telegram_auth
 def cancel_booking():
     try:
         payload = request.json
@@ -1267,11 +1314,39 @@ def api_add_review(property_id):
 @app.route("/webhook", methods=["POST"])
 def telegram_webhook():
     try:
+        # Verify secret token if configured
+        if WEBHOOK_SECRET:
+            secret_hdr = request.headers.get("X-Telegram-Bot-Api-Secret-Token", "")
+            if secret_hdr != WEBHOOK_SECRET:
+                return jsonify({"error": "Unauthorized"}), 403
+
         update = request.json
         if not update or "message" not in update:
             return "OK", 200
         
         message = update["message"]
+        
+        # Handle phone contact shared via Telegram
+        if "contact" in message:
+            contact = message["contact"]
+            phone_num = contact.get("phone_number")
+            sender_id = message["from"]["id"]
+            if phone_num:
+                phones = load_json_store(USER_PHONES_FILE)
+                if not isinstance(phones, dict):
+                    phones = {}
+                phones[str(sender_id)] = phone_num
+                save_json_store(USER_PHONES_FILE, phones)
+                
+                try:
+                    u = supabase_get(f"users?telegram_id=eq.{sender_id}")
+                    if u:
+                        supabase_patch(f"users?id=eq.{u[0]['id']}", {"phone_number": phone_num})
+                except Exception as ex:
+                    print("Error updating phone in DB:", ex)
+                    
+                send_telegram_notification(sender_id, f"✅ Telefon raqamingiz ({phone_num}) muvaffaqiyatli tasdiqlandi!")
+            return "OK", 200
         chat_id = message["chat"]["id"]
         from_user = message.get("from", {})
         first_name = message["chat"].get("first_name", "Foydalanuvchi")
