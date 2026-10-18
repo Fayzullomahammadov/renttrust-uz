@@ -1058,17 +1058,15 @@
         function renderPropertiesList(list) {
             const feed = document.getElementById('properties-feed');
             if (!list || list.length === 0) {
+                const tEmpty = (typeof I18N !== 'undefined' && I18N[currentLang]) ? I18N[currentLang] : (typeof I18N !== 'undefined' ? I18N.uz : {});
                 feed.innerHTML = `
-                    const tEmpty = I18N[currentLang] || I18N.uz;
-                    feed.innerHTML = `
                     <div class="bg-white rounded-2xl p-8 text-center text-slate-400 border border-slate-100">
                         <i data-lucide="home" class="w-10 h-10 mx-auto mb-2 text-slate-300"></i>
-                        <p class="text-xs font-semibold">${tEmpty.prop_empty_title}</p>
-                        <button onclick="resetFilters()" class="mt-3 text-xs text-emerald-600 font-bold bg-emerald-50 px-3 py-1.5 rounded-lg">${tEmpty.prop_empty_btn}</button>
+                        <p class="text-xs font-semibold">${tEmpty.prop_empty_title || "Ushbu parametrlar bo'yicha e'lon topilmadi"}</p>
+                        <button onclick="resetFilters()" class="mt-3 text-xs text-emerald-600 font-bold bg-emerald-50 px-3 py-1.5 rounded-lg">${tEmpty.prop_empty_btn || "Filtrlarni tozalash"}</button>
                     </div>
-                    `;
                 `;
-                lucide.createIcons();
+                if (window.lucide) lucide.createIcons();
                 return;
             }
 
@@ -2351,65 +2349,74 @@
         }
 
         function applyLanguage() {
-            const t = I18N[currentLang] || I18N.uz;
-            const setTxt = (id, val) => { const el = document.getElementById(id); if (el) el.innerText = val; };
-            const setHtml = (id, val) => { const el = document.getElementById(id); if (el) el.innerHTML = val; };
+            try {
+                const t = (typeof I18N !== 'undefined' && I18N[currentLang]) ? I18N[currentLang] : (typeof I18N !== 'undefined' ? I18N.uz : {});
+                if (!t) return;
 
-            setTxt('lang-btn-text', t.flag);
-            setTxt('header-slogan', t.slogan);
-            setTxt('header-add-text', t.add_prop);
-            setTxt('quick-fav-label', t.quick_fav);
-            setTxt('quick-calc-label', t.quick_calc);
-            setTxt('quick-alert-label', t.quick_alert);
+                const setTxt = (id, val) => { const el = document.getElementById(id); if (el && val !== undefined) el.innerText = val; };
+                const setHtml = (id, val) => { const el = document.getElementById(id); if (el && val !== undefined) el.innerHTML = val; };
 
-            const aiInput = document.getElementById('ai-search-input');
-            if (aiInput) aiInput.placeholder = t.ai_placeholder;
-            setTxt('ai-btn-text', t.ai_btn);
+                setTxt('lang-btn-text', t.flag);
+                setTxt('header-slogan', t.slogan);
+                setTxt('header-add-text', t.add_prop);
+                setTxt('quick-fav-label', t.quick_fav);
+                setTxt('quick-calc-label', t.quick_calc);
+                setTxt('quick-alert-label', t.quick_alert);
 
-            setTxt('banner-tag', t.banner_tag);
-            setTxt('banner-title', t.banner_title);
-            setHtml('banner-desc', t.banner_desc);
-            setTxt('banner-b1', t.banner_b1);
-            setTxt('banner-b2', t.banner_b2);
+                const aiInput = document.getElementById('ai-search-input');
+                if (aiInput && t.ai_placeholder) aiInput.placeholder = t.ai_placeholder;
+                setTxt('ai-btn-text', t.ai_btn);
 
-            setTxt('btn-filter-text', t.btn_filter);
-            setTxt('btn-view-list-text', t.view_list);
-            setTxt('btn-view-map-text', t.view_map);
-            setTxt('filter-rooms-title', t.filter_rooms);
-            setTxt('filter-price-title', t.filter_price);
-            setTxt('room-btn-all', t.room_all);
-            setTxt('districts-header-title', t.districts_header);
-            setTxt('district-pill-all', t.district_all);
+                setTxt('banner-tag', t.banner_tag);
+                setTxt('banner-title', t.banner_title);
+                if (t.banner_desc) setHtml('banner-desc', t.banner_desc);
+                setTxt('banner-b1', t.banner_b1);
+                setTxt('banner-b2', t.banner_b2);
 
-            setTxt('nav-home', t.nav_home);
-            setTxt('nav-bookings', t.nav_bookings);
-            setTxt('nav-add', t.nav_add);
-            setTxt('nav-rules', t.nav_rules);
-            setTxt('nav-help', t.nav_help);
+                setTxt('btn-filter-text', t.btn_filter);
+                setTxt('btn-view-list-text', t.view_list);
+                setTxt('btn-view-map-text', t.view_map);
+                setTxt('filter-rooms-title', t.filter_rooms);
+                setTxt('filter-price-title', t.filter_price);
+                setTxt('room-btn-all', t.room_all);
+                setTxt('districts-header-title', t.districts_header);
+                setTxt('district-pill-all', t.district_all);
 
-            setTxt('fav-modal-title', t.fav_title);
-            setTxt('fav-modal-subtitle', t.fav_subtitle);
-            setTxt('calc-modal-title', t.calc_title);
-            setTxt('calc-modal-subtitle', t.calc_subtitle);
-            setTxt('calc-input-label', t.calc_rent_lbl);
-            setTxt('calc-savings-header', t.calc_savings_hdr);
-            setTxt('calc-view-props-btn', t.calc_view_btn);
-            setTxt('alert-modal-title', t.alert_title);
-            setTxt('alert-modal-subtitle', t.alert_subtitle);
-            setTxt('alert-btn-text', t.alert_btn);
-            setTxt('comp-modal-title', t.comp_title);
-            setTxt('comp-modal-subtitle', t.comp_subtitle);
-            setTxt('modal-book-btn-text', t.prop_detail_book_btn);
+                setTxt('nav-home', t.nav_home);
+                setTxt('nav-bookings', t.nav_bookings);
+                setTxt('nav-add', t.nav_add);
+                setTxt('nav-rules', t.nav_rules);
+                setTxt('nav-help', t.nav_help);
 
-            // Re-render feed cards to update card badges, fee texts and counters
-            if (filteredProperties && filteredProperties.length > 0) {
-                renderPropertiesList(filteredProperties);
-                const countEl = document.getElementById('properties-count');
-                if (countEl) {
-                    countEl.innerText = (currentLang === 'ru') 
-                        ? `${filteredProperties.length} кв.`
-                        : `${filteredProperties.length} ta xonadon`;
+                setTxt('fav-modal-title', t.fav_title);
+                setTxt('fav-modal-subtitle', t.fav_subtitle);
+                setTxt('calc-modal-title', t.calc_title);
+                setTxt('calc-modal-subtitle', t.calc_subtitle);
+                setTxt('calc-input-label', t.calc_rent_lbl);
+                setTxt('calc-savings-header', t.calc_savings_hdr);
+                setTxt('calc-view-props-btn', t.calc_view_btn);
+                setTxt('alert-modal-title', t.alert_title);
+                setTxt('alert-modal-subtitle', t.alert_subtitle);
+                setTxt('alert-btn-text', t.alert_btn);
+                setTxt('comp-modal-title', t.comp_title);
+                setTxt('comp-modal-subtitle', t.comp_subtitle);
+                setTxt('modal-book-btn-text', t.prop_detail_book_btn);
+
+                // Re-render feed cards to update card badges, fee texts and counters
+                if (typeof filteredProperties !== 'undefined' && filteredProperties && filteredProperties.length > 0) {
+                    renderPropertiesList(filteredProperties);
+                    const countEl = document.getElementById('properties-count');
+                    if (countEl) {
+                        countEl.innerText = (currentLang === 'ru') 
+                            ? `${filteredProperties.length} кв.`
+                            : `${filteredProperties.length} ta xonadon`;
+                    }
                 }
+                if (window.lucide) {
+                    lucide.createIcons();
+                }
+            } catch (err) {
+                console.error("applyLanguage error:", err);
             }
         }
 
@@ -2814,11 +2821,19 @@
             }
         }
 
-        // Initial Load
-        updateFavoritesBadges();
-        applyLanguage();
-        fetchProperties();
-        lucide.createIcons();
+        // Safe Initial Load
+        function initApp() {
+            try { updateFavoritesBadges(); } catch (e) { console.error("Fav init error:", e); }
+            try { applyLanguage(); } catch (e) { console.error("Lang init error:", e); }
+            try { fetchProperties(); } catch (e) { console.error("Fetch init error:", e); }
+            try { if (window.lucide) lucide.createIcons(); } catch (e) { console.error("Lucide init error:", e); }
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initApp);
+        } else {
+            initApp();
+        }
     </script>
 </body>
 </html>
