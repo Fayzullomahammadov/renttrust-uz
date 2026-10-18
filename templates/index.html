@@ -10,6 +10,9 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <!-- Telegram WebApp SDK -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <!-- Leaflet.js for Interactive Map -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -21,6 +24,17 @@
         .hide-scrollbar {
             -ms-overflow-style: none;
             scrollbar-width: none;
+        }
+        /* Custom Leaflet Map styling */
+        .leaflet-popup-content-wrapper {
+            border-radius: 1rem;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            padding: 0;
+            overflow: hidden;
+        }
+        .leaflet-popup-content {
+            margin: 0;
+            line-height: 1.4;
         }
     </style>
 </head>
@@ -54,7 +68,7 @@
         </div>
     </header>
 
-    <main class="max-w-lg mx-auto px-4 pt-3 space-y-4">
+    <main class="max-w-lg mx-auto px-4 pt-3 space-y-3.5">
 
         <!-- Value Proposition Escrow Banner -->
         <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-slate-900 via-slate-800 to-emerald-950 text-white p-4 shadow-xl shadow-slate-900/10">
@@ -71,6 +85,55 @@
                 <div class="pt-1 flex items-center space-x-3 text-[11px] text-slate-400">
                     <span class="flex items-center"><i data-lucide="check" class="w-3.5 h-3.5 text-emerald-400 mr-1"></i> Fakesiz uylar</span>
                     <span class="flex items-center"><i data-lucide="check" class="w-3.5 h-3.5 text-emerald-400 mr-1"></i> Depozit himoyasi</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- View Mode Switcher & Filter Triggers -->
+        <div class="flex items-center justify-between pt-0.5">
+            <!-- Filter drawer trigger button -->
+            <button onclick="toggleFilterDrawer()" class="inline-flex items-center space-x-1.5 text-xs font-bold text-slate-700 bg-white border border-slate-200 px-3 py-1.5 rounded-xl hover:bg-slate-50 transition shadow-sm active:scale-95">
+                <i data-lucide="sliders-horizontal" class="w-3.5 h-3.5 text-emerald-600"></i>
+                <span>Narx & Xonalar</span>
+                <span id="active-filters-dot" class="w-2 h-2 rounded-full bg-emerald-500"></span>
+            </button>
+
+            <!-- View Switcher (Ro'yxat vs Xarita) -->
+            <div class="bg-slate-200/80 p-0.5 rounded-xl flex items-center text-xs font-bold">
+                <button onclick="setViewMode('list')" id="btn-view-list" class="px-3 py-1 rounded-lg bg-white text-slate-900 shadow-sm transition">
+                    📋 Ro'yxat
+                </button>
+                <button onclick="setViewMode('map')" id="btn-view-map" class="px-3 py-1 rounded-lg text-slate-600 hover:text-slate-900 transition">
+                    🗺️ Xarita
+                </button>
+            </div>
+        </div>
+
+        <!-- Filter Drawer (Rooms & Price slider) -->
+        <div id="filter-drawer" class="hidden bg-white border border-slate-200/80 rounded-2xl p-3.5 space-y-3 shadow-sm text-xs transition">
+            <!-- Xonalar soni filtri -->
+            <div class="space-y-1.5">
+                <span class="font-bold text-slate-700 block">Xonalar soni bo'yicha:</span>
+                <div class="flex flex-wrap gap-1.5">
+                    <button onclick="filterRooms('all')" class="room-btn active px-3 py-1 rounded-lg bg-emerald-600 text-white font-bold">Barchasi</button>
+                    <button onclick="filterRooms(1)" class="room-btn px-3 py-1 rounded-lg bg-slate-100 text-slate-700 font-bold">1 xona</button>
+                    <button onclick="filterRooms(2)" class="room-btn px-3 py-1 rounded-lg bg-slate-100 text-slate-700 font-bold">2 xona</button>
+                    <button onclick="filterRooms(3)" class="room-btn px-3 py-1 rounded-lg bg-slate-100 text-slate-700 font-bold">3 xona</button>
+                    <button onclick="filterRooms(4)" class="room-btn px-3 py-1 rounded-lg bg-slate-100 text-slate-700 font-bold">4+ xona</button>
+                </div>
+            </div>
+
+            <!-- Narx oralig'i filtri -->
+            <div class="space-y-1.5 border-t border-slate-100 pt-2.5">
+                <div class="flex justify-between items-center">
+                    <span class="font-bold text-slate-700">Maksimal oylik narx:</span>
+                    <span id="price-slider-val" class="text-emerald-700 font-extrabold text-xs">10 000 000 so'm</span>
+                </div>
+                <input type="range" id="price-slider" min="2000000" max="10000000" step="500000" value="10000000" class="w-full accent-emerald-600 cursor-pointer" oninput="handlePriceChange(this.value)">
+                <div class="flex justify-between text-[10px] text-slate-400">
+                    <span>2 mln so'm</span>
+                    <span>6 mln so'm</span>
+                    <span>10+ mln so'm</span>
                 </div>
             </div>
         </div>
@@ -97,15 +160,23 @@
                 <button onclick="filterDistrict('Yakkasaroy')" class="district-btn px-3.5 py-1.5 rounded-full font-semibold bg-white border border-slate-200 text-slate-700 hover:bg-slate-100 transition">
                     Yakkasaroy
                 </button>
+                <button onclick="filterDistrict('Shayxontohur')" class="district-btn px-3.5 py-1.5 rounded-full font-semibold bg-white border border-slate-200 text-slate-700 hover:bg-slate-100 transition">
+                    Shayxontohur
+                </button>
             </div>
         </div>
 
-        <!-- Properties Grid / Feed -->
+        <!-- View 1: Properties List Feed -->
         <div id="properties-feed" class="space-y-4">
             <div class="py-12 text-center text-slate-400">
                 <div class="animate-spin w-6 h-6 border-2 border-emerald-500 border-t-transparent rounded-full mx-auto mb-2"></div>
                 <p class="text-xs">Uylar yuklanmoqda...</p>
             </div>
+        </div>
+
+        <!-- View 2: Interactive Toshkent Map -->
+        <div id="map-view" class="hidden relative h-[420px] rounded-2xl overflow-hidden border border-slate-200 shadow-sm z-10">
+            <!-- Leaflet injects map here -->
         </div>
 
     </main>
@@ -176,7 +247,7 @@
         </div>
     </div>
 
-    <!-- Uy Egasi: "E'lon berish" (Add Property) Modal -->
+    <!-- Uy Egasi: "E'lon berish" (Add Property) Modal with Camera/Gallery Upload -->
     <div id="add-modal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden flex flex-col justify-end">
         <div class="bg-white rounded-t-3xl max-h-[92vh] overflow-y-auto w-full max-w-lg mx-auto shadow-2xl transition-transform duration-300 transform translate-y-full flex flex-col" id="add-modal-container">
             
@@ -194,7 +265,6 @@
 
             <form onsubmit="handleCreateProperty(event)" class="p-4 space-y-3.5 text-xs">
                 
-                <!-- Soliq imtiyozi banner -->
                 <div class="bg-emerald-50 border border-emerald-200 rounded-xl p-3 text-emerald-900 space-y-1">
                     <div class="flex items-center font-bold text-xs text-emerald-800">
                         <i data-lucide="sparkles" class="w-4 h-4 mr-1 text-emerald-600"></i> 12% Soliq Imtiyozi!
@@ -210,7 +280,7 @@
                     <input type="text" id="prop-title" required placeholder="Masalan: Chilonzor metrosi yonida 2 xonali shinam kvartira" class="w-full px-3 py-2 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-xs">
                 </div>
 
-                <!-- Tuman va Aniq Manzil -->
+                <!-- Tuman va Xonalar -->
                 <div class="grid grid-cols-2 gap-2">
                     <div class="space-y-1">
                         <label class="font-bold text-slate-700 block">Tuman *</label>
@@ -272,16 +342,25 @@
                     </div>
                 </div>
 
+                <!-- Camera / Gallery Rasm Yuklash -->
+                <div class="space-y-1.5 border-t border-slate-100 pt-2">
+                    <label class="font-bold text-slate-700 block">Xonadon rasmlari (Kamera yoki Galereyadan)</label>
+                    <label class="flex items-center justify-center space-x-2 border-2 border-dashed border-emerald-300 bg-emerald-50/50 hover:bg-emerald-50 rounded-xl p-3.5 cursor-pointer transition">
+                        <i data-lucide="camera" class="w-5 h-5 text-emerald-600"></i>
+                        <span class="text-xs font-bold text-emerald-700" id="upload-label">Rasm yuklash (Kamera / Galereya)</span>
+                        <input type="file" id="prop-file-input" accept="image/*" class="hidden" onchange="handleFileSelect(event)">
+                    </label>
+                    <div id="image-preview-container" class="hidden relative rounded-xl overflow-hidden h-32 border border-slate-200 mt-2">
+                        <img id="image-preview" src="" class="w-full h-full object-cover">
+                        <button type="button" onclick="clearSelectedImage()" class="absolute top-2 right-2 w-7 h-7 rounded-full bg-black/70 text-white flex items-center justify-center text-xs font-bold shadow-md">✕</button>
+                    </div>
+                    <input type="hidden" id="prop-photo" value="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800">
+                </div>
+
                 <!-- Tavsif -->
                 <div class="space-y-1">
                     <label class="font-bold text-slate-700 block">Qo'shimcha ma'lumotlar</label>
                     <textarea id="prop-desc" rows="2" placeholder="Uydagi qulayliklar, kimlarga ijaraga berilishi va talablar..." class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs"></textarea>
-                </div>
-
-                <!-- Rasm havolasi -->
-                <div class="space-y-1">
-                    <label class="font-bold text-slate-700 block">Rasm havolasi (URL)</label>
-                    <input type="url" id="prop-photo" placeholder="https://images.unsplash.com/..." value="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs text-slate-500">
                 </div>
 
                 <!-- Uy egasi ma'lumotlari -->
@@ -372,13 +451,6 @@
                     <h4 class="font-bold text-slate-800 text-xs">3. ijara.soliq.uz va 12% Soliq Imtiyozi</h4>
                     <p>Barcha ijara bitimlari Soliq Qo'mitasi portalida rasmiylashtirilishi shart. Oliy ta'lim talabalariga ijara bergan uy egalari <strong>12% daromad solig'idan (JSHODS) to'liq ozod</strong> hisoblanadi.</p>
                 </div>
-
-                <div class="border-t border-slate-100 pt-3">
-                    <a href="https://t.me/renttrust_admin" class="w-full inline-flex items-center justify-center space-x-1.5 bg-slate-100 text-slate-700 font-bold py-2.5 rounded-xl hover:bg-slate-200 transition text-xs">
-                        <i data-lucide="message-square" class="w-4 h-4"></i>
-                        <span>Yurist yoki Operator bilan bog'lanish</span>
-                    </a>
-                </div>
             </div>
         </div>
     </div>
@@ -389,20 +461,39 @@
         const SUPABASE_KEY = "sb_publishable_Hk3qScveZpR6IVhfaGU0LA_X6Mx2AvH";
         
         let allProperties = [];
+        let filteredProperties = [];
         let selectedProperty = null;
         let activeBooking = null;
+        let currentDistrict = "Barchasi";
+        let currentRoomFilter = "all";
+        let maxPriceFilter = 10000000;
+        let viewMode = "list";
+        let leafletMap = null;
+        let mapMarkers = [];
+
+        // Tashkent District Center Coordinates
+        const DISTRICT_COORDS = {
+            "Chilonzor": [41.2825, 69.2045],
+            "Yunusobod": [41.3650, 69.2885],
+            "Mirzo Ulug‘bek": [41.3275, 69.3280],
+            "Yakkasaroy": [41.2910, 69.2550],
+            "Shayxontohur": [41.3200, 69.2300],
+            "Mirobod": [41.2980, 69.2780],
+            "Olmazor": [41.3480, 69.2200],
+            "Uchtepa": [41.2950, 69.1700],
+            "Sergeli": [41.2250, 69.2200],
+            "Yashnobod": [41.2950, 69.3300]
+        };
 
         if (window.Telegram && window.Telegram.WebApp) {
             window.Telegram.WebApp.ready();
             window.Telegram.WebApp.expand();
             if (window.Telegram.WebApp.initDataUnsafe && window.Telegram.WebApp.initDataUnsafe.user) {
                 const tgUser = window.Telegram.WebApp.initDataUnsafe.user;
-                const name = tgUser.first_name + (tgUser.last_name ? ' ' + tgUser.last_name : '');
                 document.getElementById('user-avatar').innerText = tgUser.first_name ? tgUser.first_name[0] : 'U';
             }
         }
 
-        // Check query params for action
         const urlParams = new URLSearchParams(window.location.search);
         if (urlParams.get('action') === 'add') {
             setTimeout(openAddPropertyModal, 300);
@@ -412,44 +503,48 @@
             return new Intl.NumberFormat('uz-UZ').format(amount) + " so'm";
         }
 
-        async function fetchProperties(district = "Barchasi") {
-            const feed = document.getElementById('properties-feed');
-            feed.innerHTML = `
-                <div class="py-12 text-center text-slate-400">
-                    <div class="animate-spin w-6 h-6 border-2 border-emerald-500 border-t-transparent rounded-full mx-auto mb-2"></div>
-                    <p class="text-xs">Uylar yuklanmoqda...</p>
-                </div>
-            `;
-
+        async function fetchProperties() {
             try {
-                let url = `${SUPABASE_URL}/rest/v1/properties?select=*,users:landlord_id(*)&order=created_at.desc`;
-                if (district !== "Barchasi") {
-                    url += `&district=eq.${encodeURIComponent(district)}`;
-                }
-
-                const res = await fetch(url, {
-                    headers: {
-                        'apikey': SUPABASE_KEY,
-                        'Authorization': `Bearer ${SUPABASE_KEY}`
-                    }
+                const res = await fetch(`${SUPABASE_URL}/rest/v1/properties?select=*,users:landlord_id(*)&order=created_at.desc`, {
+                    headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
                 });
-                const data = await res.json();
-                allProperties = data;
-                renderProperties(data);
-                document.getElementById('properties-count').innerText = `${data.length} ta xonadon`;
+                allProperties = await res.json();
+                applyFilters();
             } catch (err) {
                 console.error("Xatolik:", err);
-                feed.innerHTML = `<p class="text-center text-xs text-rose-500 py-8">Ma'lumotlarni yuklab bo'lmadi.</p>`;
+                document.getElementById('properties-feed').innerHTML = `<p class="text-center text-xs text-rose-500 py-8">Ma'lumotlarni yuklab bo'lmadi.</p>`;
             }
         }
 
-        function renderProperties(list) {
+        function applyFilters() {
+            filteredProperties = allProperties.filter(item => {
+                // 1. Tuman bo'yicha
+                const matchDistrict = (currentDistrict === "Barchasi") || (item.district === currentDistrict);
+                // 2. Xona bo'yicha
+                const matchRoom = (currentRoomFilter === "all") || (item.rooms == currentRoomFilter) || (currentRoomFilter === 4 && item.rooms >= 4);
+                // 3. Narx bo'yicha
+                const matchPrice = (item.monthly_rent_uzs <= maxPriceFilter);
+
+                return matchDistrict && matchRoom && matchPrice;
+            });
+
+            document.getElementById('properties-count').innerText = `${filteredProperties.length} ta xonadon`;
+
+            if (viewMode === 'list') {
+                renderPropertiesList(filteredProperties);
+            } else {
+                updateMapMarkers(filteredProperties);
+            }
+        }
+
+        function renderPropertiesList(list) {
             const feed = document.getElementById('properties-feed');
             if (!list || list.length === 0) {
                 feed.innerHTML = `
                     <div class="bg-white rounded-2xl p-8 text-center text-slate-400 border border-slate-100">
                         <i data-lucide="home" class="w-10 h-10 mx-auto mb-2 text-slate-300"></i>
-                        <p class="text-xs font-semibold">Bu tumanda hozircha bo'sh uylar yo'q</p>
+                        <p class="text-xs font-semibold">Ushbu filtr bo'yicha uylar topilmadi</p>
+                        <button onclick="resetFilters()" class="mt-3 text-xs text-emerald-600 font-bold bg-emerald-50 px-3 py-1.5 rounded-lg">Filtrlarni tozalash</button>
                     </div>
                 `;
                 lucide.createIcons();
@@ -512,7 +607,91 @@
             lucide.createIcons();
         }
 
+        // View Mode Switcher
+        function setViewMode(mode) {
+            viewMode = mode;
+            const btnList = document.getElementById('btn-view-list');
+            const btnMap = document.getElementById('btn-view-map');
+            const feedView = document.getElementById('properties-feed');
+            const mapView = document.getElementById('map-view');
+
+            if (mode === 'list') {
+                btnList.classList.add('bg-white', 'text-slate-900', 'shadow-sm');
+                btnList.classList.remove('text-slate-600');
+                btnMap.classList.remove('bg-white', 'text-slate-900', 'shadow-sm');
+                btnMap.classList.add('text-slate-600');
+
+                feedView.classList.remove('hidden');
+                mapView.classList.add('hidden');
+                renderPropertiesList(filteredProperties);
+            } else {
+                btnMap.classList.add('bg-white', 'text-slate-900', 'shadow-sm');
+                btnMap.classList.remove('text-slate-600');
+                btnList.classList.remove('bg-white', 'text-slate-900', 'shadow-sm');
+                btnList.classList.add('text-slate-600');
+
+                feedView.classList.add('hidden');
+                mapView.classList.remove('hidden');
+
+                initOrUpdateMap();
+            }
+        }
+
+        // Leaflet Map Initialization
+        function initOrUpdateMap() {
+            if (!leafletMap) {
+                leafletMap = L.map('map-view').setView([41.311081, 69.240562], 12);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    maxZoom: 18,
+                    attribution: '© OpenStreetMap'
+                }).addTo(leafletMap);
+            }
+
+            setTimeout(() => {
+                leafletMap.invalidateSize();
+                updateMapMarkers(filteredProperties);
+            }, 200);
+        }
+
+        function updateMapMarkers(list) {
+            if (!leafletMap) return;
+
+            // Clear old markers
+            mapMarkers.forEach(m => leafletMap.removeLayer(m));
+            mapMarkers = [];
+
+            list.forEach(item => {
+                const baseCoords = DISTRICT_COORDS[item.district] || [41.311081, 69.240562];
+                // Kichik offset bilan joylashtirish
+                const lat = baseCoords[0] + (Math.random() - 0.5) * 0.015;
+                const lng = baseCoords[1] + (Math.random() - 0.5) * 0.015;
+
+                const photo = (item.photos && item.photos.length > 0) ? item.photos[0] : 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800';
+
+                const marker = L.marker([lat, lng]).addTo(leafletMap);
+                const popupContent = `
+                    <div style="width: 220px;" class="p-2 space-y-1.5 font-sans">
+                        <img src="${photo}" style="height: 100px; width: 100%; object-fit: cover; border-radius: 8px;">
+                        <h4 style="font-weight: bold; font-size: 12px; margin: 0; line-height: 1.2;">${item.title}</h4>
+                        <div style="font-size: 11px; color: #059669; font-weight: bold;">${formatMoney(item.monthly_rent_uzs)} /oy</div>
+                        <button onclick="openPropertyModal('${item.id}')" style="width: 100%; background: #059669; color: white; border: none; padding: 6px; border-radius: 6px; font-weight: bold; font-size: 11px; cursor: pointer;">
+                            Ko'rish va Bron qilish
+                        </button>
+                    </div>
+                `;
+                marker.bindPopup(popupContent);
+                mapMarkers.push(marker);
+            });
+        }
+
+        // Filters Handling
+        function toggleFilterDrawer() {
+            const drawer = document.getElementById('filter-drawer');
+            drawer.classList.toggle('hidden');
+        }
+
         function filterDistrict(district) {
+            currentDistrict = district;
             document.querySelectorAll('.district-btn').forEach(btn => {
                 if (btn.innerText.trim().includes(district) || (district === 'Barchasi' && btn.innerText.includes('Barchasi'))) {
                     btn.classList.add('bg-emerald-600', 'text-white');
@@ -522,9 +701,86 @@
                     btn.classList.add('bg-white', 'text-slate-700');
                 }
             });
-            fetchProperties(district);
+            applyFilters();
         }
 
+        function filterRooms(rooms) {
+            currentRoomFilter = rooms;
+            document.querySelectorAll('.room-btn').forEach(btn => {
+                if ((rooms === 'all' && btn.innerText.includes('Barchasi')) || btn.innerText.includes(`${rooms} xona`)) {
+                    btn.classList.add('bg-emerald-600', 'text-white');
+                    btn.classList.remove('bg-slate-100', 'text-slate-700');
+                } else {
+                    btn.classList.remove('bg-emerald-600', 'text-white');
+                    btn.classList.add('bg-slate-100', 'text-slate-700');
+                }
+            });
+            applyFilters();
+        }
+
+        function handlePriceChange(val) {
+            maxPriceFilter = parseInt(val);
+            document.getElementById('price-slider-val').innerText = formatMoney(maxPriceFilter);
+            applyFilters();
+        }
+
+        function resetFilters() {
+            currentDistrict = "Barchasi";
+            currentRoomFilter = "all";
+            maxPriceFilter = 10000000;
+            document.getElementById('price-slider').value = 10000000;
+            document.getElementById('price-slider-val').innerText = "10 000 000 so'm";
+            filterDistrict('Barchasi');
+            filterRooms('all');
+        }
+
+        // Camera / Gallery Image Upload Handling
+        async function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const label = document.getElementById('upload-label');
+            label.innerText = "Yuklanmoqda...";
+
+            const formData = new FormData();
+            formData.append('file', file);
+
+            try {
+                const res = await fetch('/api/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await res.json();
+                if (data.success) {
+                    document.getElementById('prop-photo').value = data.url;
+                    document.getElementById('image-preview').src = data.url;
+                    document.getElementById('image-preview-container').classList.remove('hidden');
+                    label.innerText = "Boshqa rasm tanlash";
+                } else {
+                    alert("Rasm yuklashda xatolik: " + data.error);
+                    label.innerText = "Rasm yuklash (Kamera / Galereya)";
+                }
+            } catch (err) {
+                // Fallback to local FileReader preview
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('prop-photo').value = e.target.result;
+                    document.getElementById('image-preview').src = e.target.result;
+                    document.getElementById('image-preview-container').classList.remove('hidden');
+                    label.innerText = "Rasm tanlandi";
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function clearSelectedImage() {
+            document.getElementById('prop-photo').value = "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800";
+            document.getElementById('image-preview-container').classList.add('hidden');
+            document.getElementById('prop-file-input').value = "";
+            document.getElementById('upload-label').innerText = "Rasm yuklash (Kamera / Galereya)";
+        }
+
+        // Property Modal
         function openPropertyModal(id) {
             const item = allProperties.find(p => p.id === id);
             if (!item) return;
@@ -655,7 +911,7 @@
             }, 1200);
         }
 
-        // Add Property Modal Functions
+        // Add Property Modal
         function openAddPropertyModal() {
             const modal = document.getElementById('add-modal');
             const container = document.getElementById('add-modal-container');
@@ -671,25 +927,6 @@
             container.classList.add('translate-y-full');
             setTimeout(() => {
                 document.getElementById('add-modal').classList.add('hidden');
-            }, 300);
-        }
-
-        // Terms Modal Functions
-        function openTermsModal() {
-            const modal = document.getElementById('terms-modal');
-            const container = document.getElementById('terms-modal-container');
-            modal.classList.remove('hidden');
-            setTimeout(() => {
-                container.classList.remove('translate-y-full');
-            }, 10);
-            lucide.createIcons();
-        }
-
-        function closeTermsModal() {
-            const container = document.getElementById('terms-modal-container');
-            container.classList.add('translate-y-full');
-            setTimeout(() => {
-                document.getElementById('terms-modal').classList.add('hidden');
             }, 300);
         }
 
@@ -727,7 +964,7 @@
                 if (resData.success) {
                     closeAddPropertyModal();
                     alert("🎉 Tabriklaymiz!\n\nE'loningiz muvaffaqiyatli joylashtirildi va RentTrust UZ katalogiga qo'shildi!");
-                    fetchProperties(); // ro'yxatni yangilash
+                    fetchProperties();
                 } else {
                     alert("Xatolik yuz berdi: " + (resData.error || "Noma'lum xato"));
                 }
@@ -736,6 +973,25 @@
             } finally {
                 btn.innerHTML = originalContent;
             }
+        }
+
+        // Terms Modal
+        function openTermsModal() {
+            const modal = document.getElementById('terms-modal');
+            const container = document.getElementById('terms-modal-container');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                container.classList.remove('translate-y-full');
+            }, 10);
+            lucide.createIcons();
+        }
+
+        function closeTermsModal() {
+            const container = document.getElementById('terms-modal-container');
+            container.classList.add('translate-y-full');
+            setTimeout(() => {
+                document.getElementById('terms-modal').classList.add('hidden');
+            }, 300);
         }
 
         function showMyBookings() {

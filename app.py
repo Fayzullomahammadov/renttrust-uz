@@ -40,6 +40,36 @@ def index():
 def admin_panel():
     return render_template("admin.html")
 
+UPLOAD_FOLDER = os.path.join(os.path.dirname(__file__), 'static', 'uploads')
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'webp', 'gif'}
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+@app.route('/api/upload', methods=['POST'])
+def upload_file():
+    try:
+        if 'file' not in request.files:
+            return jsonify({'success': False, 'error': 'Fayl yuborilmadi'}), 400
+        file = request.files['file']
+        if file.filename == '':
+            return jsonify({'success': False, 'error': 'Fayl tanlanmadi'}), 400
+        if file and allowed_file(file.filename):
+            import time
+            import re
+            clean_name = re.sub(r'[^a-zA-Z0-9_.-]', '', file.filename)
+            filename = f"prop_{int(time.time())}_{clean_name}"
+            filepath = os.path.join(UPLOAD_FOLDER, filename)
+            file.save(filepath)
+            
+            # Agar to'liq host kerak bo'lsa
+            file_url = f"/static/uploads/{filename}"
+            return jsonify({'success': True, 'url': file_url})
+        return jsonify({'success': False, 'error': 'Faqat rasm fayllari (jpg, png, webp) qabul qilinadi'}), 400
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
 @app.route("/api/properties", methods=["GET"])
 def get_properties():
     try:
