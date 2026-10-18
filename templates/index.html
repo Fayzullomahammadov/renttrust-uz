@@ -264,35 +264,35 @@
                 <i data-lucide="shield-check" class="w-6 h-6"></i>
             </div>
             <div class="text-center space-y-1">
-                <h3 class="text-base font-bold text-slate-900">Xavfsiz Escrow To'lovi</h3>
-                <p class="text-xs text-slate-500">Uyni 24 soatga band qilish</p>
+                <h3 class="text-base font-bold text-slate-900" id="escrow-modal-title">Himoyalangan to'lov</h3>
+                <p class="text-xs text-slate-500" id="escrow-modal-sub">Uyni 24 soatga band qilish</p>
             </div>
 
             <div class="bg-slate-50 border border-slate-100 rounded-xl p-3 space-y-2 text-xs">
                 <div class="flex justify-between text-slate-600">
-                    <span>Bron (Depozitdan oldindan):</span>
+                    <span id="escrow-hold-lbl">Bron (Depozitdan oldindan):</span>
                     <span class="font-bold text-slate-900" id="escrow-hold-val">-- so‘m</span>
                 </div>
                 <div class="flex justify-between text-slate-600">
-                    <span>Platforma xizmat haqi (2%):</span>
+                    <span id="escrow-fee-lbl">Platforma xizmat haqi (2%):</span>
                     <span class="font-bold text-emerald-600" id="escrow-fee-val">-- so‘m</span>
                 </div>
                 <div class="text-[10px] text-slate-400" id="escrow-rent-basis-note">Oylik ijaraning 2% komissiyasi</div>
                 <div class="border-t border-slate-200 pt-1.5 flex justify-between font-bold text-slate-900">
-                    <span>Jami hozir to‘lanadi:</span>
+                    <span id="escrow-total-lbl">Jami hozir to‘lanadi:</span>
                     <span class="text-sm text-emerald-700" id="escrow-total-val">-- so‘m</span>
                 </div>
             </div>
 
-            <div class="bg-emerald-50 border border-emerald-200 rounded-lg p-2.5 text-[11px] text-emerald-800 leading-snug">
+            <div class="bg-emerald-50 border border-emerald-200 rounded-lg p-2.5 text-[11px] text-emerald-800 leading-snug" id="escrow-note-text">
                 Bu pul to'g'ridan-to'g'ri uy egasiga o'tmaydi, RentTrust nazoratida saqlanadi. Uy egasi tasdiqlamasa yoki ko'chib kirish bo'lmasa, qoidalarga muvofiq qaytariladi.
             </div>
 
             <div class="space-y-2">
                 <button onclick="confirmEscrowPayment()" id="pay-btn" class="w-full bg-emerald-600 text-white font-bold py-2.5 rounded-xl shadow-md active:scale-95 transition flex items-center justify-center space-x-2 text-xs">
-                    <span>Click / Payme orqali to'lash</span>
+                    <span id="escrow-pay-btn-text">Click / Payme orqali to'lash</span>
                 </button>
-                <button onclick="closeEscrowModal()" class="w-full py-2 text-xs font-semibold text-slate-500 hover:text-slate-800">
+                <button onclick="closeEscrowModal()" class="w-full py-2 text-xs font-semibold text-slate-500 hover:text-slate-800" id="escrow-cancel-btn-text">
                     Bekor qilish
                 </button>
             </div>
@@ -308,7 +308,7 @@
                     <div class="w-7 h-7 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center">
                         <i data-lucide="home" class="w-4 h-4"></i>
                     </div>
-                    <span class="text-sm font-extrabold text-slate-900">Yangi e'lon joylashtirish</span>
+                    <span class="text-sm font-extrabold text-slate-900" id="add-modal-title">Yangi e'lon joylashtirish</span>
                 </div>
                 <button onclick="closeAddPropertyModal()" class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center hover:bg-slate-200">
                     <i data-lucide="x" class="w-4 h-4"></i>
@@ -444,7 +444,7 @@
                 <div class="pt-2">
                     <button type="submit" id="submit-prop-btn" class="w-full bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-bold py-3 rounded-xl shadow-lg shadow-emerald-500/25 active:scale-95 transition text-xs flex items-center justify-center space-x-1.5">
                         <i data-lucide="check-circle-2" class="w-4 h-4"></i>
-                        <span>E'lonni platformaga joylash</span>
+                        <span id="add-submit-text">E'lonni platformaga joylash</span>
                     </button>
                 </div>
             </form>
@@ -456,26 +456,26 @@
         <div class="max-w-lg mx-auto flex items-center justify-around px-4">
             <button onclick="scrollToTop()" class="flex flex-col items-center text-emerald-600 space-y-1">
                 <i data-lucide="home" class="w-5 h-5"></i>
-                <span class="text-[10px] font-bold">Uylar</span>
+                <span class="text-[10px] font-bold" id="nav-home">Uylar</span>
             </button>
             <button onclick="showMyBookings()" class="flex flex-col items-center text-slate-400 hover:text-slate-700 space-y-1 relative">
                 <i data-lucide="calendar" class="w-5 h-5"></i>
-                <span class="text-[10px] font-medium">Arizalarim</span>
+                <span class="text-[10px] font-medium" id="nav-bookings">Arizalarim</span>
                 <span id="badge-booking" class="hidden absolute top-0 right-3 w-2 h-2 rounded-full bg-emerald-500"></span>
             </button>
             <button onclick="openAddPropertyModal()" class="flex flex-col items-center text-emerald-600 hover:text-emerald-700 space-y-1">
                 <div class="w-6 h-6 rounded-full bg-emerald-600 text-white flex items-center justify-center shadow-sm">
                     <i data-lucide="plus" class="w-3.5 h-3.5"></i>
                 </div>
-                <span class="text-[10px] font-bold">E'lon berish</span>
+                <span class="text-[10px] font-bold" id="nav-add">E'lon berish</span>
             </button>
             <button onclick="openTermsModal()" class="flex flex-col items-center text-slate-400 hover:text-slate-700 space-y-1">
                 <i data-lucide="scale" class="w-5 h-5"></i>
-                <span class="text-[10px] font-medium">Qoidalar</span>
+                <span class="text-[10px] font-medium" id="nav-rules">Qoidalar</span>
             </button>
             <button onclick="alert('RentTrust UZ Qo\'llab-quvvatlash xizmati: @renttrust_admin')" class="flex flex-col items-center text-slate-400 hover:text-slate-700 space-y-1">
                 <i data-lucide="help-circle" class="w-5 h-5"></i>
-                <span class="text-[10px] font-medium">Yordam</span>
+                <span class="text-[10px] font-medium" id="nav-help">Yordam</span>
             </button>
         </div>
     </nav>
@@ -516,8 +516,8 @@
                         <i data-lucide="shield-check" class="w-4 h-4"></i>
                     </div>
                     <div>
-                        <span class="text-sm font-extrabold text-slate-900 block">Ko'chib kirish dalolatnomasi</span>
-                        <span class="text-[10px] text-slate-500">Depozit dalolatnomasi akti</span>
+                        <span class="text-sm font-extrabold text-slate-900 block" id="insp-modal-title">Ko'chib kirish dalolatnomasi</span>
+                        <span class="text-[10px] text-slate-500" id="insp-modal-sub">Depozit dalolatnomasi akti</span>
                     </div>
                 </div>
                 <button onclick="closeInspectionModal()" class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center hover:bg-slate-200">
@@ -530,9 +530,9 @@
                 <div class="bg-gradient-to-br from-emerald-50 to-teal-50 border border-emerald-200/80 rounded-2xl p-3.5 space-y-1.5 text-emerald-950">
                     <div class="flex items-center font-bold text-xs text-emerald-800">
                         <i data-lucide="camera" class="w-4 h-4 mr-1.5 text-emerald-600"></i>
-                        <span>Nima uchun bu suratlar kerak?</span>
+                        <span id="insp-why-title">Nima uchun bu suratlar kerak?</span>
                     </div>
-                    <p class="text-[11px] leading-relaxed text-slate-600">
+                    <p class="text-[11px] leading-relaxed text-slate-600" id="insp-why-desc">
                         Xonadondagi mavjud nuqsonlarni (devor tirnalgani, mebel yoki texnika holati) rasmga olib ilova qiling. Ko'chib chiqayotganingizda ushbu akt depozit bo'yicha asosiy dalil bo'ladi.
                     </p>
                 </div>
@@ -540,7 +540,7 @@
                 <!-- Photos Upload Section -->
                 <div class="space-y-2">
                     <div class="flex justify-between items-center">
-                        <label class="font-bold text-slate-800 block">Nuqsonlar fotosuratlari</label>
+                        <label class="font-bold text-slate-800 block" id="insp-photos-label">Nuqsonlar fotosuratlari</label>
                         <span id="inspection-photos-count" class="text-[10px] font-semibold text-slate-400">0 ta rasm yuklandi</span>
                     </div>
 
@@ -556,14 +556,14 @@
 
                 <!-- Notes Section -->
                 <div class="space-y-1">
-                    <label class="font-bold text-slate-800 block">Qo'shimcha izoh yoki hisoblagich ko'rsatkichlari</label>
+                    <label class="font-bold text-slate-800 block" id="insp-notes-label">Qo'shimcha izoh yoki hisoblagich ko'rsatkichlari</label>
                     <textarea id="insp-notes" rows="3" placeholder="Masalan: Gaz hisoblagich: 12450, Svet: 04820. Zaldagi stol oyog'ida kichik tirnalish bor..." class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none"></textarea>
                 </div>
 
                 <!-- Checkbox Confirmation -->
                 <div class="bg-slate-50 border border-slate-100 rounded-xl p-3 flex items-start space-x-2">
                     <input type="checkbox" id="insp-agree" checked class="mt-0.5 rounded text-emerald-600 focus:ring-emerald-500">
-                    <label for="insp-agree" class="text-[11px] text-slate-600 leading-snug cursor-pointer">
+                    <label for="insp-agree" class="text-[11px] text-slate-600 leading-snug cursor-pointer" id="insp-agree-label">
                         Xonadonni ko'zdan kechirdim va kalitlarni qabul qildim. To'langan mablag' uy egasiga o'tkazilishiga roziman.
                     </label>
                 </div>
@@ -572,7 +572,7 @@
                 <div>
                     <button type="button" onclick="submitInspection()" id="insp-submit-btn" class="w-full bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-bold py-3 rounded-xl shadow-lg shadow-emerald-500/25 active:scale-95 transition text-xs flex items-center justify-center space-x-1.5">
                         <i data-lucide="check-circle-2" class="w-4 h-4"></i>
-                        <span>Dalolatnomani imzolash va Kalitni olish</span>
+                        <span id="insp-submit-text">Dalolatnomani imzolash va Kalitni olish</span>
                     </button>
                 </div>
             </div>
@@ -587,7 +587,7 @@
                     <div class="w-7 h-7 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center">
                         <i data-lucide="shield-check" class="w-4 h-4"></i>
                     </div>
-                    <span class="text-sm font-extrabold text-slate-900">Foydalanish Qoidalari va Oferta</span>
+                    <span class="text-sm font-extrabold text-slate-900" id="terms-modal-title">Foydalanish Qoidalari va Oferta</span>
                 </div>
                 <button onclick="closeTermsModal()" class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center hover:bg-slate-200">
                     <i data-lucide="x" class="w-4 h-4"></i>
@@ -596,8 +596,8 @@
 
             <div class="p-4 space-y-3.5 text-xs text-slate-600 leading-relaxed">
                 <div class="bg-emerald-50 border border-emerald-200 rounded-xl p-3 text-emerald-900">
-                    <h4 class="font-bold text-xs mb-1">🛡️ Himoyalangan to'lov</h4>
-                    <p class="text-[11px]">Siz to'lagan ijara va depozit to'g'ridan-to'g'ri uy egasiga o'tmaydi. Ko'chib kirib, uyni tasdiqlamaguningizcha RentTrust nazoratidagi hisobda turadi. To'liq tartib ofertada yozilgan.</p>
+                    <h4 class="font-bold text-xs mb-1" id="terms-safe-title">🛡️ Himoyalangan to'lov</h4>
+                    <p class="text-[11px]" id="terms-safe-desc">Siz to'lagan ijara va depozit to'g'ridan-to'g'ri uy egasiga o'tmaydi. Ko'chib kirib, uyni tasdiqlamaguningizcha RentTrust nazoratidagi hisobda turadi. To'liq tartib ofertada yozilgan.</p>
                 </div>
 
                 <div class="space-y-1">
@@ -638,7 +638,7 @@
                     <div class="w-7 h-7 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center">
                         <i data-lucide="gift" class="w-4 h-4"></i>
                     </div>
-                    <span class="text-sm font-extrabold text-slate-900">Do'st taklif qiling: komissiyaning 30% i sizga</span>
+                    <span class="text-sm font-extrabold text-slate-900" id="ref-modal-title">Do'st taklif qiling: komissiyaning 30% i sizga</span>
                 </div>
                 <button onclick="closeReferralModal()" class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center hover:bg-slate-200">
                     <i data-lucide="x" class="w-4 h-4"></i>
@@ -651,31 +651,31 @@
                     <div class="inline-flex items-center space-x-1.5 bg-white/20 backdrop-blur-sm px-2.5 py-0.5 rounded-full text-[11px] font-bold">
                         <span>🎁 Doimiy Keshbek</span>
                     </div>
-                    <h3 class="text-base font-extrabold leading-tight">Do'st taklif qiling: komissiyaning 30% i sizga</h3>
-                    <p class="text-[11px] text-amber-100">
-                        Har bir taklif qilgan do'stingiz RentTrust UZ da xonadonga ko'chib kirganda, biz o'z xizmat haqimizning 30% ini to'g'ridan-to'g'ri kartangizga keshbek qilamiz.
+                    <h3 class="text-base font-extrabold leading-tight" id="ref-banner-title">Do'st taklif qiling: komissiyaning 30% i sizga</h3>
+                    <p class="text-[11px] text-amber-100" id="ref-banner-desc">
+                        Keshbek do'stingiz ko'chib kirishni tasdiqlab, nizo muddati tugagach hisoblanadi.
                     </p>
                 </div>
 
                 <!-- Stats summary -->
                 <div class="grid grid-cols-3 gap-2 text-center">
                     <div class="bg-slate-50 border border-slate-100 p-2.5 rounded-xl">
-                        <span class="text-[10px] text-slate-400 font-medium block">Takliflar</span>
+                        <span class="text-[10px] text-slate-400 font-medium block" id="ref-stat-lbl-invited">Takliflar</span>
                         <span id="ref-stat-invited" class="text-sm font-extrabold text-slate-800">0 ta</span>
                     </div>
                     <div class="bg-slate-50 border border-slate-100 p-2.5 rounded-xl">
-                        <span class="text-[10px] text-slate-400 font-medium block">Bitimlar</span>
+                        <span class="text-[10px] text-slate-400 font-medium block" id="ref-stat-lbl-deals">Bitimlar</span>
                         <span id="ref-stat-deals" class="text-sm font-extrabold text-emerald-600">0 ta</span>
                     </div>
                     <div class="bg-slate-50 border border-slate-100 p-2.5 rounded-xl">
-                        <span class="text-[10px] text-slate-400 font-medium block">Keshbek</span>
+                        <span class="text-[10px] text-slate-400 font-medium block" id="ref-stat-lbl-cashback">Keshbek</span>
                         <span id="ref-stat-cashback" class="text-sm font-extrabold text-amber-600">0 UZS</span>
                     </div>
                 </div>
 
                 <!-- Personal Link Box -->
                 <div class="space-y-1.5 pt-1">
-                    <label class="font-bold text-slate-800 block text-xs">Sizning shaxsiy taklif havolangiz:</label>
+                    <label class="font-bold text-slate-800 block text-xs" id="ref-link-lbl">Sizning shaxsiy taklif havolangiz:</label>
                     <div class="flex items-center space-x-2">
                         <input type="text" id="referral-link-input" readonly value="https://t.me/RentTrust_Uz_Bot?start=ref_me" class="w-full bg-slate-100 border border-slate-200 rounded-xl px-3 py-2 text-xs font-mono text-slate-700 select-all">
                         <button onclick="copyReferralLink()" id="btn-copy-ref" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs px-3.5 py-2 rounded-xl shrink-0 transition active:scale-95 shadow-sm flex items-center space-x-1">
@@ -688,12 +688,12 @@
                 <!-- Share to Telegram Button -->
                 <button onclick="shareReferralTelegram()" class="w-full bg-sky-500 hover:bg-sky-600 text-white font-bold py-2.5 rounded-xl shadow-md active:scale-95 transition text-xs flex items-center justify-center space-x-2">
                     <i data-lucide="send" class="w-4 h-4"></i>
-                    <span>Telegram orqali do'stlarga yuborish</span>
+                    <span id="ref-share-btn-text">Telegram orqali do'stlarga yuborish</span>
                 </button>
 
                 <!-- Benefits checklist -->
                 <div class="bg-slate-50 border border-slate-100 rounded-xl p-3 space-y-1.5 text-[11px] text-slate-600">
-                    <span class="font-bold text-slate-800 block">Qanday ishlaydi?</span>
+                    <span class="font-bold text-slate-800 block" id="ref-how-title">Qanday ishlaydi?</span>
                     <div class="flex items-center space-x-1.5">
                         <span class="w-4 h-4 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-[10px] font-bold">1</span>
                         <span>Havolani do'stlaringiz yoki guruhlarga yuboring</span>
@@ -1136,6 +1136,11 @@
                                         <i data-lucide="badge-check" class="w-3 h-3 mr-1"></i> ${t.prop_verified_badge}
                                     </span>
                                 ` : ''}
+                                ${item.for_students ? `
+                                    <span class="inline-flex items-center text-[10px] font-bold px-2 py-0.5 rounded-md bg-indigo-600/90 text-white backdrop-blur-sm shadow-sm">
+                                        <i data-lucide="graduation-cap" class="w-3 h-3 mr-1"></i> ${t.prop_student_badge}
+                                    </span>
+                                ` : ''}
                                 <span class="inline-flex items-center text-[10px] font-semibold px-2 py-0.5 rounded-md bg-slate-900/80 text-white backdrop-blur-sm">
                                     <i data-lucide="shield" class="w-3 h-3 mr-1 text-emerald-400"></i> ${t.prop_escrow_badge}
                                 </span>
@@ -1500,7 +1505,7 @@
                     <span>E'lon ID: #${item.id.slice(0, 8)}</span>
                     <button onclick="reportProperty('${item.id}')" class="inline-flex items-center text-rose-500 hover:text-rose-600 font-semibold space-x-1 active:scale-95 transition">
                         <i data-lucide="flag" class="w-3.5 h-3.5 mr-1"></i>
-                        <span>Shikoyat qilish</span>
+                        <span>${t.prop_report_btn}</span>
                     </button>
                 </div>
 
@@ -1509,11 +1514,11 @@
                     <div class="flex items-center justify-between">
                         <div class="flex items-center space-x-1.5">
                             <i data-lucide="star" class="w-4 h-4 fill-amber-400 text-amber-400"></i>
-                            <span class="text-xs font-bold text-slate-900" id="prop-reviews-title">Sharhlar va Reyting</span>
+                            <span class="text-xs font-bold text-slate-900" id="prop-reviews-title">${t.prop_detail_reviews_title}</span>
                             <span id="prop-avg-rating-badge" class="text-[11px] font-extrabold bg-amber-50 text-amber-700 px-1.5 py-0.5 rounded-md border border-amber-200">5.0</span>
                         </div>
                         <button onclick="toggleWriteReview()" class="text-[11px] font-bold text-emerald-600 hover:text-emerald-700 bg-emerald-50 px-2 py-1 rounded-lg">
-                            + Sharh qoldirish
+                            ${t.prop_detail_write_review}
                         </button>
                     </div>
 
@@ -1817,6 +1822,7 @@
 
         function renderBookingsList(list) {
             const content = document.getElementById('bookings-content');
+            const t = (typeof I18N !== 'undefined' && I18N[currentLang]) ? I18N[currentLang] : (typeof I18N !== 'undefined' ? I18N.uz : {});
             if (!list || list.length === 0) {
                 content.innerHTML = `
                     <div class="py-12 px-4 text-center space-y-3">
@@ -1824,11 +1830,11 @@
                             <i data-lucide="calendar-x-2" class="w-8 h-8"></i>
                         </div>
                         <div>
-                            <h4 class="font-bold text-sm text-slate-800">Faol band qilingan uylar yo'q</h4>
-                            <p class="text-xs text-slate-500 max-w-xs mx-auto mt-1">Platformadagi xonadonlarni ko'ring va 2% lik arzon komissiya bilan uyni xavfsiz band qiling.</p>
+                            <h4 class="font-bold text-sm text-slate-800">${t.bookings_empty_title || "Faol band qilingan uylar yo'q"}</h4>
+                            <p class="text-xs text-slate-500 max-w-xs mx-auto mt-1">${t.bookings_empty_desc || "Platformadagi xonadonlarni ko'ring va arzon komissiya bilan uyni xavfsiz band qiling."}</p>
                         </div>
                         <button onclick="closeBookingsModal(); scrollToTop();" class="mt-2 px-5 py-2.5 bg-emerald-600 text-white font-bold text-xs rounded-xl shadow-md hover:bg-emerald-700 transition">
-                            Uylarni qidirish
+                            ${t.bookings_browse_btn || "Uylarni qidirish"}
                         </button>
                     </div>
                 `;
@@ -2337,10 +2343,11 @@
             storedLang = (userLang.startsWith('ru')) ? 'ru' : 'uz';
         }
         let currentLang = storedLang || 'uz';
+
         const I18N = {
             uz: {
                 flag: "🇺🇿 UZ",
-                slogan: "Ishonch va Escrow tizimi",
+                slogan: "Ishonch va Himoyalangan to'lov tizimi",
                 quick_fav: "Sevimlilar",
                 quick_calc: "🧮 Tejamkorlik",
                 quick_alert: "🔔 Uylarga obuna",
@@ -2348,9 +2355,9 @@
                 ai_btn: "Topish",
                 add_prop: "E'lon",
                 banner_tag: "Himoyalangan to'lov",
-                banner_title: "Pul uy egasiga emas, platformaga tushadi",
+                banner_title: "Siz ko'chib kirib, uyni tasdiqlamaguningizcha mablag' RentTrust nazoratida saqlanadi.",
                 banner_desc: "Siz ko'chib kirib, uyni tasdiqlamaguningizcha mablag' RentTrust nazoratida saqlanadi. Xizmat haqi: ijarachidan 2%, uy egasidan 2%.",
-                banner_b1: "",
+                banner_b1: "Tekshirilgan uy",
                 banner_b2: "Depozit dalolatnomasi",
                 btn_filter: "Narx & Xonalar",
                 view_list: "📋 Ro'yxat",
@@ -2372,11 +2379,14 @@
                 prop_saved_label: "Tejov: ~",
                 prop_escrow_badge: "Himoyalangan to'lov",
                 prop_verified_badge: "Tekshirilgan uy",
-                prop_empty_title: "Ushbu filtr bo'yicha uylar topilmadi",
-                prop_empty_btn: "Filtrlarni tozalash",
+                prop_student_badge: "Talabalar uchun",
+                prop_empty_title: "Hozircha uy yo'q",
+                prop_empty_desc: "Ushbu parametrlar bo'yicha e'lon topilmadi.",
+                prop_empty_btn: "Filtrni tozalash",
+                prop_retry_btn: "Qayta urinish",
                 prop_detail_rent: "Oylik ijara narxi",
                 prop_detail_book_btn: "Ariza & Band qilish",
-                prop_detail_deposit: "Xavfsiz depozit (Escrow):",
+                prop_detail_deposit: "Depozit (Himoyalangan to'lov):",
                 prop_detail_fee: "Sizdan platforma haqi (2%):",
                 prop_detail_old_fee: "Maklerlar ko'pincha oylik ijaraning yarmigacha olishadi:",
                 prop_detail_saved: "Cho'ntakda tejalgan summa:",
@@ -2385,6 +2395,7 @@
                 prop_detail_reviews_title: "Sharhlar va Reyting",
                 prop_detail_write_review: "+ Sharh qoldirish",
                 prop_detail_verified_landlord: "Tasdiqlangan mulk egasi",
+                prop_report_btn: "Shikoyat qilish",
                 fav_title: "Sevimlilar ro'yxati",
                 fav_subtitle: "Saqlangan xonadonlar",
                 calc_title: "Tejamkorlik Kalkulyatori",
@@ -2399,19 +2410,53 @@
                 alert_btn: "🔔 Xabarnomalarni yoqish",
                 comp_title: "Xonadonlarni taqqoslash",
                 comp_subtitle: "Yonma-yon solishtiring",
-                escrow_modal_title: "Xavfsiz Escrow To'lovi",
+                escrow_modal_title: "Himoyalangan to'lov",
                 escrow_modal_sub: "Uyni 24 soatga band qilish",
                 escrow_hold_label: "Bron (Depozitdan oldindan):",
                 escrow_fee_label: "Platforma xizmat haqi (2%):",
                 escrow_total_label: "Jami hozir to‘lanadi:",
+                escrow_rent_basis: "Oylik ijaraning 2% komissiyasi",
                 escrow_note: "Bu pul to'g'ridan-to'g'ri uy egasiga o'tmaydi, RentTrust nazoratida saqlanadi. Uy egasi tasdiqlamasa yoki ko'chib kirish bo'lmasa, qoidalarga muvofiq qaytariladi.",
                 escrow_pay_btn: "Click / Payme orqali to'lash",
                 escrow_cancel_btn: "Bekor qilish",
-                add_modal_title: "Yangi e'lon joylashtirish"
+                add_modal_title: "Yangi e'lon joylashtirish",
+                add_tax_title: "12% Soliq Imtiyozi!",
+                add_tax_desc: "Talabaga ijaraga bersangiz va shartnoma soliq organida ro'yxatdan o'tgan bo'lsa, ijaradan olingan daromad daromad solig'idan ozod bo'ladi. Bu yuridik maslahat emas.",
+                add_student_chk: "Talabalarga ijaraga beraman (12% soliq imtiyozi)",
+                add_doc_lbl: "Kadastr yoki mulk huquqini tasdiqlovchi hujjat (ixtiyoriy, xavfsiz saqlanadi):",
+                add_submit_btn: "E'lonni platformaga joylash",
+                insp_modal_title: "Ko'chib kirish dalolatnomasi",
+                insp_modal_sub: "Depozit dalolatnomasi akti",
+                insp_why_title: "Nima uchun bu suratlar kerak?",
+                insp_why_desc: "Xonadondagi mavjud nuqsonlarni (devor tirnalgani, mebel yoki texnika holati) rasmga olib ilova qiling. Ko'chib chiqayotganingizda ushbu akt depozit bo'yicha asosiy dalil bo'ladi.",
+                insp_photos_lbl: "Nuqsonlar fotosuratlari",
+                insp_upload_btn: "Rasm olish",
+                insp_notes_lbl: "Qo'shimcha izoh yoki hisoblagich ko'rsatkichlari",
+                insp_notes_ph: "Masalan: Gaz hisoblagich: 12450, Svet: 04820. Zaldagi stol oyog'ida kichik tirnalish bor...",
+                insp_agree_lbl: "Xonadonni ko'zdan kechirdim va kalitlarni qabul qildim. To'langan mablag' uy egasiga o'tkazilishiga roziman.",
+                insp_submit_btn: "Dalolatnomani imzolash va Kalitni olish",
+                terms_modal_title: "Foydalanish Qoidalari va Oferta",
+                terms_safe_title: "🛡️ Himoyalangan to'lov",
+                terms_safe_desc: "Siz to'lagan ijara va depozit to'g'ridan-to'g'ri uy egasiga o'tmaydi. Ko'chib kirib, uyni tasdiqlamaguningizcha RentTrust nazoratidagi hisobda turadi. To'liq tartib ofertada yozilgan.",
+                ref_modal_title: "Do'st taklif qiling: komissiyaning 30% i sizga",
+                ref_banner_title: "Do'st taklif qiling: komissiyaning 30% i sizga",
+                ref_banner_desc: "Keshbek do'stingiz ko'chib kirishni tasdiqlab, nizo muddati tugagach hisoblanadi.",
+                ref_stat_lbl_invited: "Takliflar",
+                ref_stat_lbl_deals: "Bitimlar",
+                ref_stat_lbl_cashback: "Keshbek",
+                ref_link_lbl: "Sizning shaxsiy taklif havolangiz:",
+                ref_copy_btn: "Nusxa",
+                ref_share_btn: "Telegram orqali do'stlarga yuborish",
+                ref_how_title: "Qanday ishlaydi?",
+                bookings_modal_title: "Mening Arizalarim va Bandlarim",
+                bookings_empty_title: "Faol band qilingan uylar yo'q",
+                bookings_empty_desc: "Platformadagi xonadonlarni ko'ring va arzon komissiya bilan uyni xavfsiz band qiling.",
+                bookings_browse_btn: "Uylarni ko'rish"
             },
+            // needs native review
             ru: {
                 flag: "🇷🇺 RU",
-                slogan: "Система доверия и Эскроу",
+                slogan: "Система доверия и защищенной оплаты",
                 quick_fav: "Избранное",
                 quick_calc: "🧮 Калькулятор",
                 quick_alert: "🔔 Подписка",
@@ -2419,21 +2464,21 @@
                 ai_btn: "Найти",
                 add_prop: "Подать",
                 banner_tag: "Защищенная оплата",
-                banner_title: "Деньги поступают не владельцу, а на платформу",
-                banner_desc: "Пока вы не заселитесь и не подтвердите жилье, средства находятся под контролем RentTrust. Комиссия: 2% с арендатора, 2% с арендодателя.",
-                banner_b1: "",
+                banner_title: "Деньги хранятся под контролем RentTrust до подтверждения заселения обеими сторонами.",
+                banner_desc: "Защищенная оплата: деньги хранятся под контролем RentTrust до подтверждения заселения обеими сторонами. Комиссия: 2% с арендатора, 2% с арендодателя.",
+                banner_b1: "Проверенное жилье",
                 banner_b2: "Акт приема-передачи",
                 btn_filter: "Цена & Комнаты",
                 view_list: "📋 Список",
                 view_map: "🗺️ Карта",
-                filter_rooms: "По количеству комнат:",
+                filter_rooms: "Количество комнат:",
                 filter_price: "Максимальная цена в месяц:",
                 room_all: "Все",
                 districts_header: "Районы Ташкента",
                 district_all: "Все районы",
                 nav_home: "Квартиры",
                 nav_bookings: "Заявки",
-                nav_add: "Подать объявление",
+                nav_add: "Разместить",
                 nav_rules: "Правила",
                 nav_help: "Помощь",
                 prop_rooms_label: "комн.",
@@ -2443,19 +2488,23 @@
                 prop_saved_label: "Экономия: ~",
                 prop_escrow_badge: "Защищенная оплата",
                 prop_verified_badge: "Проверенное жилье",
-                prop_empty_title: "Квартиры по данному фильтру не найдены",
+                prop_student_badge: "Для студентов",
+                prop_empty_title: "Пока нет квартир",
+                prop_empty_desc: "По заданным фильтрам объявлений не найдено.",
                 prop_empty_btn: "Сбросить фильтры",
+                prop_retry_btn: "Повторить попытку",
                 prop_detail_rent: "Стоимость аренды в месяц",
                 prop_detail_book_btn: "Подать заявку & Забронировать",
-                prop_detail_deposit: "Безопасный депозит (Эскроу):",
-                prop_detail_fee: "Ваша комиссия платформе (2%):",
+                prop_detail_deposit: "Обеспечительный депозит:",
+                prop_detail_fee: "Комиссия платформе (2%):",
                 prop_detail_old_fee: "Маклеры часто берут до половины месячной аренды:",
-                prop_detail_saved: "Сумма, сэкономленная вами:",
-                prop_detail_legal_title: "Официальная гарантия",
-                prop_detail_legal_desc: "При сдаче студентам и регистрации договора доход освобождается от подоходного налога (12%). Не является юридической консультацией.",
+                prop_detail_saved: "Сэкономлено в вашем бюджете:",
+                prop_detail_legal_title: "Договор аренды и налог",
+                prop_detail_legal_desc: "При сдаче студентам и регистрации договора доход освобождается от подоходного налога. Не является юридической консультацией.",
                 prop_detail_reviews_title: "Отзывы и Рейтинг",
                 prop_detail_write_review: "+ Оставить отзыв",
                 prop_detail_verified_landlord: "Проверенный собственник",
+                prop_report_btn: "Пожаловаться",
                 fav_title: "Избранные квартиры",
                 fav_subtitle: "Сохраненные варианты",
                 calc_title: "Калькулятор Экономии",
@@ -2470,15 +2519,48 @@
                 alert_btn: "🔔 Включить уведомления",
                 comp_title: "Сравнение квартир",
                 comp_subtitle: "Сравните характеристики рядом",
-                escrow_modal_title: "Безопасная оплата через Эскроу",
+                escrow_modal_title: "Защищенная оплата",
                 escrow_modal_sub: "Бронирование квартиры на 24 часа",
                 escrow_hold_label: "Бронь (Аванс из депозита):",
                 escrow_fee_label: "Комиссия платформы (2%):",
                 escrow_total_label: "Итого к оплате сейчас:",
-                escrow_note: "Деньги не переводятся сразу владельцу, а хранятся под контролем RentTrust. Если владелец не подтвердит или заселение не состоится, средства возвращаются согласно правилам.",
+                escrow_rent_basis: "Комиссия 2% от месячной аренды",
+                escrow_note: "Защищенная оплата: деньги хранятся под контролем RentTrust до подтверждения заселения обеими сторонами. Комиссия: 2% с арендатора, 2% с арендодателя. Если владелец не подтвердит или заселение не состоится, средства возвращаются согласно правилам.",
                 escrow_pay_btn: "Оплатить через Click / Payme",
                 escrow_cancel_btn: "Отмена",
-                add_modal_title: "Разместить новое объявление"
+                add_modal_title: "Разместить объявление",
+                add_tax_title: "Льгота по подоходному налогу!",
+                add_tax_desc: "При сдаче студентам и регистрации договора доход освобождается от подоходного налога. Не является юридической консультацией.",
+                add_student_chk: "Сдаю студентам (налоговая льгота)",
+                add_doc_lbl: "Кадастр или документ о праве собственности (необязательно, хранится приватно):",
+                add_submit_btn: "Опубликовать объявление",
+                insp_modal_title: "Акт приема-передачи жилья",
+                insp_modal_sub: "Акт осмотра для депозита",
+                insp_why_title: "Зачем нужны эти фотографии?",
+                insp_why_desc: "Сфотографируйте имеющиеся дефекты (царапины, состояние мебели/техники). При выезде данный акт будет основным доказательством по депозиту.",
+                insp_photos_lbl: "Фотографии дефектов",
+                insp_upload_btn: "Сделать фото",
+                insp_notes_lbl: "Примечания или показания счетчиков",
+                insp_notes_ph: "Например: Газ: 12450, Свет: 04820. Царапина на ножке стола...",
+                insp_agree_lbl: "Я осмотрел квартиру и принял ключи. Согласен на перевод оплаченных средств владельцу.",
+                insp_submit_btn: "Подписать акт и получить ключи",
+                terms_modal_title: "Правила сервиса и Оферта",
+                terms_safe_title: "🛡️ Защищенная оплата",
+                terms_safe_desc: "Защищенная оплата: деньги хранятся под контролем RentTrust до подтверждения заселения обеими сторонами. Комиссия: 2% с арендатора, 2% с арендодателя.",
+                ref_modal_title: "Пригласите друга: 30% комиссии вам",
+                ref_banner_title: "Пригласите друга: 30% комиссии вам",
+                ref_banner_desc: "Кэшбэк начисляется после подтверждения заселения вашим другом и истечения срока спора.",
+                ref_stat_lbl_invited: "Приглашено",
+                ref_stat_lbl_deals: "Сделки",
+                ref_stat_lbl_cashback: "Кэшбэк",
+                ref_link_lbl: "Ваша личная ссылка-приглашение:",
+                ref_copy_btn: "Копия",
+                ref_share_btn: "Отправить друзьям в Telegram",
+                ref_how_title: "Как это работает?",
+                bookings_modal_title: "Мои заявки и бронирования",
+                bookings_empty_title: "Нет активных бронирований",
+                bookings_empty_desc: "Просмотрите квартиры на платформе и забронируйте с комиссией всего 2%.",
+                bookings_browse_btn: "Искать квартиры"
             }
         };
 
@@ -2542,6 +2624,49 @@
                 setTxt('comp-modal-subtitle', t.comp_subtitle);
                 setTxt('modal-book-btn-text', t.prop_detail_book_btn);
 
+                // Modals
+                setTxt('escrow-modal-title', t.escrow_modal_title);
+                setTxt('escrow-modal-sub', t.escrow_modal_sub);
+                setTxt('escrow-hold-lbl', t.escrow_hold_label);
+                setTxt('escrow-fee-lbl', t.escrow_fee_label);
+                setTxt('escrow-total-lbl', t.escrow_total_label);
+                setTxt('escrow-rent-basis-note', t.escrow_rent_basis);
+                setTxt('escrow-note-text', t.escrow_note);
+                setTxt('escrow-pay-btn-text', t.escrow_pay_btn);
+                setTxt('escrow-cancel-btn-text', t.escrow_cancel_btn);
+
+                setTxt('add-modal-title', t.add_modal_title);
+                setTxt('add-submit-text', t.add_submit_btn);
+
+                setTxt('insp-modal-title', t.insp_modal_title);
+                setTxt('insp-modal-sub', t.insp_modal_sub);
+                setTxt('insp-why-title', t.insp_why_title);
+                setTxt('insp-why-desc', t.insp_why_desc);
+                setTxt('insp-photos-label', t.insp_photos_lbl);
+                setTxt('insp-upload-label', t.insp_upload_btn);
+                setTxt('insp-notes-label', t.insp_notes_lbl);
+                const inspNotes = document.getElementById('insp-notes');
+                if (inspNotes && t.insp_notes_ph) inspNotes.placeholder = t.insp_notes_ph;
+                setTxt('insp-agree-label', t.insp_agree_lbl);
+                setTxt('insp-submit-text', t.insp_submit_btn);
+
+                setTxt('terms-modal-title', t.terms_modal_title);
+                setTxt('terms-safe-title', t.terms_safe_title);
+                setTxt('terms-safe-desc', t.terms_safe_desc);
+
+                setTxt('ref-modal-title', t.ref_modal_title);
+                setTxt('ref-banner-title', t.ref_banner_title);
+                setTxt('ref-banner-desc', t.ref_banner_desc);
+                setTxt('ref-stat-lbl-invited', t.ref_stat_lbl_invited);
+                setTxt('ref-stat-lbl-deals', t.ref_stat_lbl_deals);
+                setTxt('ref-stat-lbl-cashback', t.ref_stat_lbl_cashback);
+                setTxt('ref-link-lbl', t.ref_link_lbl);
+                setTxt('copy-ref-text', t.ref_copy_btn);
+                setTxt('ref-share-btn-text', t.ref_share_btn);
+                setTxt('ref-how-title', t.ref_how_title);
+
+                setTxt('bookings-modal-title', t.bookings_modal_title);
+
                 // Re-render feed cards to update card badges, fee texts and counters
                 if (typeof filteredProperties !== 'undefined' && filteredProperties && filteredProperties.length > 0) {
                     renderPropertiesList(filteredProperties);
@@ -2552,6 +2677,15 @@
                             : `${filteredProperties.length} ta xonadon`;
                     }
                 }
+
+                // If property modal is open, re-render its details
+                if (selectedProperty && typeof openPropertyModal === 'function') {
+                    const pModal = document.getElementById('property-modal');
+                    if (pModal && !pModal.classList.contains('hidden')) {
+                        openPropertyModal(selectedProperty.id);
+                    }
+                }
+
                 if (window.lucide) {
                     lucide.createIcons();
                 }
