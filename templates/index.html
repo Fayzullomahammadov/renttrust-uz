@@ -1701,66 +1701,108 @@
             return '111222333';
         }
 
-        async function openReferralModal() {
+        function openReferralModal() {
+            const modal = document.getElementById('referral-modal');
+            const container = document.getElementById('referral-modal-container');
+            if (modal && container) {
+                modal.classList.remove('hidden');
+                setTimeout(() => {
+                    container.classList.remove('translate-y-full');
+                }, 10);
+            }
+
             const uid = getTelegramUserId();
             const botUser = "RentTrust_Uz_Bot";
             const link = `https://t.me/${botUser}?start=ref_${uid}`;
             
-            document.getElementById('referral-link-input').value = link;
+            const linkInput = document.getElementById('referral-link-input');
+            if (linkInput) linkInput.value = link;
 
-            // Load live referral stats
-            try {
-                const res = await fetch(`/api/referral/stats?user_id=${uid}`);
-                const data = await res.json();
-                if (data.success && data.data) {
-                    document.getElementById('ref-stat-invited').innerText = `${data.data.total_invited || 0} ta`;
-                    document.getElementById('ref-stat-deals').innerText = `${data.data.completed_deals || 0} ta`;
-                    document.getElementById('ref-stat-cashback').innerText = `${(data.data.total_cashback_uzs || 0).toLocaleString()} UZS`;
-                }
-            } catch (e) {
-                console.log("Stats fetch error:", e);
-            }
+            // Load live referral stats in background
+            fetch(`/api/referral/stats?user_id=${uid}`)
+                .then(r => r.json())
+                .then(data => {
+                    if (data && data.success && data.data) {
+                        const inv = document.getElementById('ref-stat-invited');
+                        const deals = document.getElementById('ref-stat-deals');
+                        const cb = document.getElementById('ref-stat-cashback');
+                        if (inv) inv.innerText = `${data.data.total_invited || 0} ta`;
+                        if (deals) deals.innerText = `${data.data.completed_deals || 0} ta`;
+                        if (cb) cb.innerText = `${(data.data.total_cashback_uzs || 0).toLocaleString()} UZS`;
+                    }
+                })
+                .catch(e => console.log("Stats fetch err:", e));
 
-            const modal = document.getElementById('referral-modal');
-            const container = document.getElementById('referral-modal-container');
-            modal.classList.remove('hidden');
-            setTimeout(() => {
-                container.classList.remove('translate-y-full');
-            }, 10);
             lucide.createIcons();
         }
 
         function closeReferralModal() {
             const container = document.getElementById('referral-modal-container');
-            container.classList.add('translate-y-full');
+            if (container) container.classList.add('translate-y-full');
             setTimeout(() => {
-                document.getElementById('referral-modal').classList.add('hidden');
+                const modal = document.getElementById('referral-modal');
+                if (modal) modal.classList.add('hidden');
             }, 300);
         }
 
         function copyReferralLink() {
             const input = document.getElementById('referral-link-input');
-            input.select();
-            input.setSelectionRange(0, 99999);
-            navigator.clipboard.writeText(input.value);
+            if (!input) return;
 
+            let copied = false;
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(input.value)
+                    .then(() => showCopiedSuccess())
+                    .catch(() => fallbackCopy(input));
+            } else {
+                fallbackCopy(input);
+            }
+        }
+
+        function fallbackCopy(input) {
+            try {
+                input.focus();
+                input.select();
+                input.setSelectionRange(0, 99999);
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    showCopiedSuccess();
+                } else {
+                    prompt("Havolani nusxalash:", input.value);
+                }
+            } catch (err) {
+                prompt("Havolani nusxalash:", input.value);
+            }
+        }
+
+        function showCopiedSuccess() {
             const copyText = document.getElementById('copy-ref-text');
-            copyText.innerText = "Nusxalandi! ✅";
-            setTimeout(() => {
-                copyText.innerText = "Nusxa";
-            }, 2000);
+            if (copyText) {
+                copyText.innerText = "Nusxalandi! ✅";
+                setTimeout(() => {
+                    copyText.innerText = "Nusxa";
+                }, 2000);
+            }
+            if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.HapticFeedback) {
+                window.Telegram.WebApp.HapticFeedback.notificationOccurred('success');
+            }
         }
 
         function shareReferralTelegram() {
             const input = document.getElementById('referral-link-input');
-            const link = input.value;
+            const link = input ? input.value : `https://t.me/RentTrust_Uz_Bot?start=ref_${getTelegramUserId()}`;
             const text = "RentTrust UZ orqali 50% lik rieltor komissiyasisiz, 100% Escrow kafolati bilan Toshkentdan xonadon toping! Havola orqali kiring va 30% chegirma oling:";
             const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(link)}&text=${encodeURIComponent(text)}`;
-            if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.openTelegramLink) {
-                window.Telegram.WebApp.openTelegramLink(shareUrl);
-            } else {
-                window.open(shareUrl, '_blank');
+            
+            if (window.Telegram && window.Telegram.WebApp && typeof window.Telegram.WebApp.openTelegramLink === 'function') {
+                try {
+                    window.Telegram.WebApp.openTelegramLink(shareUrl);
+                    return;
+                } catch (e) {
+                    console.log("openTelegramLink error:", e);
+                }
             }
+            window.open(shareUrl, '_blank');
         }
 
         // Initial Load

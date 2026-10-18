@@ -1229,6 +1229,26 @@ def telegram_webhook():
             # Agar do'st taklif havolasi orqali kirgan bo'lsa
             if len(parts) > 1 and parts[1].startswith("ref_"):
                 referrer_code = parts[1].replace("ref_", "").strip()
+                if str(referrer_code) == str(chat_id):
+                    # O'zining havolasini bosgan holat
+                    self_ref_msg = (
+                        f"Assalomu alaykum, {first_name}! 👋\n\n"
+                        f"ℹ️ <b>Bu sizning shaxsiy taklif havolangiz!</b>\n\n"
+                        f"Do'stlaringiz yoki guruhlarga ushbu havolani yuboring:\n"
+                        f"<code>https://t.me/{bot_user}?start=ref_{chat_id}</code>\n\n"
+                        f"Do'stingiz platforma orqali xonadonga ko'chib kirganda, RentTrust komissiyasining <b>30% qismi (keshbek)</b> sizning hisobingizga tushadi! 💰"
+                    )
+                    share_link = f"https://t.me/{bot_user}?start=ref_{chat_id}"
+                    share_txt = "RentTrust UZ orqali rieltorlarning 50% to'lovisiz, 100% Escrow kafolati bilan Toshkentdan xonadon toping! Havola orqali o'ting va 30% chegirma oling:"
+                    self_kb = {
+                        "inline_keyboard": [
+                            [{"text": "📲 Telegram orqali do'stlarga ulashish", "url": f"https://t.me/share/url?url={urllib.parse.quote(share_link)}&text={urllib.parse.quote(share_txt)}"}],
+                            [{"text": "🚀 Web App ni ochish", "web_app": {"url": app_host}}]
+                        ]
+                    }
+                    send_telegram_notification(chat_id, self_ref_msg, self_kb)
+                    return "OK", 200
+
                 ok, rec = record_referral(referrer_code, chat_id, first_name)
                 if ok:
                     is_referral_welcome = True
