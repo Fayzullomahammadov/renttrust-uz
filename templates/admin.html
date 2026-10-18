@@ -358,20 +358,26 @@
         }
 
         async function resolveEscrow(id, action) {
-            const newStatus = action === 'release' ? 'released_to_landlord' : 'refunded_to_tenant';
-            const confirmMsg = action === 'release' ? "Haqiqatan ham pulni uy egasiga o'tkazmoqchimisiz?" : "Pulni ijarachiga qaytarmoqchimisiz?";
-            if (!confirm(confirmMsg)) return;
+            const actionText = action === 'release' ? "pulni uy egasiga o'tkazmoqchimisiz?" : "pulni ijarachiga qaytarmoqchimisiz?";
+            if (!confirm(`Haqiqatan ham ${actionText}`)) return;
 
-            await fetch(`${SUPABASE_URL}/rest/v1/escrow_transactions?id=eq.${id}`, {
-                method: 'PATCH',
-                headers: {
-                    'apikey': SUPABASE_KEY,
-                    'Authorization': `Bearer ${SUPABASE_KEY}`,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ status: newStatus })
-            });
-            loadAdminData();
+            try {
+                const res = await fetch('/api/admin/escrow/resolve', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id: id, action: action })
+                });
+                const resData = await res.json();
+                if (resData.success) {
+                    alert(`✅ Muvaffaqiyatli bajarildi!\nTomonlarga Telegram orqali push bildirishnoma yuborildi.`);
+                    loadAdminData();
+                } else {
+                    alert("Xatolik yuz berdi: " + (resData.error || "Noma'lum xato"));
+                }
+            } catch (err) {
+                console.error(err);
+                alert("Server bilan bog'lanishda xatolik yuz berdi.");
+            }
         }
 
         // Initial Load

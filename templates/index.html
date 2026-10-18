@@ -894,21 +894,53 @@
             document.getElementById('escrow-modal').classList.add('hidden');
         }
 
-        function confirmEscrowPayment() {
+        async function confirmEscrowPayment() {
+            if (!selectedProperty) return;
             const btn = document.getElementById('pay-btn');
+            const originalContent = btn.innerHTML;
             btn.innerHTML = `<div class="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full mx-auto"></div>`;
 
-            setTimeout(() => {
-                closeEscrowModal();
-                activeBooking = {
-                    property: selectedProperty,
-                    holdAmount: 300000,
-                    status: "held",
-                    date: new Date().toLocaleDateString('uz-UZ')
-                };
-                document.getElementById('badge-booking').classList.remove('hidden');
-                alert(`🎉 Tabriklaymiz!\n\n300 000 so‘m RentTrust Escrow hisobiga qabul qilindi.\n\n"${selectedProperty.title}" xonadoni 24 soatga Ali Valiyev uchun band qilindi. Uy egasi Sardor Rahimovga xabarnoma yuborildi!`);
-            }, 1200);
+            const tgUser = (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe) ? window.Telegram.WebApp.initDataUnsafe.user : null;
+
+            const payload = {
+                property_id: selectedProperty.id,
+                amount: 300000,
+                tenant_name: tgUser ? `${tgUser.first_name || ''} ${tgUser.last_name || ''}`.trim() || 'Ijarachi' : 'Ali Valiyev',
+                tenant_tg_id: tgUser ? tgUser.id : null,
+                tenant_username: tgUser ? tgUser.username : null,
+                tenant_phone: '+998 90 999 88 77',
+                move_in_date: '2026-11-01',
+                note: 'RentTrust Escrow orqali 24 soatga band qilindi'
+            };
+
+            try {
+                const res = await fetch('/api/escrow/hold', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const resData = await res.json();
+
+                if (resData.success) {
+                    closeEscrowModal();
+                    activeBooking = {
+                        property: selectedProperty,
+                        holdAmount: 300000,
+                        status: "held",
+                        date: new Date().toLocaleDateString('uz-UZ')
+                    };
+                    document.getElementById('badge-booking').classList.remove('hidden');
+                    alert(`🎉 Tabriklaymiz!\n\n300 000 so‘m RentTrust Escrow hisobiga qabul qilindi.\n\n"${selectedProperty.title}" xonadoni 24 soatga band qilindi.\n\nTelegram botingizga rasmiy to'lov cheki va xabarnoma yuborildi! 📲`);
+                    fetchProperties();
+                } else {
+                    alert("Xatolik: " + (resData.error || "To'lovni amalga oshirib bo'lmadi"));
+                }
+            } catch (err) {
+                console.error("Escrow hold xatosi:", err);
+                alert("Server bilan bog'lanishda xatolik yuz berdi.");
+            } finally {
+                btn.innerHTML = originalContent;
+            }
         }
 
         // Add Property Modal
@@ -936,6 +968,8 @@
             const originalContent = btn.innerHTML;
             btn.innerHTML = `<div class="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full mx-auto"></div>`;
 
+            const tgUser = (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe) ? window.Telegram.WebApp.initDataUnsafe.user : null;
+
             const payload = {
                 title: document.getElementById('prop-title').value,
                 district: document.getElementById('prop-district').value,
@@ -950,6 +984,7 @@
                 photos: [document.getElementById('prop-photo').value],
                 landlord_name: document.getElementById('prop-landlord-name').value,
                 landlord_phone: document.getElementById('prop-landlord-phone').value,
+                landlord_tg_id: tgUser ? tgUser.id : null,
                 amenities: { "wifi": true, "ac": true, "washing_machine": true }
             };
 
@@ -963,7 +998,7 @@
                 
                 if (resData.success) {
                     closeAddPropertyModal();
-                    alert("🎉 Tabriklaymiz!\n\nE'loningiz muvaffaqiyatli joylashtirildi va RentTrust UZ katalogiga qo'shildi!");
+                    alert("🎉 Tabriklaymiz!\n\nE'loningiz muvaffaqiyatli joylashtirildi va RentTrust UZ katalogiga qo'shildi!\nTelegram botingizga tasdiqnoma yuborildi.");
                     fetchProperties();
                 } else {
                     alert("Xatolik yuz berdi: " + (resData.error || "Noma'lum xato"));
