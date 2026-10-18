@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: renttrust-uz
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app
+    envVars:
+      - key: BOT_TOKEN
+        value: 8909483662:AAFGrtJGPGSEVf5jr60ikamdGMCRLPM8XZc
