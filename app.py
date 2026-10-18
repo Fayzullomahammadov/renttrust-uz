@@ -436,6 +436,159 @@ def create_hold():
         print("Escrow hold xatoligi:", e)
         return jsonify({"success": False, "error": str(e)}), 500
 
+@app.route("/api/my-bookings", methods=["GET"])
+def get_my_bookings():
+    try:
+        telegram_id = request.args.get("telegram_id")
+        user_id = None
+        if telegram_id:
+            users = supabase_get(f"users?telegram_id=eq.{telegram_id}")
+            if users:
+                user_id = users[0]["id"]
+        
+        if user_id:
+            escrows = supabase_get(f"escrow_transactions?tenant_id=eq.{user_id}&order=created_at.desc")
+        else:
+            escrows = supabase_get("escrow_transactions?order=created_at.desc&limit=5")
+        
+        results = []
+        for e in escrows:
+            prop_list = supabase_get(f"properties?id=eq.{e['property_id']}")
+            prop = prop_list[0] if prop_list else {}
+            landlord_list = supabase_get(f"users?id=eq.{e['landlord_id']}")
+            landlord = landlord_list[0] if landlord_list else {}
+            
+            results.append({
+                "escrow_id": e["id"],
+                "status": e.get("status", "held"),
+                "amount_uzs": e.get("amount_uzs", 300000),
+                "held_at": e.get("held_at") or e.get("created_at"),
+                "property": {
+                    "id": prop.get("id"),
+                    "title": prop.get("title", "Shinam xonadon"),
+                    "district": prop.get("district", "Toshkent"),
+                    "address": prop.get("address", ""),
+                    "monthly_rent_uzs": prop.get("monthly_rent_uzs", 0),
+                    "photos": prop.get("photos", [])
+                },
+                "landlord": {
+                    "full_name": landlord.get("full_name", "Uy Egasi"),
+                    "phone_number": landlord.get("phone_number", "+998 90 000 00 00"),
+                    "username": landlord.get("username", "")
+                }
+            })
+            
+        return jsonify({"success": True, "data": results})
+    except Exception as e:
+        print("get_my_bookings xatosi:", e)
+        return jsonify({"success": False, "error": str(e)}), 500
+
+@app.route("/api/my-bookings/confirm-move-in", methods=["POST"])
+def confirm_move_in():
+    try:
+        payload = request.json
+        escrow_id = payload.get("escrow_id")
+        
+        escrows = supabase_get(f"escrow_transactions?id=eq.{escrow_id}")
+        if not escrows:
+            return jsonify({"success": False, "error": "Bandlik topilmadi"}), 404
+        escrow = escrows[0]
+        
+        now_iso = datetime.datetime.now(datetime.timezone.utc).isoformat()
+        supabase_patch(f"escrow_transactions?id=eq.{escrow_id}", {
+            "status": "released_to_landlord",
+            "released_at": now_iso
+        })
+        supabase_patch(f"properties?id=eq.{escrow['property_id']}", {"status": "rented"})
+        
+        props = supabase_get(f"properties?id=eq.{escrow['property_id']}")
+        prop = props[0] if props else {}
+        landlords = supabase_get(f"users?id=eq.{escrow['landlord_id']}")
+        landlord = landlords[0] if landlords else {}
+        tenants = supabase_get(f"users?id=eq.{escrow['tenant_id']}")
+        tenant = tenants[0] if tenants else {}
+        amount = escrow.get("amount_uzs", 300000)
+        
+        # 1. Uy egasiga xabarnoma
+        if landlord.get("telegram_id"):
+            msg_landlord = (
+                f"🎉 <b>IJARACHI KO'CHIB KIRDI VA KALITNI OLDI!</b>\n\n"
+                f"🏠 <b>Xonadon:</b> {prop.get('title')}\n"
+                f"👤 <b>Ijarachi:</b> {tenant.get('full_name')}\n"
+                f"💰 <b>Muzlatilgan hold summasi:</b> {int(amount):,} so'm hisobingizga o'tkazildi!\n\n"
+                f"🤝 RentTrust UZ bilan hamkorlik uchun tashakkur!"
+            )
+            send_telegram_notification(landlord["telegram_id"], msg_landlord)
+            
+        # 2. Ijarachiga xabarnoma
+        tenant_tg = tenant.get("telegram_id") or get_admin_chat_id()
+        if tenant_tg:
+            msg_tenant = (
+                f"🎉 <b>TABRIKLAYMIZ! YANGI UYINGIZ MUBORAK BO'LSIN!</b>\n\n"
+                f"🏠 <b>Xonadon:</b> {prop.get('title')}\n"
+                f"📍 <b>Manzil:</b> {prop.get('address')}\n\n"
+                f"✅ Xonadon holati va kalit qabul qilingani tasdiqlandi. RentTrust UZ bilan ijara — xavfsiz va shaffof!"
+            )
+            send_telegram_notification(tenant_tg, msg_tenant)
+            
+        return jsonify({"success": True})
+    except Exception as e:
+        print("confirm_move_in xatosi:", e)
+        return jsonify({"success": False, "error": str(e)}), 500
+
+@app.route("/api/my-bookings/cancel", methods=["POST"])
+def cancel_booking():
+    try:
+        payload = request.json
+        escrow_id = payload.get("escrow_id")
+        reason = payload.get("reason", "Ijarachi tomonidan bekor qilindi")
+        
+        escrows = supabase_get(f"escrow_transactions?id=eq.{escrow_id}")
+        if not escrows:
+            return jsonify({"success": False, "error": "Bandlik topilmadi"}), 404
+        escrow = escrows[0]
+        
+        now_iso = datetime.datetime.now(datetime.timezone.utc).isoformat()
+        supabase_patch(f"escrow_transactions?id=eq.{escrow_id}", {
+            "status": "refunded_to_tenant",
+            "refunded_at": now_iso,
+            "dispute_reason": reason
+        })
+        supabase_patch(f"properties?id=eq.{escrow['property_id']}", {"status": "available"})
+        
+        props = supabase_get(f"properties?id=eq.{escrow['property_id']}")
+        prop = props[0] if props else {}
+        landlords = supabase_get(f"users?id=eq.{escrow['landlord_id']}")
+        landlord = landlords[0] if landlords else {}
+        tenants = supabase_get(f"users?id=eq.{escrow['tenant_id']}")
+        tenant = tenants[0] if tenants else {}
+        amount = escrow.get("amount_uzs", 300000)
+        
+        # 1. Ijarachiga refund xabari
+        tenant_tg = tenant.get("telegram_id") or get_admin_chat_id()
+        if tenant_tg:
+            msg_tenant = (
+                f"↩️ <b>BANDLIK BEKOR QILINDI (REFUND)</b>\n\n"
+                f"🏠 <b>Xonadon:</b> {prop.get('title')}\n"
+                f"💰 <b>Qaytarilgan mablag':</b> {int(amount):,} so'm\n\n"
+                f"Mablag' RentTrust Escrow tomonidan kartangizga qaytarildi."
+            )
+            send_telegram_notification(tenant_tg, msg_tenant)
+            
+        # 2. Uy egasiga xabarnoma
+        if landlord.get("telegram_id"):
+            msg_landlord = (
+                f"ℹ️ <b>Xonadon bandligi bekor qilindi</b>\n\n"
+                f"🏠 <b>Xonadon:</b> {prop.get('title')}\n"
+                f"E'loningiz qaytadan platforma katalogi va xaritasida mavjud holatga o'tkazildi."
+            )
+            send_telegram_notification(landlord["telegram_id"], msg_landlord)
+            
+        return jsonify({"success": True})
+    except Exception as e:
+        print("cancel_booking xatosi:", e)
+        return jsonify({"success": False, "error": str(e)}), 500
+
 @app.route("/api/admin/escrow/resolve", methods=["POST"])
 def resolve_escrow_admin():
     try:
