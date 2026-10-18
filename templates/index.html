@@ -944,9 +944,73 @@
             "Yangihayot": [41.2050, 69.2200]
         };
 
+        function checkReferralStartParam() {
+            try {
+                let startParam = null;
+                if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe) {
+                    startParam = window.Telegram.WebApp.initDataUnsafe.start_param;
+                }
+                if (!startParam) {
+                    const params = new URLSearchParams(window.location.search);
+                    startParam = params.get('tgWebAppStartParam') || params.get('startapp') || params.get('start');
+                }
+                const tgUser = (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe) ? window.Telegram.WebApp.initDataUnsafe.user : null;
+                if (startParam && startParam.startsWith('ref_') && tgUser) {
+                    const referrerId = startParam.replace('ref_', '').trim();
+                    if (referrerId && referrerId !== String(tgUser.id)) {
+                        fetch('/api/referral/join', {
+                            method: 'POST',
+                            headers: getAuthHeaders({ 'Content-Type': 'application/json' }),
+                            body: JSON.stringify({
+                                referrer_id: referrerId,
+                                referee_id: tgUser.id,
+                                referee_name: `${tgUser.first_name || ''} ${tgUser.last_name || ''}`.trim() || 'Foydalanuvchi'
+                            })
+                        }).catch(e => console.log('Referral join err:', e));
+                    }
+                }
+            } catch (err) {
+                console.log('checkReferralStartParam error:', err);
+            }
+        }
+
+        function setupTelegramNavigation() {
+            if (window.Telegram && window.Telegram.WebApp) {
+                const tg = window.Telegram.WebApp;
+                tg.ready();
+                tg.expand();
+                if (tg.BackButton) {
+                    tg.BackButton.onClick(() => {
+                        // Close any open modal
+                        const modals = [
+                            { id: 'details-modal', close: closeModal },
+                            { id: 'escrow-modal', close: closeEscrowModal },
+                            { id: 'add-property-modal', close: closeAddPropertyModal },
+                            { id: 'terms-modal', close: closeTermsModal },
+                            { id: 'bookings-modal', close: closeBookingsModal },
+                            { id: 'inspection-modal', close: closeInspectionModal },
+                            { id: 'referral-modal', close: closeReferralModal },
+                            { id: 'favorites-modal', close: closeFavoritesModal },
+                            { id: 'comparison-modal', close: closeComparisonModal },
+                            { id: 'calculator-modal', close: closeCalculatorModal },
+                            { id: 'alert-modal', close: closeAlertModal }
+                        ];
+                        for (const m of modals) {
+                            const el = document.getElementById(m.id);
+                            if (el && !el.classList.contains('hidden')) {
+                                m.close();
+                                return;
+                            }
+                        }
+                        tg.BackButton.hide();
+                    });
+                }
+            }
+        }
+
         if (window.Telegram && window.Telegram.WebApp) {
-            window.Telegram.WebApp.ready();
-            window.Telegram.WebApp.expand();
+            setupTelegramNavigation();
+            try { checkReferralStartParam(); } catch(e){}
             if (window.Telegram.WebApp.initDataUnsafe && window.Telegram.WebApp.initDataUnsafe.user) {
                 const tgUser = window.Telegram.WebApp.initDataUnsafe.user;
                 document.getElementById('user-avatar').innerText = tgUser.first_name ? tgUser.first_name[0] : 'U';
@@ -2170,8 +2234,9 @@
             }
 
             const uid = getTelegramUserId();
-            const botUser = "RentTrust_Uz_Bot";
-            const link = `https://t.me/${botUser}?start=ref_${uid}`;
+            const botUser = window.BOT_USERNAME || "RentTrust_Uz_Bot";
+            const appShort = window.APP_SHORT_NAME || "app";
+            const link = `https://t.me/${botUser}/${appShort}?startapp=ref_${uid}`;
             
             const linkInput = document.getElementById('referral-link-input');
             if (linkInput) linkInput.value = link;

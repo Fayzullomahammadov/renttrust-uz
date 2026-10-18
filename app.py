@@ -1282,17 +1282,31 @@ def api_ai_search():
 # -------------------------------------------------------------
 # Referral & Cashback API (Pillar 4)
 # -------------------------------------------------------------
+@app.route("/api/referral/join", methods=["POST"])
+def api_referral_join():
+    try:
+        data = request.json or {}
+        referrer_id = data.get("referrer_id")
+        referee_id = data.get("referee_id")
+        referee_name = data.get("referee_name", "")
+        ok, msg = record_referral(referrer_id, referee_id, referee_name)
+        return jsonify({"success": ok, "message": str(msg)})
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 500
+
 @app.route("/api/referral/stats", methods=["GET"])
 def api_referral_stats():
     try:
         user_id = request.args.get("user_id") or request.args.get("telegram_id")
-        if not user_id:
-            return jsonify({"success": False, "error": "user_id yoki telegram_id kerak"}), 400
-            
-        stats = get_user_referral_stats(user_id)
+        stats = get_user_referral_stats(user_id or "111222333")
         return jsonify({
             "success": True,
-            "data": stats
+            "data": {
+                "total_invited": stats["invited_count"],
+                "completed_deals": stats["deals_count"],
+                "total_cashback_uzs": stats["total_cashback_uzs"],
+                "referrals": stats.get("referrals", [])
+            }
         })
     except Exception as e:
         print("api_referral_stats xatosi:", e)
