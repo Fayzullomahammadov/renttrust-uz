@@ -535,9 +535,11 @@ def get_user_phone():
     return jsonify({"success": True, "phone": phone})
 
 @app.route("/api/properties", methods=["POST"])
+@require_telegram_auth
 def add_property():
     try:
-        payload = request.json
+        tg_user = request.tg_user
+        payload = request.json or {}
         title = payload.get("title", "").strip()
         description = payload.get("description", "").strip()
         district = payload.get("district", "Chilonzor")
