@@ -1767,7 +1767,6 @@
         }
 
         // Camera / Gallery Image Upload Handling
-        async 
         let isDuplicateImageDetected = false;
 
         async function handleDocSelect(event) {
@@ -1818,7 +1817,7 @@
             }
         }
 
-        function handleFileSelect(event) {
+        async function handleFileSelect(event) {
             const file = event.target.files[0];
             if (!file) return;
 
