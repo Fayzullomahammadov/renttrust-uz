@@ -2,9 +2,9 @@
 <html lang="uz">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>RentTrust UZ — Toshkentda Maklersiz Uy Ijarasi va 100% Escrow Kafolati</title>
-    <meta name="description" content="RentTrust UZ — Toshkentda maklersiz, xavfsiz uy ijarasi platformasi. 50% rieltor to'lovi o'rniga atigi 2% komissiya va 100% Escrow depozit kafolati. Talabalarga 12% soliq imtiyozi.">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RentTrust UZ — Toshkentda Maklersiz, Xavfsiz Uy Ijarasi</title>
+    <meta name="description" content="RentTrust UZ — Toshkentda maklersiz, xavfsiz uy ijarasi. Ijarachidan 2%, uy egasidan 2% komissiya. Depozit tasdiqlaguncha RentTrust nazoratida. Shaffof, qulay, ishonchli.">
     <meta name="keywords" content="toshkent uy ijarasi, maklersiz uy, ijara kvartira toshkent, arzon uy toshkent, chilonzor ijara, yunusobod ijara, talabalar uchun uy, renttrust uz, escrow toshkent, soliq ijara">
     <meta name="author" content="RentTrust UZ">
     <meta name="robots" content="index, follow">
@@ -13,7 +13,7 @@
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://renttrust-uz.onrender.com">
     <meta property="og:title" content="RentTrust UZ — Toshkentda Maklersiz Uy Ijarasi">
-    <meta property="og:description" content="Maklerlarning 50% lik qimmat to'loviga chek qo'ying! Atigi 2% xizmat haqi va 100% xavfsiz Escrow depozit tizimi.">
+    <meta property="og:description" content="Maklerlarning qimmat to'loviga chek qo'ying! Ijarachidan 2%, uy egasidan 2%. Depozit tasdiqlaguncha RentTrust nazoratida.">
     <meta property="og:image" content="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=1200">
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -97,11 +97,11 @@
             <div class="relative z-10 space-y-2">
                 <div class="inline-flex items-center space-x-1.5 bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 text-[11px] font-semibold px-2.5 py-0.5 rounded-full">
                     <i data-lucide="lock" class="w-3 h-3"></i>
-                    <span>100% Escrow Kafolati</span>
+                    <span>Depozit nazorat ostida</span>
                 </div>
                 <h1 class="text-base font-bold leading-tight">Pul uy egasiga emas, platformaga tushadi</h1>
                 <p class="text-xs text-slate-300 leading-relaxed">
-                    Siz ko‘chib kirib, uyni tasdiqlamaguningizcha mablag‘ xavfsiz saqlanadi. Rieltorlik to‘lovi 50% emas — <strong class="text-emerald-400">atigi 2%</strong>!
+                    Siz ko‘chib kirib tasdiqlamaguningizcha pul RentTrust nazoratida saqlanadi. Ijarachidan 2%, uy egasidan 2% — <strong class="text-emerald-400">jami 4% komissiya</strong>.
                 </p>
                 <div class="pt-1 flex items-center space-x-3 text-[11px] text-slate-400">
                     <span class="flex items-center"><i data-lucide="check" class="w-3.5 h-3.5 text-emerald-400 mr-1"></i> Fakesiz uylar</span>
@@ -204,32 +204,59 @@
                 <span class="text-[11px] text-emerald-600 font-semibold" id="properties-count">Yuklanmoqda...</span>
             </div>
             <div class="flex items-center space-x-2 overflow-x-auto hide-scrollbar py-1 text-xs">
-                <button onclick="filterDistrict('Barchasi')" class="district-btn active px-3.5 py-1.5 rounded-full font-semibold bg-emerald-600 text-white shadow-sm transition">
+                <button onclick="filterDistrict('Barchasi')" class="district-btn active px-3.5 py-1.5 rounded-full font-semibold bg-emerald-600 text-white shadow-sm transition whitespace-nowrap">
                     Barchasi
                 </button>
-                <button onclick="filterDistrict('Chilonzor')" class="district-btn px-3.5 py-1.5 rounded-full font-semibold bg-white border border-slate-200 text-slate-700 hover:bg-slate-100 transition">
+                <button onclick="filterDistrict('Bektemir')" class="district-btn px-3.5 py-1.5 rounded-full font-semibold bg-white border border-slate-200 text-slate-700 hover:bg-slate-100 transition whitespace-nowrap">
+                    Bektemir
+                </button>
+                <button onclick="filterDistrict('Chilonzor')" class="district-btn px-3.5 py-1.5 rounded-full font-semibold bg-white border border-slate-200 text-slate-700 hover:bg-slate-100 transition whitespace-nowrap">
                     Chilonzor
                 </button>
-                <button onclick="filterDistrict('Yunusobod')" class="district-btn px-3.5 py-1.5 rounded-full font-semibold bg-white border border-slate-200 text-slate-700 hover:bg-slate-100 transition">
-                    Yunusobod
+                <button onclick="filterDistrict('Mirobod')" class="district-btn px-3.5 py-1.5 rounded-full font-semibold bg-white border border-slate-200 text-slate-700 hover:bg-slate-100 transition whitespace-nowrap">
+                    Mirobod
                 </button>
-                <button onclick="filterDistrict('Mirzo Ulug‘bek')" class="district-btn px-3.5 py-1.5 rounded-full font-semibold bg-white border border-slate-200 text-slate-700 hover:bg-slate-100 transition">
-                    Mirzo Ulug‘bek
+                <button onclick="filterDistrict('Mirzo Ulug\'bek')" class="district-btn px-3.5 py-1.5 rounded-full font-semibold bg-white border border-slate-200 text-slate-700 hover:bg-slate-100 transition whitespace-nowrap">
+                    Mirzo Ulug'bek
                 </button>
-                <button onclick="filterDistrict('Yakkasaroy')" class="district-btn px-3.5 py-1.5 rounded-full font-semibold bg-white border border-slate-200 text-slate-700 hover:bg-slate-100 transition">
+                <button onclick="filterDistrict('Olmazor')" class="district-btn px-3.5 py-1.5 rounded-full font-semibold bg-white border border-slate-200 text-slate-700 hover:bg-slate-100 transition whitespace-nowrap">
+                    Olmazor
+                </button>
+                <button onclick="filterDistrict('Sergeli')" class="district-btn px-3.5 py-1.5 rounded-full font-semibold bg-white border border-slate-200 text-slate-700 hover:bg-slate-100 transition whitespace-nowrap">
+                    Sergeli
+                </button>
+                <button onclick="filterDistrict('Shayxontohur')" class="district-btn px-3.5 py-1.5 rounded-full font-semibold bg-white border border-slate-200 text-slate-700 hover:bg-slate-100 transition whitespace-nowrap">
+                    Shayxontohur
+                </button>
+                <button onclick="filterDistrict('Uchtepa')" class="district-btn px-3.5 py-1.5 rounded-full font-semibold bg-white border border-slate-200 text-slate-700 hover:bg-slate-100 transition whitespace-nowrap">
+                    Uchtepa
+                </button>
+                <button onclick="filterDistrict('Yakkasaroy')" class="district-btn px-3.5 py-1.5 rounded-full font-semibold bg-white border border-slate-200 text-slate-700 hover:bg-slate-100 transition whitespace-nowrap">
                     Yakkasaroy
                 </button>
-                <button onclick="filterDistrict('Shayxontohur')" class="district-btn px-3.5 py-1.5 rounded-full font-semibold bg-white border border-slate-200 text-slate-700 hover:bg-slate-100 transition">
-                    Shayxontohur
+                <button onclick="filterDistrict('Yashnobod')" class="district-btn px-3.5 py-1.5 rounded-full font-semibold bg-white border border-slate-200 text-slate-700 hover:bg-slate-100 transition whitespace-nowrap">
+                    Yashnobod
+                </button>
+                <button onclick="filterDistrict('Yunusobod')" class="district-btn px-3.5 py-1.5 rounded-full font-semibold bg-white border border-slate-200 text-slate-700 hover:bg-slate-100 transition whitespace-nowrap">
+                    Yunusobod
+                </button>
+                <button onclick="filterDistrict('Yangihayot')" class="district-btn px-3.5 py-1.5 rounded-full font-semibold bg-white border border-slate-200 text-slate-700 hover:bg-slate-100 transition whitespace-nowrap">
+                    Yangihayot
                 </button>
             </div>
         </div>
 
-        <!-- View 1: Properties List Feed -->
+        <!-- View 1: Properties List Feed (Skeleton loading state) -->
         <div id="properties-feed" class="space-y-4">
-            <div class="py-12 text-center text-slate-400">
-                <div class="animate-spin w-6 h-6 border-2 border-emerald-500 border-t-transparent rounded-full mx-auto mb-2"></div>
-                <p class="text-xs">Uylar yuklanmoqda...</p>
+            <div class="bg-white rounded-2xl overflow-hidden border border-slate-100 shadow-sm animate-pulse space-y-3 p-3.5">
+                <div class="h-44 bg-slate-200 rounded-xl w-full"></div>
+                <div class="h-4 bg-slate-200 rounded w-3/4"></div>
+                <div class="h-3 bg-slate-200 rounded w-1/2"></div>
+                <div class="grid grid-cols-3 gap-2 pt-2">
+                    <div class="h-8 bg-slate-100 rounded-lg"></div>
+                    <div class="h-8 bg-slate-100 rounded-lg"></div>
+                    <div class="h-8 bg-slate-100 rounded-lg"></div>
+                </div>
             </div>
         </div>
 
@@ -255,7 +282,7 @@
             <div class="sticky bottom-0 bg-white border-t border-slate-100 p-4 shadow-lg flex items-center space-x-3">
                 <div class="flex-1">
                     <span class="text-[10px] text-slate-400 font-medium block">Oylik ijara narxi</span>
-                    <span class="text-base font-extrabold text-slate-900" id="modal-price-footer">0 so'm</span>
+                    <span class="text-base font-extrabold text-slate-900" id="modal-price-footer">Yuklanmoqda...</span>
                 </div>
                 <button onclick="openBookingStep()" class="flex-1 bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-bold py-3 px-4 rounded-xl shadow-lg shadow-emerald-500/25 active:scale-95 transition flex items-center justify-center space-x-1.5 text-xs">
                     <i data-lucide="calendar-check" class="w-4 h-4"></i>
@@ -273,21 +300,22 @@
             </div>
             <div class="text-center space-y-1">
                 <h3 class="text-base font-bold text-slate-900">Xavfsiz Escrow To'lovi</h3>
-                <p class="text-xs text-slate-500">Uyni 24 soatga Ali Valiyev uchun band qilish</p>
+                <p class="text-xs text-slate-500">Uyni 24 soatga band qilish</p>
             </div>
 
             <div class="bg-slate-50 border border-slate-100 rounded-xl p-3 space-y-2 text-xs">
                 <div class="flex justify-between text-slate-600">
-                    <span>Bron (Hold) summasi:</span>
-                    <span class="font-bold text-slate-900">300 000 so‘m</span>
+                    <span>Bron (Depozitdan oldindan):</span>
+                    <span class="font-bold text-slate-900" id="escrow-hold-val">300 000 so‘m</span>
                 </div>
                 <div class="flex justify-between text-slate-600">
-                    <span>RentTrust komissiyasi (2%):</span>
-                    <span class="font-bold text-emerald-600">6 000 so‘m</span>
+                    <span>Platforma xizmat haqi (2%):</span>
+                    <span class="font-bold text-emerald-600" id="escrow-fee-val">80 000 so‘m</span>
                 </div>
+                <div class="text-[10px] text-slate-400" id="escrow-rent-basis-note">Oylik ijaraning 2% komissiyasi</div>
                 <div class="border-t border-slate-200 pt-1.5 flex justify-between font-bold text-slate-900">
-                    <span>Jami to‘lanadi:</span>
-                    <span class="text-sm text-emerald-700">306 000 so‘m</span>
+                    <span>Jami hozir to‘lanadi:</span>
+                    <span class="text-sm text-emerald-700" id="escrow-total-val">380 000 so‘m</span>
                 </div>
             </div>
 
@@ -344,16 +372,18 @@
                     <div class="space-y-1">
                         <label class="font-bold text-slate-700 block">Tuman *</label>
                         <select id="prop-district" class="w-full px-3 py-2 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-xs bg-white">
-                            <option value="Chilonzor">Chilonzor</option>
-                            <option value="Yunusobod">Yunusobod</option>
-                            <option value="Mirzo Ulug‘bek">Mirzo Ulug‘bek</option>
-                            <option value="Yakkasaroy">Yakkasaroy</option>
-                            <option value="Shayxontohur">Shayxontohur</option>
+                            <option value="Bektemir">Bektemir</option>
+                            <option value="Chilonzor" selected>Chilonzor</option>
                             <option value="Mirobod">Mirobod</option>
+                            <option value="Mirzo Ulug'bek">Mirzo Ulug'bek</option>
                             <option value="Olmazor">Olmazor</option>
-                            <option value="Uchtepa">Uchtepa</option>
                             <option value="Sergeli">Sergeli</option>
+                            <option value="Shayxontohur">Shayxontohur</option>
+                            <option value="Uchtepa">Uchtepa</option>
+                            <option value="Yakkasaroy">Yakkasaroy</option>
                             <option value="Yashnobod">Yashnobod</option>
+                            <option value="Yunusobod">Yunusobod</option>
+                            <option value="Yangihayot">Yangihayot</option>
                         </select>
                     </div>
                     <div class="space-y-1">
@@ -426,11 +456,11 @@
                 <div class="border-t border-slate-100 pt-3 grid grid-cols-2 gap-2">
                     <div class="space-y-1">
                         <label class="font-bold text-slate-700 block">Ismingiz *</label>
-                        <input type="text" id="prop-landlord-name" required value="Sardor Rahimov" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs">
+                        <input type="text" id="prop-landlord-name" required placeholder="Ism va familiyangiz" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs">
                     </div>
                     <div class="space-y-1">
                         <label class="font-bold text-slate-700 block">Telefon raqamingiz *</label>
-                        <input type="tel" id="prop-landlord-phone" required value="+998 90 123 45 67" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs">
+                        <input type="tel" id="prop-landlord-phone" required placeholder="+998 90 123 45 67" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs">
                     </div>
                 </div>
 
@@ -557,7 +587,7 @@
                 <div class="bg-slate-50 border border-slate-100 rounded-xl p-3 flex items-start space-x-2">
                     <input type="checkbox" id="insp-agree" checked class="mt-0.5 rounded text-emerald-600 focus:ring-emerald-500">
                     <label for="insp-agree" class="text-[11px] text-slate-600 leading-snug cursor-pointer">
-                        Xonadonni ko'zdan kechirdim va kalitlarni qabul qildim. 300 000 so'm depozit mablag'i uy egasiga o'tkazilishiga roziman.
+                        Xonadonni ko'zdan kechirdim, mavjud nuqsonlar suratlarini ilova qildim va kalitlarni qabul qildim. Dalolatnoma ikki tomon uchun rasmiy akt hisoblanishiga roziman.
                     </label>
                 </div>
 
@@ -595,7 +625,7 @@
 
                 <div class="space-y-1">
                     <h4 class="font-bold text-slate-800 text-xs">1. Split Komissiya (2% + 2%)</h4>
-                    <p>Maklerlarning 50% lik qimmat to'loviga chek qo'yish maqsadida xizmat haqi har ikkala tomondan atigi 2% dan (jami 4%) tashkil etadi.</p>
+                    <p>Xizmat haqi: ijarachidan 2% + uy egasidan 2% = jami 4%. Maklerlarning ko'pincha oylik ijaraning yarmigacha bo'lgan qimmat to'lovlariga muqobil.</p>
                 </div>
 
                 <div class="space-y-1">
@@ -607,7 +637,17 @@
 
                 <div class="space-y-1">
                     <h4 class="font-bold text-slate-800 text-xs">3. ijara.soliq.uz va 12% Soliq Imtiyozi</h4>
-                    <p>Barcha ijara bitimlari Soliq Qo'mitasi portalida rasmiylashtirilishi shart. Oliy ta'lim talabalariga ijara bergan uy egalari <strong>12% daromad solig'idan (JSHODS) to'liq ozod</strong> hisoblanadi.</p>
+                    <p>Barcha ijara bitimlari Soliq Qo'mitasi portalida rasmiylashtirilishi shart. <strong>Faqat talabalarga ijaraga bergan uy egalari</strong> uchun: shartnoma soliq organida ro'yxatdan o'tkazilsa va ijarachi talaba ekanligini tasdiqlasa, 12% daromad solig'idan (JSHODS) ozod bo'lish mumkin (Soliq kodeksi, 378-modda 19-band). Shartnoma shablonini platforma taqdim etadi, davlat ro'yxatidan o'tkazish tomonlar majburiyatidir.</p>
+                </div>
+
+                <div class="space-y-1 bg-amber-50/70 border border-amber-200/60 rounded-xl p-2.5">
+                    <h4 class="font-bold text-amber-900 text-xs flex items-center">
+                        <i data-lucide="scale" class="w-3.5 h-3.5 mr-1 text-amber-600"></i>
+                        4. Dalolatnoma va Nizolarni Hal Qilish Tartibi
+                    </h4>
+                    <p class="text-[11px] text-amber-950 leading-relaxed">
+                        Ko'chib kirish dalolatnomasi ikki tomonlama amal qiladi: ijarachi fotodalillar yuklab imzolaydi, uy egasi bot orqali rasmlar bilan tanishadi. Nizo yuzaga kelsa, pul platformada <strong>muzlatiladi (DISPUTE)</strong>. Tomonlar 48 soat ichida dalillarni taqdim etadi, RentTrust arbitraj operatori xolis tekshirib qaror qabul qiladi.
+                    </p>
                 </div>
             </div>
         </div>
@@ -687,7 +727,10 @@
                     </div>
                     <div class="flex items-center space-x-1.5">
                         <span class="w-4 h-4 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-[10px] font-bold">3</span>
-                        <span>RentTrust o'z daromadining 30% ini avtomatik sizga beradi</span>
+                        <span>Do'stingiz ko'chib kirib nizo oynasi (72s) yopilgach, 30% keshbek kartangizga o'tkaziladi</span>
+                    </div>
+                    <div class="pt-1 text-[10px] text-slate-400 border-t border-slate-200 mt-1">
+                        🔒 Suiiste'molning oldini olish: o'zini taklif qilish taqiqlangan, har bir do'stning Telegram ID va to'lov rekvizitlari alohida tekshiriladi.
                     </div>
                 </div>
             </div>
@@ -837,16 +880,18 @@
                     <label class="font-bold text-slate-700 block" id="alert-lbl-dist">Qaysi tumandan qidiryapsiz?</label>
                     <select id="alert-district" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs bg-slate-50">
                         <option value="all">Barcha tumanlar</option>
+                        <option value="Bektemir">Bektemir tumani</option>
                         <option value="Chilonzor">Chilonzor tumani</option>
-                        <option value="Yunusobod">Yunusobod tumani</option>
-                        <option value="Mirzo Ulug‘bek">Mirzo Ulug‘bek tumani</option>
-                        <option value="Yakkasaroy">Yakkasaroy tumani</option>
-                        <option value="Shayxontohur">Shayxontohur tumani</option>
                         <option value="Mirobod">Mirobod tumani</option>
+                        <option value="Mirzo Ulug'bek">Mirzo Ulug'bek tumani</option>
                         <option value="Olmazor">Olmazor tumani</option>
-                        <option value="Uchtepa">Uchtepa tumani</option>
-                        <option value="Yashnobod">Yashnobod tumani</option>
                         <option value="Sergeli">Sergeli tumani</option>
+                        <option value="Shayxontohur">Shayxontohur tumani</option>
+                        <option value="Uchtepa">Uchtepa tumani</option>
+                        <option value="Yakkasaroy">Yakkasaroy tumani</option>
+                        <option value="Yashnobod">Yashnobod tumani</option>
+                        <option value="Yunusobod">Yunusobod tumani</option>
+                        <option value="Yangihayot">Yangihayot tumani</option>
                     </select>
                 </div>
 
@@ -907,16 +952,19 @@
 
         // Tashkent District Center Coordinates
         const DISTRICT_COORDS = {
+            "Bektemir": [41.2380, 69.3340],
             "Chilonzor": [41.2825, 69.2045],
-            "Yunusobod": [41.3650, 69.2885],
-            "Mirzo Ulug‘bek": [41.3275, 69.3280],
-            "Yakkasaroy": [41.2910, 69.2550],
-            "Shayxontohur": [41.3200, 69.2300],
             "Mirobod": [41.2980, 69.2780],
+            "Mirzo Ulug'bek": [41.3275, 69.3280],
+            "Mirzo Ulug‘bek": [41.3275, 69.3280],
             "Olmazor": [41.3480, 69.2200],
-            "Uchtepa": [41.2950, 69.1700],
             "Sergeli": [41.2250, 69.2200],
-            "Yashnobod": [41.2950, 69.3300]
+            "Shayxontohur": [41.3200, 69.2300],
+            "Uchtepa": [41.2950, 69.1700],
+            "Yakkasaroy": [41.2910, 69.2550],
+            "Yashnobod": [41.2950, 69.3300],
+            "Yunusobod": [41.3650, 69.2885],
+            "Yangihayot": [41.2050, 69.2200]
         };
 
         if (window.Telegram && window.Telegram.WebApp) {
@@ -937,16 +985,52 @@
             return new Intl.NumberFormat('uz-UZ').format(amount) + " so'm";
         }
 
+        function renderPropertiesSkeleton() {
+            const feed = document.getElementById('properties-feed');
+            if (!feed) return;
+            feed.innerHTML = [1, 2, 3].map(() => `
+                <div class="bg-white rounded-2xl overflow-hidden border border-slate-100 shadow-sm animate-pulse space-y-3 p-3.5">
+                    <div class="h-44 bg-slate-200 rounded-xl w-full"></div>
+                    <div class="h-4 bg-slate-200 rounded w-3/4"></div>
+                    <div class="h-3 bg-slate-200 rounded w-1/2"></div>
+                    <div class="grid grid-cols-3 gap-2 pt-2">
+                        <div class="h-8 bg-slate-100 rounded-lg"></div>
+                        <div class="h-8 bg-slate-100 rounded-lg"></div>
+                        <div class="h-8 bg-slate-100 rounded-lg"></div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
         async function fetchProperties() {
+            renderPropertiesSkeleton();
             try {
                 const res = await fetch(`${SUPABASE_URL}/rest/v1/properties?select=*,users:landlord_id(*)&order=created_at.desc`, {
                     headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
                 });
+                if (!res.ok) throw new Error("Tarmoq xatosi: " + res.status);
                 allProperties = await res.json();
                 applyFilters();
             } catch (err) {
                 console.error("Xatolik:", err);
-                document.getElementById('properties-feed').innerHTML = `<p class="text-center text-xs text-rose-500 py-8">Ma'lumotlarni yuklab bo'lmadi.</p>`;
+                const feed = document.getElementById('properties-feed');
+                if (feed) {
+                    feed.innerHTML = `
+                        <div class="bg-white rounded-2xl p-6 text-center border border-rose-100 shadow-sm space-y-3 my-4">
+                            <div class="w-12 h-12 rounded-full bg-rose-50 text-rose-500 flex items-center justify-center mx-auto">
+                                <i data-lucide="alert-circle" class="w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-xs text-slate-800">Internet yoki server bilan aloqa uzildi</h4>
+                                <p class="text-[11px] text-slate-400 mt-0.5">Uylarni yuklab bo'lmadi. Qayta urinib ko'ring.</p>
+                            </div>
+                            <button onclick="fetchProperties()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-md transition active:scale-95">
+                                🔄 Qayta urinish
+                            </button>
+                        </div>
+                    `;
+                    lucide.createIcons();
+                }
             }
         }
 
@@ -1336,7 +1420,7 @@
                             <button type="button" onclick="setReviewRating(5)" class="star-btn"><i data-lucide="star" class="w-4 h-4 fill-amber-400 text-amber-400"></i></button>
                             <span id="selected-stars-text" class="text-[11px] font-bold text-slate-600 ml-1.5">5/5 a'lo</span>
                         </div>
-                        <input type="text" id="review-author" placeholder="Ismingiz (masalan, Ali Valiyev)" class="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 text-xs">
+                        <input type="text" id="review-author" placeholder="Ismingiz" class="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 text-xs">
                         <textarea id="review-comment" rows="2" placeholder="Xonadon tozaligi, mebellari, uy egasi haqida fikringiz..." class="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 text-xs"></textarea>
                         <div class="flex justify-end space-x-2">
                             <button type="button" onclick="toggleWriteReview()" class="px-2.5 py-1 text-slate-500 font-semibold">Bekor qilish</button>
@@ -1369,6 +1453,21 @@
 
         function openBookingStep() {
             closeModal();
+            if (selectedProperty) {
+                const rent = selectedProperty.monthly_rent_uzs || 4000000;
+                const fee2 = Math.round(rent * 0.02);
+                const totalBooking = 300000 + fee2;
+                
+                const holdEl = document.getElementById('escrow-hold-val');
+                const feeEl = document.getElementById('escrow-fee-val');
+                const totalEl = document.getElementById('escrow-total-val');
+                const rentNoteEl = document.getElementById('escrow-rent-basis-note');
+                
+                if (holdEl) holdEl.innerText = "300 000 so‘m";
+                if (feeEl) feeEl.innerText = formatMoney(fee2);
+                if (totalEl) totalEl.innerText = formatMoney(totalBooking);
+                if (rentNoteEl) rentNoteEl.innerText = `Oylik ijara (${formatMoney(rent)}) ning 2% xizmat haqi`;
+            }
             document.getElementById('escrow-modal').classList.remove('hidden');
         }
 
@@ -1384,14 +1483,18 @@
 
             const tgUser = (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe) ? window.Telegram.WebApp.initDataUnsafe.user : null;
 
+            const today = new Date();
+            today.setDate(today.getDate() + 3);
+            const defaultMoveIn = today.toISOString().split('T')[0];
+
             const payload = {
                 property_id: selectedProperty.id,
                 amount: 300000,
-                tenant_name: tgUser ? `${tgUser.first_name || ''} ${tgUser.last_name || ''}`.trim() || 'Ijarachi' : 'Ali Valiyev',
+                tenant_name: tgUser ? `${tgUser.first_name || ''} ${tgUser.last_name || ''}`.trim() || 'Ijarachi' : 'Ijarachi',
                 tenant_tg_id: tgUser ? tgUser.id : null,
                 tenant_username: tgUser ? tgUser.username : null,
-                tenant_phone: '+998 90 999 88 77',
-                move_in_date: '2026-11-01',
+                tenant_phone: (tgUser && tgUser.phone_number) ? tgUser.phone_number : 'Aloqaga chiqiladi',
+                move_in_date: defaultMoveIn,
                 note: 'RentTrust Escrow orqali 24 soatga band qilindi'
             };
 
@@ -1429,6 +1532,16 @@
         function openAddPropertyModal() {
             const modal = document.getElementById('add-modal');
             const container = document.getElementById('add-modal-container');
+            
+            // Telegram foydalanuvchisi ma'lumotlarini formaga avtomatik kiritish
+            if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe && window.Telegram.WebApp.initDataUnsafe.user) {
+                const user = window.Telegram.WebApp.initDataUnsafe.user;
+                const nameInput = document.getElementById('prop-landlord-name');
+                if (nameInput && !nameInput.value) {
+                    nameInput.value = `${user.first_name || ''} ${user.last_name || ''}`.trim();
+                }
+            }
+
             modal.classList.remove('hidden');
             setTimeout(() => {
                 container.classList.remove('translate-y-full');
@@ -2075,7 +2188,12 @@
         // ---------------------------------------------------------
         // FEATURE 4: i18n Translation Dictionary (UZ / RU)
         // ---------------------------------------------------------
-        let currentLang = localStorage.getItem('renttrust_lang') || 'uz';
+        let storedLang = localStorage.getItem('renttrust_lang');
+        if (!storedLang && window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe && window.Telegram.WebApp.initDataUnsafe.user) {
+            const userLang = window.Telegram.WebApp.initDataUnsafe.user.language_code || 'uz';
+            storedLang = (userLang.startsWith('ru')) ? 'ru' : 'uz';
+        }
+        let currentLang = storedLang || 'uz';
         const I18N = {
             uz: {
                 flag: "🇺🇿 UZ",
@@ -2331,7 +2449,7 @@
                             <div class="h-8 flex items-center border-b border-slate-100">Oylik ijara:</div>
                             <div class="h-8 flex items-center border-b border-slate-100">Xavfsiz depozit:</div>
                             <div class="h-8 flex items-center border-b border-slate-100 text-emerald-700">RentTrust 2%:</div>
-                            <div class="h-8 flex items-center border-b border-slate-100 text-rose-500">Makler 50%:</div>
+                            <div class="h-8 flex items-center border-b border-slate-100 text-rose-500">Makler (o'rtacha 50%):</div>
                             <div class="h-8 flex items-center border-b border-slate-100">Tuman:</div>
                             <div class="h-8 flex items-center border-b border-slate-100">Xonalar / Maydon:</div>
                             <div class="h-8 flex items-center border-b border-slate-100">Qavat:</div>
