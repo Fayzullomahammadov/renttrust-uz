@@ -1,0 +1,20 @@
+[
+  {
+    "event_id": "evt_48fed0534f",
+    "booking_id": "test_bk_001",
+    "from_state": "HOLD",
+    "to_state": "FUNDED",
+    "actor": "tenant",
+    "notes": "Remainder paid",
+    "timestamp": "2026-10-18T12:23:56.673879+00:00"
+  },
+  {
+    "event_id": "evt_6bb43784f9",
+    "booking_id": "test_bk_001",
+    "from_state": "HOLD",
+    "to_state": "FUNDED",
+    "actor": "tenant",
+    "notes": "Remainder paid",
+    "timestamp": "2026-10-18T12:24:22.863501+00:00"
+  }
+]

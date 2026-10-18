@@ -11,6 +11,15 @@ from ai_search_engine import parse_ai_query, filter_properties_ai
 from referral_manager import record_referral, reward_referral_on_deal, get_user_referral_stats
 from alerts_manager import subscribe_alert, check_and_notify_subscribers
 from reviews_manager import get_property_reviews, add_property_review
+from fee_calculator import calculate_fees
+from payment_provider import get_payment_provider
+from booking_manager import (
+    record_booking_event,
+    get_booking_events,
+    evaluate_cancellation,
+    record_dispute,
+    resolve_dispute
+)
 from auth import verify_telegram_init_data, create_session_token, verify_session_token, require_telegram_auth, get_authenticated_user
 WEBHOOK_SECRET = os.environ.get("WEBHOOK_SECRET", "")
 USER_PHONES_FILE = os.path.join(os.path.dirname(__file__), "user_phones.json")
@@ -1121,6 +1130,43 @@ def cancel_booking():
         return jsonify({"success": True})
     except Exception as e:
         print("cancel_booking xatosi:", e)
+        return jsonify({"success": False, "error": str(e)}), 500
+
+
+@app.route("/api/my-bookings/dispute", methods=["POST"])
+@require_telegram_auth
+def open_booking_dispute():
+    try:
+        payload = request.json or {}
+        escrow_id = payload.get("escrow_id")
+        reason = payload.get("reason", "Nizo").strip()
+        photos = payload.get("photos", [])
+        
+        escrow_list = supabase_get(f"escrow_transactions?id=eq.{escrow_id}")
+        if not escrow_list:
+            return jsonify({"success": False, "error": "Escrow tranzaksiyasi topilmadi"}), 404
+            
+        escrow = escrow_list[0]
+        supabase_patch(f"escrow_transactions?id=eq.{escrow_id}", {
+            "status": "disputed",
+            "dispute_reason": reason
+        })
+        
+        disp = record_dispute(escrow_id, "tenant", reason, photos)
+        record_booking_event(escrow_id, escrow.get("status", "HELD"), "DISPUTE", "tenant", reason)
+        
+        # Notify admins
+        for admin_id in ADMIN_TELEGRAM_IDS:
+            send_telegram_notification(
+                admin_id,
+                f"⚖️ <b>Yangi Nizo (DISPUTE) ochildi!</b>\n"
+                f"Escrow ID: <code>{escrow_id}</code>\n"
+                f"Sababi: <i>{reason}</i>\n"
+                f"48 soat ichida dalillar ko'rib chiqilishi kerak."
+            )
+            
+        return jsonify({"success": True, "data": disp})
+    except Exception as e:
         return jsonify({"success": False, "error": str(e)}), 500
 
 @app.route("/api/admin/escrow/resolve", methods=["POST"])

@@ -549,7 +549,7 @@
                         <label class="h-24 rounded-xl border-2 border-dashed border-emerald-300 bg-emerald-50/50 flex flex-col items-center justify-center cursor-pointer hover:bg-emerald-100/50 transition">
                             <i data-lucide="camera" class="w-6 h-6 text-emerald-600 mb-1"></i>
                             <span class="text-[10px] font-bold text-emerald-700" id="insp-upload-label">Rasm olish</span>
-                            <input type="file" id="insp-file-input" accept="image/*" class="hidden" onchange="handleInspectionPhotoSelect(event)">
+                            <input type="file" id="insp-file-input" accept="image/*" capture="environment" class="hidden" onchange="handleInspectionPhotoSelect(event)">
                         </label>
                     </div>
                 </div>
@@ -564,7 +564,7 @@
                 <div class="bg-slate-50 border border-slate-100 rounded-xl p-3 flex items-start space-x-2">
                     <input type="checkbox" id="insp-agree" checked class="mt-0.5 rounded text-emerald-600 focus:ring-emerald-500">
                     <label for="insp-agree" class="text-[11px] text-slate-600 leading-snug cursor-pointer">
-                        Xonadonni ko'zdan kechirdim, mavjud nuqsonlar suratlarini ilova qildim va kalitlarni qabul qildim. Dalolatnoma ikki tomon uchun rasmiy akt hisoblanishiga roziman.
+                        Xonadonni ko'zdan kechirdim va kalitlarni qabul qildim. To'langan mablag' uy egasiga o'tkazilishiga roziman.
                     </label>
                 </div>
 
@@ -1976,7 +1976,7 @@
                 <label class="h-24 rounded-xl border-2 border-dashed border-emerald-300 bg-emerald-50/50 flex flex-col items-center justify-center cursor-pointer hover:bg-emerald-100/50 transition">
                     <i data-lucide="camera" class="w-6 h-6 text-emerald-600 mb-1"></i>
                     <span class="text-[10px] font-bold text-emerald-700" id="insp-upload-label">Rasm olish</span>
-                    <input type="file" id="insp-file-input" accept="image/*" class="hidden" onchange="handleInspectionPhotoSelect(event)">
+                    <input type="file" id="insp-file-input" accept="image/*" capture="environment" class="hidden" onchange="handleInspectionPhotoSelect(event)">
                 </label>
             `;
 
@@ -2038,6 +2038,29 @@
                 alert("Server bilan bog'lanishda xatolik yuz berdi.");
             } finally {
                 btn.innerHTML = originalText;
+            }
+        }
+
+        
+        async function openDisputeModal(escrowId) {
+            const reason = prompt("Nizo sababini yozing (masalan, kvartira rasmlarga mos kelmadi, kalit berilmadi, jiddiy nosozliklar bor):");
+            if (!reason || !reason.trim()) return;
+
+            try {
+                const res = await fetch('/api/my-bookings/dispute', {
+                    method: 'POST',
+                    headers: getAuthHeaders({ 'Content-Type': 'application/json' }),
+                    body: JSON.stringify({ escrow_id: escrowId, reason: reason.trim() })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    alert("⚖️ Nizo ochildi. Mablag' platformada muzlatildi (DISPUTE). 48 soat ichida operator dalillarni tekshirib qaror qabul qiladi.");
+                    loadMyBookings();
+                } else {
+                    alert(data.error || "Nizo ochishda xatolik");
+                }
+            } catch (e) {
+                alert("Server xatosi: " + e.message);
             }
         }
 

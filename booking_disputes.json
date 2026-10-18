@@ -1,0 +1,38 @@
+[
+  {
+    "dispute_id": "disp_8bea8f4450",
+    "booking_id": "test_bk_002",
+    "opened_by": "tenant",
+    "reason": "Konditsioner ishlamayapti",
+    "evidence_photos": [
+      "photo1.jpg"
+    ],
+    "status": "resolved",
+    "opened_at": "2026-10-18T12:23:56.686628+00:00",
+    "deadline_at": "2026-10-20T12:23:56.686628+00:00",
+    "resolution": {
+      "decision": "refund_tenant",
+      "resolved_by": "admin",
+      "resolved_at": "2026-10-18T12:23:56.687732+00:00",
+      "notes": "Ijarachi dalillari tasdiqlandi"
+    }
+  },
+  {
+    "dispute_id": "disp_92a6d1eb95",
+    "booking_id": "test_bk_002",
+    "opened_by": "tenant",
+    "reason": "Konditsioner ishlamayapti",
+    "evidence_photos": [
+      "photo1.jpg"
+    ],
+    "status": "resolved",
+    "opened_at": "2026-10-18T12:24:22.865595+00:00",
+    "deadline_at": "2026-10-20T12:24:22.865595+00:00",
+    "resolution": {
+      "decision": "refund_tenant",
+      "resolved_by": "admin",
+      "resolved_at": "2026-10-18T12:24:22.866121+00:00",
+      "notes": "Ijarachi dalillari tasdiqlandi"
+    }
+  }
+]
