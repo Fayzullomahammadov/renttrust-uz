@@ -898,6 +898,7 @@
                 mapMarkers.push(marker);
             });
         }
+        window.renderMapMarkers = updateMapMarkers;
 
         // Filters Handling
         function toggleFilterDrawer() {
@@ -1653,6 +1654,9 @@
 
             try {
                 const res = await fetch(`/api/ai-search?q=${encodeURIComponent(q)}`);
+                if (!res.ok) {
+                    throw new Error(`Server javobi: ${res.status}`);
+                }
                 const data = await res.json();
                 if (data.success) {
                     // Update AI summary chip
@@ -1662,17 +1666,20 @@
                     summaryEl.innerHTML = data.ai_summary;
 
                     filteredProperties = data.data || [];
+                    const countEl = document.getElementById('properties-count');
+                    if (countEl) countEl.innerText = `${filteredProperties.length} ta xonadon`;
+
                     renderPropertiesList(filteredProperties);
-                    if (viewMode === 'map') {
-                        renderMapMarkers(filteredProperties);
+                    if (viewMode === 'map' && typeof updateMapMarkers === 'function') {
+                        updateMapMarkers(filteredProperties);
                     }
                     lucide.createIcons();
                 } else {
-                    alert(data.error || "AI qidiruvda xatolik");
+                    alert(data.error || "AI qidiruvda mos variantlar topilmadi");
                 }
             } catch (err) {
                 console.error("AI Search error:", err);
-                alert("AI qidiruv serveriga ulanib bo'lmadi.");
+                alert("AI qidiruvda xatolik: " + (err.message || "Serverga ulanib bo'lmadi"));
             } finally {
                 btn.innerHTML = originalBtn;
                 lucide.createIcons();
