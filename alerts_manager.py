@@ -116,7 +116,7 @@ def check_and_notify_subscribers(property_data):
             f"📐 <b>{prop_rooms} xonali</b> • {property_data.get('area_sqm', 45)} m²\n"
             f"💵 <b>Narxi:</b> {prop_price:,} so'm / oy\n\n"
             f"🛡 <b>RentTrust afzalligi:</b>\n"
-            f"• Makler 50% yo'q — atigi 2% to'lov!\n"
+            f"• Makler 50% yo'q — Ijarachidan 2%, uy egasidan 2% to'lov!\n"
             f"• 100% Escrow xavfsiz band qilish.\n\n"
             f"<i>Boshqalar band qilishidan oldin ko'rib oling!</i>"
         )

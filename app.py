@@ -267,7 +267,7 @@ def publish_property_to_channel(prop, landlord_name=None):
         f"✨ <b>Qulayliklar:</b> {amenities}\n\n"
         f"🛡 <b>Nega RentTrust UZ?</b>\n"
         f"• Rieltorlarga 50% yo'q — atigi <b>2% Split komissiya</b>!\n"
-        f"• 100% Escrow kafolati: Pul uyni ko'rib, kalit olmaguncha platformada xavfsiz saqlanadi.\n"
+        f"• Himoyalangan to'lov kafolati: Pul uyni ko'rib, kalit olmaguncha platformada xavfsiz saqlanadi.\n"
         f"• Qonuniy shartnoma va 12% talabalar soliq imtiyozi.\n\n"
         f"📲 <i>Xonadonni ko'rish va 24 soatga kafolatli band qilish:</i>"
     )
@@ -668,7 +668,7 @@ def create_hold():
                 f"📍 <b>Manzil:</b> {prop.get('district')}, {prop.get('address')}\n"
                 f"💰 <b>Muzlatilgan depozit:</b> {int(amount):,} so'm (Escrow kafolati)\n"
                 f"🔑 <b>Uy egasi:</b> {landlord.get('full_name')} ({landlord.get('phone_number')})\n\n"
-                f"🛡 <b>100% Escrow Himoyasi:</b>\n"
+                f"🛡 <b>Himoyalangan to'lov Himoyasi:</b>\n"
                 f"Pulingiz to'g'ridan-to'g'ri uy egasiga o'tkazilmadi. Siz xonadonga ko'chib kirib, dalolatnomani tasdiqlamaguningizcha mablag' platforma kafolatida xavfsiz saqlanadi."
             )
             send_telegram_notification(tenant_recipient, msg_tenant)
@@ -750,7 +750,7 @@ def dispatch_contract_pdf_and_referral(escrow_id, tenant_tg, landlord_tg, monthl
                 f"📄 <b>Rasmiy Ijara Shartnomasi va Dalolatnoma (PDF)</b>\n\n"
                 f"Shartnoma raqami: <b>{contract_data['contract_id']}</b>\n"
                 f"Sana: <b>{contract_data['date']}</b>\n"
-                f"🛡 RentTrust UZ 100% Escrow kafolati bilan tasdiqlangan."
+                f"🛡 RentTrust UZ Himoyalangan to'lov kafolati bilan tasdiqlangan."
             )
             if tenant_tg:
                 send_telegram_document(tenant_tg, pdf_path, caption=caption)
@@ -1294,7 +1294,7 @@ def telegram_webhook():
         if text in ["/referral", "/keshbek", "/bonus"]:
             ref_link = f"https://t.me/{bot_user}?start=ref_{chat_id}"
             stats = get_user_referral_stats(chat_id)
-            share_text = f"RentTrust UZ orqali rieltorlarning 50% komissiyasisiz, 100% Escrow kafolati bilan xonadon toping! Havola orqali o'ting va 30% chegirma oling: {ref_link}"
+            share_text = f"RentTrust UZ orqali rieltorlarning 50% komissiyasisiz, Himoyalangan to'lov kafolati bilan xonadon toping! Havola orqali o'ting va 30% chegirma oling: {ref_link}"
             share_url = f"https://t.me/share/url?url={urllib.parse.quote(ref_link)}&text={urllib.parse.quote(share_text)}"
             
             msg_ref = (
@@ -1371,7 +1371,7 @@ def telegram_webhook():
                         f"Do'stingiz platforma orqali xonadonga ko'chib kirganda, RentTrust komissiyasining <b>30% qismi (keshbek)</b> sizning hisobingizga tushadi! 💰"
                     )
                     share_link = f"https://t.me/{bot_user}?start=ref_{chat_id}"
-                    share_txt = "RentTrust UZ orqali rieltorlarning 50% to'lovisiz, 100% Escrow kafolati bilan Toshkentdan xonadon toping! Havola orqali o'ting va 30% chegirma oling:"
+                    share_txt = "RentTrust UZ orqali rieltorlarning 50% to'lovisiz, Himoyalangan to'lov kafolati bilan Toshkentdan xonadon toping! Havola orqali o'ting va 30% chegirma oling:"
                     self_kb = {
                         "inline_keyboard": [
                             [{"text": "📲 Telegram orqali do'stlarga ulashish", "url": f"https://t.me/share/url?url={urllib.parse.quote(share_link)}&text={urllib.parse.quote(share_txt)}"}],
@@ -1400,7 +1400,7 @@ def telegram_webhook():
                     f"Assalomu alaykum, {first_name}! 👋\n\n"
                     f"🎁 <b>Siz do'stingiz taklif havolasi orqali kirdingiz!</b>\n"
                     f"Siz uchun birinchi ijarangizda platforma komissiyasiga <b>30% maxsus chegirma</b> taqdim etiladi.\n\n"
-                    "🏢 <b>RentTrust UZ</b> — Toshkentdagi 100% Escrow kafolatlangan uy ijarasi platformasi!\n"
+                    "🏢 <b>RentTrust UZ</b> — Toshkentdagi Himoyalangan to'lov kafolatlangan uy ijarasi platformasi!\n"
                     "• Rieltorlarga 50% komissiya yo'q — atigi <b>2% Split xizmat haqi</b>\n"
                     "• Pul uyni ko'rib, kalit olmaguncha xavfsiz muzlatiladi\n"
                     "• Rasmiy shartnoma va 12% talabalar soliq imtiyozi.\n\n"
@@ -1411,9 +1411,9 @@ def telegram_webhook():
                     f"Assalomu alaykum, {first_name}! 👋\n\n"
                     "🏢 <b>RentTrust UZ</b> — Toshkentdagi ishonchli va xavfsiz uy ijarasi platformasiga xush kelibsiz!\n\n"
                     "🛡 <b>Bizning afzalliklarimiz:</b>\n"
-                    "• <b>100% Escrow kafolati:</b> Pulingiz uy egasiga emas, platformaning muzlatilgan hisobiga tushadi.\n"
+                    "• <b>Himoyalangan to'lov kafolati:</b> Pulingiz uy egasiga emas, RentTrust nazoratidagi hisobga tushadi.\n"
                     "• <b>Split komissiya:</b> Rieltorga 50% berish o‘rniga, atigi <b>2% xizmat haqi</b>!\n"
-                    "• <b>Depozit himoyasi:</b> Ko‘chib chiqayotganda depozit asossiz ushlab qolinmaydi.\n\n"
+                    "• <b>Depozit dalolatnomasi:</b> Ko‘chib chiqayotganda depozit asossiz ushlab qolinmaydi.\n\n"
                     "💡 <i>Menga istalgan talabingizni yozib yuboring (masalan: «Chilonzorda 2 xonali 400$ gacha»), AI maslahatchimiz sizga eng mos uylarni topib beradi!</i>\n\n"
                     "Yoki quyidagi tugmani bosib Web App ni oching 👇"
                 )
@@ -1466,7 +1466,7 @@ def telegram_webhook():
                         f"<b>{idx}. {p.get('title')}</b>\n"
                         f"📍 {p.get('district')} tumani, {p.get('address')}\n"
                         f"💵 <b>{rent_str}/oy</b> • {p.get('rooms')} xonali ({p.get('area_sqm')} m²)\n"
-                        f"🛡 2% Split komissiya | 100% Escrow kafolati\n\n"
+                        f"🛡 2% Split komissiya | Himoyalangan to'lov kafolati\n\n"
                     )
                     prop_web_url = f"{app_host}/?prop={p.get('id')}"
                     inline_keyboard.append([{

@@ -7,16 +7,16 @@ Ushbu hujjat O‘zbekiston Respublikasi Fuqarolik Kodeksining 367, 369 va 370-mo
 ---
 
 ### 1. ATAMALAR VA TA’RIFLAR
-1.1. **Platforma ("RentTrust UZ")** — ko‘chmas mulk egalari va ijarachilar o‘rtasida xavfsiz bitimlar, kafolatlangan to‘lovlar (eskrou) va axborot almashinuvini ta’minlovchi avtomatlashtirilgan dasturiy majmua.
+1.1. **Platforma ("RentTrust UZ")** — ko‘chmas mulk egalari va ijarachilar o‘rtasida xavfsiz bitimlar, himoyalangan to‘lovlar (eskrou) va axborot almashinuvini ta’minlovchi avtomatlashtirilgan dasturiy majmua.
 1.2. **Uy Egasi (Ijaraga beruvchi)** — Platformada o‘ziga tegishli yoki qonuniy boshqaruvidagi turar joyni ijaraga berish bo‘yicha e’lon joylashtirgan jismoniy yoki yuridik shaxs.
 1.3. **Ijarachi** — Platforma orqali turar joyni vaqtincha foydalanishga olish maqsadida ariza yuboruvchi va to‘lovlarni amalga oshiruvchi jismoniy shaxs.
-1.4. **Eskrou (Kafolatlangan hisob)** — Ijarachi tomonidan to‘langan mablag‘lar (bron puli, birinchi oy ijara to‘lovi, xavfsiz depozit) shartlar bajarilgunga qadar vaqtincha saqlanadigan platformaning maxsus nominal/tranzit hisobvarag‘i (O‘zR Fuqarolik Kodeksining 788-moddasi).
+1.4. **Eskrou (Himoyalangan hisob)** — Ijarachi tomonidan to‘langan mablag‘lar (bron puli, birinchi oy ijara to‘lovi, xavfsiz depozit) shartlar bajarilgunga qadar vaqtincha saqlanadigan platformaning maxsus nominal/tranzit hisobvarag‘i (O‘zR Fuqarolik Kodeksining 788-moddasi).
 1.5. **Split Komissiya** — Platforma tomonidan ko‘rsatilgan axborot va xavfsiz to‘lov vositachiligi xizmatlari uchun har ikki tomondan (Ijarachi — 2%, Uy egasi — 2%, jami 4%) undiriladigan xizmat haqi.
 
 ---
 
 ### 2. SHARTNOMA PREDMETI VA PLATFORMANING HUQUQIY MAQOMI
-2.1. Platforma Ijaraga beruvchi va Ijarachi o‘rtasida to‘lov agenti va vositachi (O‘zR Fuqarolik Kodeksining 831-moddasi) sifatida ishtirok etadi.
+2.1. Platforma Ijaraga beruvchi va Ijarachi o‘rtasida vositachi va axborot xizmati ko'rsatuvchi (O‘zR Fuqarolik Kodeksining 831-moddasi) sifatida ishtirok etadi.
 2.2. Platforma ko‘chmas mulk egasi hisoblanmaydi va ijara shartnomasi bo‘yicha to‘g‘ridan-to‘g‘ri taraf emas. Asosiy ijara munosabatlari Ijarachi va Uy egasi o‘rtasida mustaqil tarzda rasmiylashtiriladi.
 2.3. Platforma ijarachilar to‘lagan ijara summasi va depozitni to‘g‘ridan-to‘g‘ri o‘z daromadiga kiritmaydi, faqatgina shartlar bajarilgunga qadar ishonchli boshqaruvda ushlab turadi.
 
@@ -42,7 +42,7 @@ Ushbu hujjat O‘zbekiston Respublikasi Fuqarolik Kodeksining 367, 369 va 370-mo
    * 72 soatdan kam muddat qolganda bekor qilinsa: hold summasi Uy egasining bo‘sh turgan vaqti uchun kompensatsiya sifatida Uy egasiga o‘tkazilishi mumkin.
 4.2. **Uy egasi tashabbusi yoki aybi bilan bekor qilinganda:**
    * Agar uy e’londa ko‘rsatilgan holatga to‘g‘ri kelmasa (feyk rasm, jiddiy nosozliklar, mebellar yo‘qligi) yoki kalit topshirilmasa:
-   * To‘langan barcha mablag‘lar (100%) zudlik bilan Ijarachiga qaytariladi.
+   * To‘langan barcha mablag‘lar (to'liq) zudlik bilan Ijarachiga qaytariladi.
    * Uy egasining reytingi pasaytiriladi va platformadan bloklanishi mumkin.
 
 ---

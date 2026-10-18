@@ -72,9 +72,9 @@ def start_bot(token):
                             f"Assalomu alaykum, {first_name}! 👋\n\n"
                             "🏢 *RentTrust UZ* — Toshkentdagi ishonchli va xavfsiz uy ijarasi platformasiga xush kelibsiz!\n\n"
                             "🛡 *Bizning afzalliklarimiz:*\n"
-                            "• *100% Escrow kafolati:* Pulingiz uy egasiga emas, platformaning muzlatilgan hisobiga tushadi.\n"
+                            "• *to'liq Escrow kafolati:* Pulingiz uy egasiga emas, platformaning RentTrust nazoratidagi hisobiga tushadi.\n"
                             "• *Split komissiya:* Rieltorga 50% berish o‘rniga, atigi *2% xizmat haqi*!\n"
-                            "• *Depozit himoyasi:* Ko‘chib chiqayotganda depozit asossiz ushlab qolinmaydi.\n\n"
+                            "• *Depozit dalolatnomasi:* Ko‘chib chiqayotganda depozit asossiz ushlab qolinmaydi.\n\n"
                             "Quyidagi tugmani bosing va Toshkentdagi tekshirilgan xonadonlarni ko‘ring 👇"
                         )
 

@@ -52,10 +52,10 @@ Talabalarni qayerdan topamiz?
 > Endi buning yechimi bor — **RentTrust UZ**!
 >
 > 🛡 **Nega aynan RentTrust?**
-> ✅ **100% Escrow Kafolati:** Siz to‘lagan pul to‘g‘ridan-to‘g‘ri uy egasiga emas, platformaning muzlatilgan hisobiga tushadi. Uyni ko‘rib, kalitni olmaguningizcha pul o‘tkazilmaydi!
-> ✅ **Rieltor 50% emas — atigi 2%:** 4 000 000 so‘mlik uy uchun maklerga 2 000 000 so‘m berish o‘rniga, atigi 80 000 so‘m to‘lang!
+> ✅ **Himoyalangan to'lov Kafolati:** Siz to‘lagan pul to‘g‘ridan-to‘g‘ri uy egasiga emas, platformaning RentTrust nazoratidagi hisobiga tushadi. Uyni ko‘rib, kalitni olmaguningizcha pul o‘tkazilmaydi!
+> ✅ **Rieltor 50% emas — Ijarachidan 2%, uy egasidan 2%:** 4 000 000 so‘mlik uy uchun maklerga 2 000 000 so‘m berish o‘rniga, atigi 80 000 so‘m to‘lang!
 > ✅ **Depozitingiz qaytishi kafolatlangan:** Uy egasi kutilmaganda pulni ushlab qololmaydi.
-> ✅ **Fakesiz, tekshirilgan uylar:** Barcha xonadonlar real fotosuratlar va qulayliklar bilan kiritilgan.
+> ✅ **Tekshirilgan, tekshirilgan uylar:** Barcha xonadonlar real fotosuratlar va qulayliklar bilan kiritilgan.
 >
 > 📲 **Hoziroq Telegramdan chiqmasdan bo‘sh uylarni ko‘ring:**  
 > 👉 @RentTrust_Uz_Bot
