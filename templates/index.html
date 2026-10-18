@@ -944,6 +944,92 @@
             "Yangihayot": [41.2050, 69.2200]
         };
 
+        const TASHKENT_DISTRICTS = [
+            "Bektemir",
+            "Chilonzor",
+            "Mirobod",
+            "Mirzo Ulug'bek",
+            "Olmazor",
+            "Sergeli",
+            "Shayxontohur",
+            "Uchtepa",
+            "Yakkasaroy",
+            "Yashnobod",
+            "Yunusobod",
+            "Yangihayot"
+        ];
+
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function getAuthHeaders(customHeaders = {}) {
+            const headers = { ...customHeaders };
+            const sessionToken = localStorage.getItem('renttrust_session_token');
+            if (sessionToken) {
+                headers['Authorization'] = `Bearer ${sessionToken}`;
+            }
+            if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initData) {
+                headers['X-Telegram-Init-Data'] = window.Telegram.WebApp.initData;
+                if (!headers['Authorization']) {
+                    headers['Authorization'] = `Bearer ${window.Telegram.WebApp.initData}`;
+                }
+            }
+            return headers;
+        }
+
+        async function authenticateTelegramSession() {
+            try {
+                if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initData) {
+                    const res = await fetch('/api/auth/login', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ initData: window.Telegram.WebApp.initData })
+                    });
+                    const data = await res.json();
+                    if (data && data.success && data.token) {
+                        localStorage.setItem('renttrust_session_token', data.token);
+                    }
+                }
+            } catch (err) {
+                console.warn('authenticateTelegramSession warn:', err);
+            }
+        }
+
+        function renderDistrictOptions() {
+            // 1. Populate district pills container
+            const pillsContainer = document.getElementById('district-pills-container');
+            if (pillsContainer) {
+                const t = (typeof I18N !== 'undefined' && I18N[currentLang]) ? I18N[currentLang] : (typeof I18N !== 'undefined' ? I18N.uz : {});
+                const allLabel = t.district_all || "Barchasi";
+                let html = `
+                    <button onclick="filterDistrict('Barchasi')" class="district-btn px-3 py-1.5 rounded-full font-bold bg-emerald-600 text-white shrink-0 transition active:scale-95 shadow-sm" id="district-pill-all">
+                        ${allLabel}
+                    </button>
+                `;
+                TASHKENT_DISTRICTS.forEach(d => {
+                    html += `
+                        <button onclick="filterDistrict('${d}')" class="district-btn px-3 py-1.5 rounded-full font-medium bg-white text-slate-700 hover:bg-slate-100 shrink-0 transition active:scale-95 border border-slate-200/60">
+                            ${d}
+                        </button>
+                    `;
+                });
+                pillsContainer.innerHTML = html;
+            }
+
+            // 2. Populate prop-district select
+            const propDistrictSelect = document.getElementById('prop-district');
+            if (propDistrictSelect && propDistrictSelect.options.length <= 1) {
+                propDistrictSelect.innerHTML = TASHKENT_DISTRICTS.map(d => `<option value="${d}">${d}</option>`).join('');
+            }
+
+            // 3. Populate alert-district select
+            const alertDistrictSelect = document.getElementById('alert-district');
+            if (alertDistrictSelect && alertDistrictSelect.options.length <= 1) {
+                alertDistrictSelect.innerHTML = `<option value="all">Barcha tumanlar</option>` + TASHKENT_DISTRICTS.map(d => `<option value="${d}">${d}</option>`).join('');
+            }
+        }
+
         function checkReferralStartParam() {
             try {
                 let startParam = null;
@@ -983,9 +1069,9 @@
                     tg.BackButton.onClick(() => {
                         // Close any open modal
                         const modals = [
-                            { id: 'details-modal', close: closeModal },
+                            { id: 'property-modal', close: closeModal },
                             { id: 'escrow-modal', close: closeEscrowModal },
-                            { id: 'add-property-modal', close: closeAddPropertyModal },
+                            { id: 'add-modal', close: closeAddPropertyModal },
                             { id: 'terms-modal', close: closeTermsModal },
                             { id: 'bookings-modal', close: closeBookingsModal },
                             { id: 'inspection-modal', close: closeInspectionModal },
@@ -1046,11 +1132,15 @@
         async function fetchProperties() {
             renderPropertiesSkeleton();
             try {
-                const res = await fetch(`${SUPABASE_URL}/rest/v1/properties?select=*,users:landlord_id(*)&order=created_at.desc`, {
-                    headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
-                });
+                let res = await fetch('/api/properties');
+                if (!res.ok) {
+                    res = await fetch(`${SUPABASE_URL}/rest/v1/properties?select=*,users:landlord_id(*)&order=created_at.desc`, {
+                        headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+                    });
+                }
                 if (!res.ok) throw new Error("Tarmoq xatosi: " + res.status);
-                allProperties = await res.json();
+                const data = await res.json();
+                allProperties = (data && data.success && Array.isArray(data.data)) ? data.data : (Array.isArray(data) ? data : []);
                 applyFilters();
             } catch (err) {
                 console.error("Xatolik:", err);
@@ -1070,7 +1160,7 @@
                             </button>
                         </div>
                     `;
-                    lucide.createIcons();
+                    if (window.lucide) lucide.createIcons();
                 }
             }
         }
