@@ -1133,6 +1133,7 @@
         function showMyBookings() {
             const modal = document.getElementById('bookings-modal');
             const container = document.getElementById('bookings-modal-container');
+            container.scrollTop = 0;
             modal.classList.remove('hidden');
             setTimeout(() => {
                 container.classList.remove('translate-y-full');
@@ -1263,14 +1264,32 @@
                             </div>
                         </div>
 
-                        <!-- Escrow Assurance Note -->
-                        <div class="bg-emerald-50/70 border border-emerald-100 rounded-xl p-2.5 text-[11px] text-emerald-900 leading-relaxed flex items-start space-x-2">
-                            <i data-lucide="shield-check" class="w-4 h-4 text-emerald-600 shrink-0 mt-0.5"></i>
-                            <div>
-                                <span class="font-bold">100% Escrow Himoyasi:</span>
-                                <span>Pul uy egasiga berilmagan. Uyni ko'rib, ma'qul kelgach "Uyni qabul qildim" tugmasini bosishingiz bilan uy egasiga o'tkaziladi.</span>
+                        <!-- Status Note -->
+                        ${isHeld ? `
+                            <div class="bg-emerald-50/70 border border-emerald-100 rounded-xl p-2.5 text-[11px] text-emerald-900 leading-relaxed flex items-start space-x-2">
+                                <i data-lucide="shield-check" class="w-4 h-4 text-emerald-600 shrink-0 mt-0.5"></i>
+                                <div>
+                                    <span class="font-bold">100% Escrow Himoyasi:</span>
+                                    <span>Pul uy egasiga berilmagan. Uyni ko'rib, ma'qul kelgach "Uyni qabul qildim" tugmasini bosishingiz bilan uy egasiga o'tkaziladi.</span>
+                                </div>
                             </div>
-                        </div>
+                        ` : (isReleased ? `
+                            <div class="bg-emerald-50/90 border border-emerald-200 rounded-xl p-2.5 text-[11px] text-emerald-900 leading-relaxed flex items-start space-x-2">
+                                <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-600 shrink-0 mt-0.5"></i>
+                                <div>
+                                    <span class="font-bold">Ko'chib kirish tasdiqlangan:</span>
+                                    <span>Dalolatnoma imzolangan, kalit topshirilgan va shartnoma kuchga kirgan.</span>
+                                </div>
+                            </div>
+                        ` : `
+                            <div class="bg-slate-100/80 border border-slate-200 rounded-xl p-2.5 text-[11px] text-slate-700 leading-relaxed flex items-start space-x-2">
+                                <i data-lucide="rotate-ccw" class="w-4 h-4 text-slate-500 shrink-0 mt-0.5"></i>
+                                <div>
+                                    <span class="font-bold">Mablag' qaytarilgan (Refund):</span>
+                                    <span>Ariza bekor qilingan va 300 000 so'm depozit kartangizga to'liq qaytarilgan.</span>
+                                </div>
+                            </div>
+                        `)}
 
                         <!-- Landlord Card -->
                         <div class="bg-slate-50 border border-slate-100 rounded-xl p-3 flex items-center justify-between text-xs">
