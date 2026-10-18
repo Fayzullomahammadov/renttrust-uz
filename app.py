@@ -135,19 +135,34 @@ ADMIN_CHAT_FILE = os.path.join(os.path.dirname(__file__), "admin_chat_id.txt")
 LATEST_CHAT_FILE = os.path.join(os.path.dirname(__file__), "latest_chat.txt")
 CHANNEL_CONFIG_FILE = os.path.join(os.path.dirname(__file__), "channel_config.txt")
 
+def normalize_channel_username(ch):
+    if not ch:
+        return None
+    ch = str(ch).strip()
+    if "t.me/" in ch:
+        ch = ch.split("t.me/")[-1].strip("/").strip("@")
+    elif ch.startswith("@"):
+        ch = ch[1:].strip()
+    
+    if not ch:
+        return None
+    if ch.startswith("-100") or ch.startswith("-"):
+        return ch
+    return f"@{ch}"
+
 def get_telegram_channel_id():
     env_ch = os.environ.get("TELEGRAM_CHANNEL_ID")
     if env_ch:
-        return env_ch.strip()
+        return normalize_channel_username(env_ch)
     if os.path.exists(CHANNEL_CONFIG_FILE):
         try:
-            with open(CHANNEL_CONFIG_FILE, "r") as f:
+            with open(CHANNEL_CONFIG_FILE, "r", encoding="utf-8") as f:
                 ch = f.read().strip()
                 if ch:
-                    return ch
+                    return normalize_channel_username(ch)
         except Exception:
             pass
-    return None
+    return "@toshkent_kvartira_renttrust"
 
 CONTRACTS_DIR = os.path.join(os.path.dirname(__file__), "contracts")
 os.makedirs(CONTRACTS_DIR, exist_ok=True)
@@ -1149,7 +1164,11 @@ def telegram_webhook():
         if text.startswith("/setchannel"):
             parts = text.split()
             if len(parts) > 1:
-                target_ch = parts[1].strip()
+                raw_target = parts[1].strip()
+                target_ch = normalize_channel_username(raw_target)
+                if not target_ch:
+                    send_telegram_notification(chat_id, "⚠️ Noto'g'ri kanal formati. Iltimos <code>@kanal_nomi</code> yoki havola ko'rinishida yuboring.")
+                    return "OK", 200
                 with open(CHANNEL_CONFIG_FILE, "w", encoding="utf-8") as f:
                     f.write(target_ch)
                 send_telegram_notification(
@@ -1169,9 +1188,28 @@ def telegram_webhook():
         if text in ["/channel", "/kanal"]:
             ch = get_telegram_channel_id()
             if ch:
-                send_telegram_notification(chat_id, f"📢 Hozirgi ulangan kanal: <b>{ch}</b>\nO'zgartirish uchun: <code>/setchannel @yangi_kanal</code>")
+                send_telegram_notification(chat_id, f"📢 Hozirgi ulangan kanal: <b>{ch}</b>\nO'zgartirish uchun: <code>/setchannel @yangi_kanal</code>\nTest e'lon yuborish uchun: <code>/testpost</code>")
             else:
                 send_telegram_notification(chat_id, "ℹ️ Hozircha ommaviy kanal ulanmagan. Ulash uchun: <code>/setchannel @kanal_nomi</code> deb yuboring.")
+            return "OK", 200
+
+        if text in ["/testpost", "/post"]:
+            ch = get_telegram_channel_id()
+            if not ch:
+                send_telegram_notification(chat_id, "⚠️ Hali kanal biriktirilmagan. Avval <code>/setchannel @kanal_nomi</code> deb yuboring.")
+                return "OK", 200
+            try:
+                props = supabase_get("properties?order=created_at.desc&limit=1")
+                if props:
+                    ok = publish_property_to_channel(props[0])
+                    if ok:
+                        send_telegram_notification(chat_id, f"✅ Test e'lon kanalingizga (<b>{ch}</b>) muvaffaqiyatli joylandi! Kanalga kirib ko'rishingiz mumkin.")
+                    else:
+                        send_telegram_notification(chat_id, f"⚠️ E'lonni kanalga yuborishda xatolik yuz berdi. Bot kanalda admin ekanligiga va xabar yozish huquqi borligiga ishonch hosil qiling.")
+                else:
+                    send_telegram_notification(chat_id, "ℹ️ E'lonlar bazasi bo'sh.")
+            except Exception as e:
+                send_telegram_notification(chat_id, f"❌ Xatolik: {e}")
             return "OK", 200
 
         # 3. Referral va Keshbek buyrug'i (Pillar 4)
