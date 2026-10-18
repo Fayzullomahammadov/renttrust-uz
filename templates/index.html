@@ -47,6 +47,10 @@
             margin: 0;
             line-height: 1.4;
         }
+    
+        input, select, textarea {
+            font-size: 16px !important;
+        }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-900 pb-24 antialiased selection:bg-emerald-500 selection:text-white">
@@ -83,7 +87,7 @@
                     <span id="header-add-text">E'lon</span>
                 </button>
                 <div class="w-8 h-8 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-600 font-bold text-xs" id="user-avatar">
-                    AV
+                    U
                 </div>
             </div>
         </div>
@@ -202,46 +206,8 @@
                 <span class="text-xs font-bold text-slate-800 uppercase tracking-wider" id="districts-header-title">Toshkent tumanlari</span>
                 <span class="text-[11px] text-emerald-600 font-semibold" id="properties-count">Yuklanmoqda...</span>
             </div>
-            <div class="flex items-center space-x-2 overflow-x-auto hide-scrollbar py-1 text-xs">
-                <button onclick="filterDistrict('Barchasi')" class="district-btn active px-3.5 py-1.5 rounded-full font-semibold bg-emerald-600 text-white shadow-sm transition whitespace-nowrap" id="district-pill-all">
-                    Barchasi
-                </button>
-                <button onclick="filterDistrict('Bektemir')" class="district-btn px-3.5 py-1.5 rounded-full font-semibold bg-white border border-slate-200 text-slate-700 hover:bg-slate-100 transition whitespace-nowrap">
-                    Bektemir
-                </button>
-                <button onclick="filterDistrict('Chilonzor')" class="district-btn px-3.5 py-1.5 rounded-full font-semibold bg-white border border-slate-200 text-slate-700 hover:bg-slate-100 transition whitespace-nowrap">
-                    Chilonzor
-                </button>
-                <button onclick="filterDistrict('Mirobod')" class="district-btn px-3.5 py-1.5 rounded-full font-semibold bg-white border border-slate-200 text-slate-700 hover:bg-slate-100 transition whitespace-nowrap">
-                    Mirobod
-                </button>
-                <button onclick="filterDistrict('Mirzo Ulug\'bek')" class="district-btn px-3.5 py-1.5 rounded-full font-semibold bg-white border border-slate-200 text-slate-700 hover:bg-slate-100 transition whitespace-nowrap">
-                    Mirzo Ulug'bek
-                </button>
-                <button onclick="filterDistrict('Olmazor')" class="district-btn px-3.5 py-1.5 rounded-full font-semibold bg-white border border-slate-200 text-slate-700 hover:bg-slate-100 transition whitespace-nowrap">
-                    Olmazor
-                </button>
-                <button onclick="filterDistrict('Sergeli')" class="district-btn px-3.5 py-1.5 rounded-full font-semibold bg-white border border-slate-200 text-slate-700 hover:bg-slate-100 transition whitespace-nowrap">
-                    Sergeli
-                </button>
-                <button onclick="filterDistrict('Shayxontohur')" class="district-btn px-3.5 py-1.5 rounded-full font-semibold bg-white border border-slate-200 text-slate-700 hover:bg-slate-100 transition whitespace-nowrap">
-                    Shayxontohur
-                </button>
-                <button onclick="filterDistrict('Uchtepa')" class="district-btn px-3.5 py-1.5 rounded-full font-semibold bg-white border border-slate-200 text-slate-700 hover:bg-slate-100 transition whitespace-nowrap">
-                    Uchtepa
-                </button>
-                <button onclick="filterDistrict('Yakkasaroy')" class="district-btn px-3.5 py-1.5 rounded-full font-semibold bg-white border border-slate-200 text-slate-700 hover:bg-slate-100 transition whitespace-nowrap">
-                    Yakkasaroy
-                </button>
-                <button onclick="filterDistrict('Yashnobod')" class="district-btn px-3.5 py-1.5 rounded-full font-semibold bg-white border border-slate-200 text-slate-700 hover:bg-slate-100 transition whitespace-nowrap">
-                    Yashnobod
-                </button>
-                <button onclick="filterDistrict('Yunusobod')" class="district-btn px-3.5 py-1.5 rounded-full font-semibold bg-white border border-slate-200 text-slate-700 hover:bg-slate-100 transition whitespace-nowrap">
-                    Yunusobod
-                </button>
-                <button onclick="filterDistrict('Yangihayot')" class="district-btn px-3.5 py-1.5 rounded-full font-semibold bg-white border border-slate-200 text-slate-700 hover:bg-slate-100 transition whitespace-nowrap">
-                    Yangihayot
-                </button>
+            <div id="district-pills-container" class="flex items-center space-x-2 overflow-x-auto hide-scrollbar py-1 text-xs">
+                <!-- Dynamically populated from TASHKENT_DISTRICTS single source of truth -->
             </div>
         </div>
 
@@ -305,16 +271,16 @@
             <div class="bg-slate-50 border border-slate-100 rounded-xl p-3 space-y-2 text-xs">
                 <div class="flex justify-between text-slate-600">
                     <span>Bron (Depozitdan oldindan):</span>
-                    <span class="font-bold text-slate-900" id="escrow-hold-val">300 000 so‘m</span>
+                    <span class="font-bold text-slate-900" id="escrow-hold-val">-- so‘m</span>
                 </div>
                 <div class="flex justify-between text-slate-600">
                     <span>Platforma xizmat haqi (2%):</span>
-                    <span class="font-bold text-emerald-600" id="escrow-fee-val">80 000 so‘m</span>
+                    <span class="font-bold text-emerald-600" id="escrow-fee-val">-- so‘m</span>
                 </div>
                 <div class="text-[10px] text-slate-400" id="escrow-rent-basis-note">Oylik ijaraning 2% komissiyasi</div>
                 <div class="border-t border-slate-200 pt-1.5 flex justify-between font-bold text-slate-900">
                     <span>Jami hozir to‘lanadi:</span>
-                    <span class="text-sm text-emerald-700" id="escrow-total-val">380 000 so‘m</span>
+                    <span class="text-sm text-emerald-700" id="escrow-total-val">-- so‘m</span>
                 </div>
             </div>
 
@@ -371,18 +337,7 @@
                     <div class="space-y-1">
                         <label class="font-bold text-slate-700 block">Tuman *</label>
                         <select id="prop-district" class="w-full px-3 py-2 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-xs bg-white">
-                            <option value="Bektemir">Bektemir</option>
-                            <option value="Chilonzor" selected>Chilonzor</option>
-                            <option value="Mirobod">Mirobod</option>
-                            <option value="Mirzo Ulug'bek">Mirzo Ulug'bek</option>
-                            <option value="Olmazor">Olmazor</option>
-                            <option value="Sergeli">Sergeli</option>
-                            <option value="Shayxontohur">Shayxontohur</option>
-                            <option value="Uchtepa">Uchtepa</option>
-                            <option value="Yakkasaroy">Yakkasaroy</option>
-                            <option value="Yashnobod">Yashnobod</option>
-                            <option value="Yunusobod">Yunusobod</option>
-                            <option value="Yangihayot">Yangihayot</option>
+                            <!-- Dynamically populated from TASHKENT_DISTRICTS -->
                         </select>
                     </div>
                     <div class="space-y-1">
@@ -1057,12 +1012,17 @@
         function renderPropertiesList(list) {
             const feed = document.getElementById('properties-feed');
             if (!list || list.length === 0) {
-                const tEmpty = (typeof I18N !== 'undefined' && I18N[currentLang]) ? I18N[currentLang] : (typeof I18N !== 'undefined' ? I18N.uz : {});
+                const emptyTitle = (typeof currentLang !== 'undefined' && currentLang === 'ru') ? "Пока нет квартир" : "Hozircha uy yo'q";
+                const emptyDesc = (typeof currentLang !== 'undefined' && currentLang === 'ru') ? "По заданным фильтрам объявлений не найдено." : "Ushbu parametrlar bo'yicha e'lon topilmadi.";
+                const emptyBtn = (typeof currentLang !== 'undefined' && currentLang === 'ru') ? "Сбросить фильтры" : "Filtrni tozalash";
                 feed.innerHTML = `
-                    <div class="bg-white rounded-2xl p-8 text-center text-slate-400 border border-slate-100">
+                    <div class="bg-white rounded-2xl p-8 text-center text-slate-400 border border-slate-100 space-y-2">
                         <i data-lucide="home" class="w-10 h-10 mx-auto mb-2 text-slate-300"></i>
-                        <p class="text-xs font-semibold">${tEmpty.prop_empty_title || "Ushbu parametrlar bo'yicha e'lon topilmadi"}</p>
-                        <button onclick="resetFilters()" class="mt-3 text-xs text-emerald-600 font-bold bg-emerald-50 px-3 py-1.5 rounded-lg">${tEmpty.prop_empty_btn || "Filtrlarni tozalash"}</button>
+                        <h4 class="font-bold text-sm text-slate-700">${emptyTitle}</h4>
+                        <p class="text-xs text-slate-400 max-w-xs mx-auto">${emptyDesc}</p>
+                        <button onclick="resetFilters()" class="mt-2 text-xs text-emerald-600 font-bold bg-emerald-50 px-3.5 py-1.5 rounded-lg border border-emerald-200/60 active:scale-95 transition">
+                            ${emptyBtn}
+                        </button>
                     </div>
                 `;
                 if (window.lucide) lucide.createIcons();
@@ -1457,18 +1417,20 @@
             closeModal();
             if (selectedProperty) {
                 const rent = selectedProperty.monthly_rent_uzs || 4000000;
+                // Hold is 10% of monthly rent (part of first payment, not separate fee)
+                const hold = Math.max(300000, Math.round(rent * 0.10));
                 const fee2 = Math.round(rent * 0.02);
-                const totalBooking = 300000 + fee2;
+                const totalBooking = hold + fee2;
                 
                 const holdEl = document.getElementById('escrow-hold-val');
                 const feeEl = document.getElementById('escrow-fee-val');
                 const totalEl = document.getElementById('escrow-total-val');
                 const rentNoteEl = document.getElementById('escrow-rent-basis-note');
                 
-                if (holdEl) holdEl.innerText = "300 000 so‘m";
+                if (holdEl) holdEl.innerText = formatMoney(hold);
                 if (feeEl) feeEl.innerText = formatMoney(fee2);
                 if (totalEl) totalEl.innerText = formatMoney(totalBooking);
-                if (rentNoteEl) rentNoteEl.innerText = `Oylik ijara (${formatMoney(rent)}) ning 2% xizmat haqi`;
+                if (rentNoteEl) rentNoteEl.innerText = `Oylik ijara (${formatMoney(rent)}) ning 2% xizmat haqi. Qolgan summa ko'chishda to'lanadi.`;
             }
             document.getElementById('escrow-modal').classList.remove('hidden');
         }
@@ -1489,9 +1451,11 @@
             today.setDate(today.getDate() + 3);
             const defaultMoveIn = today.toISOString().split('T')[0];
 
+            const rent = selectedProperty.monthly_rent_uzs || 4000000;
+            const holdAmt = Math.max(300000, Math.round(rent * 0.10));
             const payload = {
                 property_id: selectedProperty.id,
-                amount: 300000,
+                amount: holdAmt,
                 tenant_name: tgUser ? `${tgUser.first_name || ''} ${tgUser.last_name || ''}`.trim() || 'Ijarachi' : 'Ijarachi',
                 tenant_tg_id: tgUser ? tgUser.id : null,
                 tenant_username: tgUser ? tgUser.username : null,
@@ -1667,34 +1631,41 @@
 
         async function loadMyBookings() {
             const content = document.getElementById('bookings-content');
+            if (!content) return;
+            
+            // State 1: Skeleton Loading
+            content.innerHTML = `
+                <div class="space-y-3 p-4 animate-pulse">
+                    <div class="h-32 bg-slate-200 rounded-2xl w-full"></div>
+                    <div class="h-32 bg-slate-200 rounded-2xl w-full"></div>
+                </div>
+            `;
+
             const tgUser = (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe) ? window.Telegram.WebApp.initDataUnsafe.user : null;
             const tgId = tgUser ? tgUser.id : '';
 
             try {
                 const res = await fetch(`/api/my-bookings?telegram_id=${tgId}`);
+                if (!res.ok) throw new Error("Arizalarni yuklashda server xatoligi: " + res.status);
                 const data = await res.json();
-                
-                let list = (data.success && data.data && data.data.length > 0) ? data.data : [];
-
-                if (list.length === 0 && activeBooking) {
-                    list = [{
-                        escrow_id: "local_temp",
-                        status: activeBooking.status || "held",
-                        amount_uzs: activeBooking.holdAmount || 300000,
-                        held_at: new Date().toISOString(),
-                        property: activeBooking.property,
-                        landlord: {
-                            full_name: "Sardor Rahimov",
-                            phone_number: "+998 90 123 45 67",
-                            username: "sardor_r"
-                        }
-                    }];
-                }
-
+                const list = (data.success && data.data) ? data.data : [];
                 renderBookingsList(list);
             } catch (e) {
                 console.error(e);
-                content.innerHTML = `<p class="text-center text-xs text-rose-500 py-6">Arizalarni yuklab bo'lmadi.</p>`;
+                // State 2: Error State with Retry Button
+                content.innerHTML = `
+                    <div class="py-12 px-4 text-center space-y-3">
+                        <div class="w-12 h-12 rounded-full bg-rose-50 text-rose-500 flex items-center justify-center mx-auto">
+                            <i data-lucide="alert-circle" class="w-6 h-6"></i>
+                        </div>
+                        <h4 class="font-bold text-xs text-slate-800">Arizalarni yuklashda xatolik yuz berdi</h4>
+                        <p class="text-[11px] text-slate-400">Internet yoki server bilan aloqani tekshiring.</p>
+                        <button onclick="loadMyBookings()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-md transition active:scale-95">
+                            Qayta urinish
+                        </button>
+                    </div>
+                `;
+                if (window.lucide) lucide.createIcons();
             }
         }
 
@@ -2823,7 +2794,7 @@
         // Safe Initial Load
         function initApp() {
             try { updateFavoritesBadges(); } catch (e) { console.error("Fav init error:", e); }
-            try { applyLanguage(); } catch (e) { console.error("Lang init error:", e); }
+            try { renderDistrictOptions(); } catch(e){console.error(e);} try { applyLanguage(); } catch (e) { console.error("Lang init error:", e); }
             try { fetchProperties(); } catch (e) { console.error("Fetch init error:", e); }
             try { if (window.lucide) lucide.createIcons(); } catch (e) { console.error("Lucide init error:", e); }
         }

@@ -22,6 +22,22 @@ if sys.platform == "win32":
 
 app = Flask(__name__)
 
+TASHKENT_DISTRICTS = [
+    "Bektemir",
+    "Chilonzor",
+    "Mirobod",
+    "Mirzo Ulug'bek",
+    "Olmazor",
+    "Sergeli",
+    "Shayxontohur",
+    "Uchtepa",
+    "Yakkasaroy",
+    "Yashnobod",
+    "Yunusobod",
+    "Yangihayot"
+]
+
+
 SUPABASE_URL = "https://jicqycwmswpxagmnnyoj.supabase.co"
 SUPABASE_KEY = "sb_publishable_Hk3qScveZpR6IVhfaGU0LA_X6Mx2AvH"
 BOT_TOKEN = os.environ.get("BOT_TOKEN", "8909483662:AAFGrtJGPGSEVf5jr60ikamdGMCRLPM8XZc")
@@ -347,9 +363,17 @@ def save_active_chat(chat_id, user_info=None):
         except Exception as e:
             print("Foydalanuvchini saqlashda xatolik:", e)
 
+
+@app.route("/api/districts", methods=["GET"])
+def get_districts():
+    return jsonify({
+        "success": True,
+        "districts": TASHKENT_DISTRICTS
+    })
+
 @app.route("/")
 def index():
-    return render_template("index.html")
+    return render_template("index.html", districts=TASHKENT_DISTRICTS)
 
 @app.route("/admin")
 def admin_panel():
@@ -538,7 +562,7 @@ def create_application():
     try:
         payload = request.json
         property_id = payload.get("property_id")
-        tenant_name = payload.get("tenant_name", "Ali Valiyev")
+        tenant_name = (payload.get("tenant_name") or "Ijarachi").strip()
         move_in_date = payload.get("move_in_date", "2026-11-01")
         note = payload.get("note", "Talabaman, uyni ko'chishga tayyorman.")
         tenant_tg_id = payload.get("tenant_tg_id", 111222333)
@@ -572,7 +596,7 @@ def create_hold():
         payload = request.json
         property_id = payload.get("property_id")
         amount = float(payload.get("amount", 300000))
-        tenant_name = payload.get("tenant_name", "Ali Valiyev").strip()
+        tenant_name = (payload.get("tenant_name") or "Ijarachi").strip().strip()
         tenant_phone = payload.get("tenant_phone", "+998 90 999 88 77").strip()
         tenant_tg_id = payload.get("tenant_tg_id")
         tenant_username = payload.get("tenant_username", "")

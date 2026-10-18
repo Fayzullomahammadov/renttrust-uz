@@ -221,7 +221,7 @@ if __name__ == "__main__":
         "date": "18.10.2026",
         "landlord_name": "Sardor Rahimov",
         "landlord_phone": "+998 90 123 45 67",
-        "tenant_name": "Ali Valiyev",
+        "tenant_name": "Ijarachi",
         "tenant_phone": "+998 90 999 88 77",
         "property_title": "Novza metrosi yaqinida 2 xonali kvartira",
         "district": "Chilonzor",
