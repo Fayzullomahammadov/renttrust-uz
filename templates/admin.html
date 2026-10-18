@@ -102,6 +102,38 @@
             <button onclick="switchTab('users')" id="tab-btn-users" class="tab-btn px-4 py-2 rounded-xl text-xs font-bold bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 transition">
                 👥 Foydalanuvchilar (<span id="count-users">0</span>)
             </button>
+            <button onclick="switchTab('reports')" id="tab-btn-reports" class="tab-btn px-4 py-2 rounded-xl text-xs font-bold bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 transition">
+                🚩 Shikoyatlar (<span id="count-reports">0</span>)
+            </button>
+        </div>
+
+        
+        <!-- TAB 4: REPORTS MANAGEMENT -->
+        <div id="tab-reports" class="hidden space-y-4">
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                <div class="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
+                    <div>
+                        <h3 class="font-bold text-sm text-slate-900">E'lonlar bo'yicha shikoyatlar</h3>
+                        <p class="text-xs text-slate-500">Foydalanuvchilar yuborgan shikoyatlar ro'yxati</p>
+                    </div>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse text-xs">
+                        <thead>
+                            <tr class="bg-slate-50 text-slate-500 border-b border-slate-100">
+                                <th class="py-3 px-4 font-semibold">Vaqti</th>
+                                <th class="py-3 px-4 font-semibold">E'lon ID</th>
+                                <th class="py-3 px-4 font-semibold">Shikoyat qiluvchi</th>
+                                <th class="py-3 px-4 font-semibold">Sababi</th>
+                                <th class="py-3 px-4 font-semibold">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="reports-table-body" class="divide-y divide-slate-100">
+                            <!-- Dynamic Content -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
 
         <!-- TAB 1: PROPERTIES MANAGEMENT -->
@@ -276,16 +308,28 @@
                     <td class="py-3 px-4 font-bold text-emerald-700">${formatMoney(item.monthly_rent_uzs)}</td>
                     <td class="py-3 px-4 text-slate-600">${formatMoney(item.deposit_uzs)}</td>
                     <td class="py-3 px-4">
-                        <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${item.status === 'available' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-800'}">
-                            ${item.status}
+                        <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${item.status === 'approved' || item.status === 'available' ? 'bg-emerald-100 text-emerald-700' : (item.status === 'pending_review' ? 'bg-amber-100 text-amber-800' : 'bg-rose-100 text-rose-800')}">
+                            ${item.status || 'pending_review'}
                         </span>
+                        ${(item.amenities && item.amenities.is_duplicate_image) ? '<span class="block mt-0.5 text-[9px] font-bold text-rose-600">⚠️ Dublikat rasm</span>' : ''}
+                        ${(item.amenities && item.amenities.for_students) ? '<span class="block mt-0.5 text-[9px] font-bold text-indigo-600">🎓 Talabaga</span>' : ''}
                     </td>
                     <td class="py-3 px-4">
-                        ${item.is_verified ? '<span class="text-emerald-600 font-bold">✅ Ha</span>' : '<span class="text-slate-400">Yo\'q</span>'}
+                        ${item.is_verified ? '<span class="text-emerald-600 font-bold">✅ Tekshirilgan</span>' : '<span class="text-slate-400">Yo\'q</span>'}
                     </td>
-                    <td class="py-3 px-4 text-right">
-                        <button onclick="toggleVerify('${item.id}', ${!item.is_verified})" class="px-2.5 py-1 rounded-lg text-[10px] font-bold border border-slate-200 hover:bg-slate-100 transition">
-                            ${item.is_verified ? 'Unverify' : 'Verify qilish'}
+                    <td class="py-3 px-4 text-right space-x-1">
+                        ${item.status !== 'approved' ? `
+                            <button onclick="setPropertyStatus('${item.id}', 'approved')" class="px-2 py-1 bg-emerald-600 text-white rounded-lg text-[10px] font-bold hover:bg-emerald-700">
+                                Tasdiqlash
+                            </button>
+                        ` : ''}
+                        ${item.status !== 'rejected' ? `
+                            <button onclick="setPropertyStatus('${item.id}', 'rejected')" class="px-2 py-1 bg-rose-600 text-white rounded-lg text-[10px] font-bold hover:bg-rose-700">
+                                Rad etish
+                            </button>
+                        ` : ''}
+                        <button onclick="toggleVerify('${item.id}', ${!item.is_verified})" class="px-2 py-1 rounded-lg text-[10px] font-bold border border-slate-200 hover:bg-slate-100 transition">
+                            ${item.is_verified ? 'Unverify' : 'Verify'}
                         </button>
                     </td>
                 </tr>
@@ -344,6 +388,52 @@
             lucide.createIcons();
         }
 
+        
+        async function setPropertyStatus(propId, status) {
+            try {
+                const res = await fetch(`/api/admin/properties/${propId}/status`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ admin_tg_id: 111222333, status: status })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    alert(`✅ E'lon statusi "${status}" ga o'zgartirildi!`);
+                    loadAdminData(); loadReports();
+                } else {
+                    alert("Xatolik: " + (data.error || "Noma'lum"));
+                }
+            } catch (e) {
+                alert("Server xatosi: " + e.message);
+            }
+        }
+
+        async function loadReports() {
+            try {
+                const res = await fetch('/api/admin/reports?admin_tg_id=111222333');
+                const data = await res.json();
+                const list = (data.success && data.data) ? data.data : [];
+                document.getElementById('count-reports').innerText = list.length;
+                const tbody = document.getElementById('reports-table-body');
+                if (!tbody) return;
+                if (list.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="5" class="py-8 text-center text-slate-400">Hozircha shikoyatlar mavjud emas.</td></tr>';
+                    return;
+                }
+                tbody.innerHTML = list.map(r => `
+                    <tr class="hover:bg-slate-50 transition">
+                        <td class="py-3 px-4 text-slate-500">${new Date(r.created_at).toLocaleDateString('uz-UZ')}</td>
+                        <td class="py-3 px-4 font-mono font-bold">${r.property_id.slice(0, 8)}...</td>
+                        <td class="py-3 px-4">${r.reporter_name || 'Foydalanuvchi'} (ID: ${r.reporter_tg_id || '-'})</td>
+                        <td class="py-3 px-4 font-medium text-slate-800">${r.reason}</td>
+                        <td class="py-3 px-4"><span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800">${r.status || 'kutilmoqda'}</span></td>
+                    </tr>
+                `).join('');
+            } catch (e) {
+                console.error("Reports xatoligi:", e);
+            }
+        }
+
         async function toggleVerify(id, newStatus) {
             await fetch(`${SUPABASE_URL}/rest/v1/properties?id=eq.${id}`, {
                 method: 'PATCH',
@@ -354,7 +444,7 @@
                 },
                 body: JSON.stringify({ is_verified: newStatus })
             });
-            loadAdminData();
+            loadAdminData(); loadReports();
         }
 
         async function resolveEscrow(id, action) {
@@ -370,7 +460,7 @@
                 const resData = await res.json();
                 if (resData.success) {
                     alert(`✅ Muvaffaqiyatli bajarildi!\nTomonlarga Telegram orqali push bildirishnoma yuborildi.`);
-                    loadAdminData();
+                    loadAdminData(); loadReports();
                 } else {
                     alert("Xatolik yuz berdi: " + (resData.error || "Noma'lum xato"));
                 }
@@ -381,7 +471,7 @@
         }
 
         // Initial Load
-        loadAdminData();
+        loadAdminData(); loadReports();
         lucide.createIcons();
     </script>
 </body>

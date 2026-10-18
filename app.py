@@ -22,6 +22,26 @@ if sys.platform == "win32":
 
 app = Flask(__name__)
 
+REPORTS_FILE = os.path.join(os.path.dirname(__file__), "property_reports.json")
+IMAGE_HASHES_FILE = os.path.join(os.path.dirname(__file__), "image_hashes.json")
+
+def load_json_store(filepath):
+    if os.path.exists(filepath):
+        try:
+            with open(filepath, "r", encoding="utf-8") as f:
+                return json.load(f)
+        except Exception:
+            return []
+    return []
+
+def save_json_store(filepath, data):
+    try:
+        with open(filepath, "w", encoding="utf-8") as f:
+            json.dump(data, f, ensure_ascii=False, indent=2)
+    except Exception as e:
+        print(f"Error saving {filepath}: {e}")
+
+
 TASHKENT_DISTRICTS = [
     "Bektemir",
     "Chilonzor",
@@ -151,6 +171,27 @@ def send_telegram_document(chat_id, file_path, caption=""):
 
 ADMIN_CHAT_FILE = os.path.join(os.path.dirname(__file__), "admin_chat_id.txt")
 LATEST_CHAT_FILE = os.path.join(os.path.dirname(__file__), "latest_chat.txt")
+
+ADMIN_TELEGRAM_IDS = [
+    int(x.strip()) for x in os.environ.get("ADMIN_TELEGRAM_IDS", "111222333,999888777,1336499878").split(",") if x.strip()
+]
+if os.path.exists(ADMIN_CHAT_FILE):
+    try:
+        with open(ADMIN_CHAT_FILE, "r") as f:
+            c = f.read().strip()
+            if c and c.isdigit() and int(c) not in ADMIN_TELEGRAM_IDS:
+                ADMIN_TELEGRAM_IDS.append(int(c))
+    except Exception:
+        pass
+
+def is_admin_tg(tg_id):
+    if not tg_id:
+        return False
+    try:
+        return int(tg_id) in ADMIN_TELEGRAM_IDS
+    except Exception:
+        return False
+
 CHANNEL_CONFIG_FILE = os.path.join(os.path.dirname(__file__), "channel_config.txt")
 
 def normalize_channel_username(ch):
@@ -1523,3 +1564,102 @@ def telegram_webhook():
 if __name__ == "__main__":
     print("RentTrust UZ serveri ishga tushmoqda: http://127.0.0.1:5000")
     app.run(debug=True, host="0.0.0.0", port=5000)
+
+
+# ------------------------------------------------------------------------------
+# PHASE 3: Listing Moderation, Reports & Admin Endpoints
+# ------------------------------------------------------------------------------
+@app.route("/api/properties/<property_id>/report", methods=["POST"])
+def report_property(property_id):
+    try:
+        payload = request.json or {}
+        reason = payload.get("reason", "Shubhali e'lon").strip()
+        reporter_tg_id = payload.get("reporter_tg_id")
+        reporter_name = payload.get("reporter_name", "Foydalanuvchi")
+        
+        reports = load_json_store(REPORTS_FILE)
+        new_report = {
+            "id": f"rep_{int(datetime.datetime.now().timestamp())}",
+            "property_id": property_id,
+            "reporter_tg_id": reporter_tg_id,
+            "reporter_name": reporter_name,
+            "reason": reason,
+            "status": "pending",
+            "created_at": datetime.datetime.now(datetime.timezone.utc).isoformat()
+        }
+        reports.append(new_report)
+        save_json_store(REPORTS_FILE, reports)
+        
+        # Notify admins
+        for admin_id in ADMIN_TELEGRAM_IDS:
+            send_telegram_notification(
+                admin_id,
+                f"🚩 <b>Yangi Shikoyat!</b>\n"
+                f"E'lon ID: <code>{property_id}</code>\n"
+                f"Kimdan: {reporter_name} (ID: {reporter_tg_id})\n"
+                f"Sababi: <i>{reason}</i>"
+            )
+            
+        return jsonify({"success": True, "message": "Shikoyat qabul qilindi va ko'rib chiqiladi."})
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 500
+
+@app.route("/api/admin/properties/<property_id>/status", methods=["POST"])
+def admin_set_property_status(property_id):
+    try:
+        payload = request.json or {}
+        admin_tg = payload.get("admin_tg_id")
+        if not is_admin_tg(admin_tg):
+            return jsonify({"success": False, "error": "Ruxsat berilmagan (Admin emas)"}), 403
+            
+        new_status = payload.get("status") # 'approved' | 'rejected' | 'pending_review'
+        if new_status not in ["approved", "rejected", "pending_review", "available", "rented"]:
+            return jsonify({"success": False, "error": "Noto'g'ri status"}), 400
+            
+        updated = supabase_patch(f"properties?id=eq.{property_id}", {"status": new_status})
+        return jsonify({"success": True, "data": updated})
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 500
+
+@app.route("/api/admin/properties/<property_id>/verify", methods=["POST"])
+def admin_toggle_property_verify(property_id):
+    try:
+        payload = request.json or {}
+        admin_tg = payload.get("admin_tg_id")
+        if not is_admin_tg(admin_tg):
+            return jsonify({"success": False, "error": "Ruxsat berilmagan (Admin emas)"}), 403
+            
+        is_verified = bool(payload.get("verified", True))
+        updated = supabase_patch(f"properties?id=eq.{property_id}", {"is_verified": is_verified})
+        return jsonify({"success": True, "data": updated})
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 500
+
+@app.route("/api/admin/reports", methods=["GET"])
+def admin_get_reports():
+    try:
+        admin_tg = request.args.get("admin_tg_id")
+        if not is_admin_tg(admin_tg):
+            return jsonify({"success": False, "error": "Ruxsat berilmagan"}), 403
+        reports = load_json_store(REPORTS_FILE)
+        return jsonify({"success": True, "data": reports})
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 500
+
+@app.route("/api/admin/payments/confirm", methods=["POST"])
+def admin_confirm_payment():
+    try:
+        payload = request.json or {}
+        admin_tg = payload.get("admin_tg_id")
+        if not is_admin_tg(admin_tg):
+            return jsonify({"success": False, "error": "Ruxsat berilmagan"}), 403
+            
+        escrow_id = payload.get("escrow_id")
+        # Update escrow status to funded/held
+        updated = supabase_patch(f"escrow_transactions?id=eq.{escrow_id}", {
+            "status": "held",
+            "held_at": datetime.datetime.now(datetime.timezone.utc).isoformat()
+        })
+        return jsonify({"success": True, "data": updated})
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 500

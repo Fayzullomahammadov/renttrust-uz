@@ -400,6 +400,26 @@
                     <input type="hidden" id="prop-photo" value="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800">
                 </div>
 
+                <!-- Talabalarga ijara & Hujjat -->
+                <div class="bg-indigo-50/70 border border-indigo-200/60 rounded-xl p-3 flex items-center justify-between">
+                    <div>
+                        <label for="prop-for-students" class="font-bold text-indigo-900 text-xs block cursor-pointer">Talabaga ijaraga beraman</label>
+                        <span class="text-[10px] text-indigo-700">12% daromad solig'idan ozod bo'lish imkoniyati</span>
+                    </div>
+                    <input type="checkbox" id="prop-for-students" class="w-4 h-4 text-emerald-600 rounded focus:ring-emerald-500 cursor-pointer">
+                </div>
+
+                <div class="space-y-1">
+                    <label class="font-bold text-slate-700 block">Egalik hujjati (Kadastr yoki shartnoma) - Ixtiyoriy</label>
+                    <label class="flex items-center justify-center space-x-2 border border-dashed border-slate-300 bg-slate-50 hover:bg-slate-100 rounded-xl p-2.5 cursor-pointer transition">
+                        <i data-lucide="file-text" class="w-4 h-4 text-slate-500"></i>
+                        <span class="text-xs text-slate-600" id="doc-upload-label">Kadastr yoki shartnoma yuklash (PDF/Rasm)</span>
+                        <input type="file" id="prop-doc-input" accept="image/*,application/pdf" class="hidden" onchange="handleDocSelect(event)">
+                    </label>
+                    <input type="hidden" id="prop-doc-url" value="">
+                    <p class="text-[10px] text-slate-400">Faqat admin tekshiruvi uchun. Ommaga ko'rsatilmaydi.</p>
+                </div>
+
                 <!-- Tavsif -->
                 <div class="space-y-1">
                     <label class="font-bold text-slate-700 block">Qo'shimcha ma'lumotlar</label>
@@ -1219,7 +1239,58 @@
         }
 
         // Camera / Gallery Image Upload Handling
-        async function handleFileSelect(event) {
+        async 
+        let isDuplicateImageDetected = false;
+
+        async function handleDocSelect(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const label = document.getElementById('doc-upload-label');
+            label.innerText = "Hujjat yuklanmoqda...";
+            
+            const formData = new FormData();
+            formData.append('file', file);
+            try {
+                const res = await fetch('/api/upload', { method: 'POST', body: formData });
+                const data = await res.json();
+                if (data.success) {
+                    document.getElementById('prop-doc-url').value = data.url;
+                    label.innerText = `✅ Hujjat yuklandi (${file.name})`;
+                } else {
+                    label.innerText = "❌ Hujjat yuklanmadi";
+                }
+            } catch (err) {
+                label.innerText = "❌ Xatolik yuz berdi";
+            }
+        }
+
+        async function reportProperty(propId) {
+            const reason = prompt("Ushbu e'lon bo'yicha shikoyat sababini yozing (masalan: feyk ma'lumot, noto'g'ri narx, aloqaga chiqmayapti):");
+            if (!reason || !reason.trim()) return;
+
+            const tgUser = (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe) ? window.Telegram.WebApp.initDataUnsafe.user : null;
+            try {
+                const res = await fetch(`/api/properties/${propId}/report`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        reason: reason.trim(),
+                        reporter_tg_id: tgUser ? tgUser.id : null,
+                        reporter_name: tgUser ? `${tgUser.first_name || ''} ${tgUser.last_name || ''}`.trim() : 'Foydalanuvchi'
+                    })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    alert("Shikoyatingiz qabul qilindi. Moderatsiya tekshirib chiqadi. Rahmat!");
+                } else {
+                    alert(data.error || "Xatolik yuz berdi");
+                }
+            } catch (err) {
+                alert("Server xatosi: " + err.message);
+            }
+        }
+
+        function handleFileSelect(event) {
             const file = event.target.files[0];
             if (!file) return;
 
@@ -1356,6 +1427,14 @@
                         <i data-lucide="file-text" class="w-3.5 h-3.5 mr-1 text-emerald-600"></i> ${t.prop_detail_legal_title}
                     </p>
                     <p>${t.prop_detail_legal_desc}</p>
+                </div>
+
+                <div class="pt-2 border-t border-slate-100 flex items-center justify-between text-xs text-slate-400">
+                    <span>E'lon ID: #${item.id.slice(0, 8)}</span>
+                    <button onclick="reportProperty('${item.id}')" class="inline-flex items-center text-rose-500 hover:text-rose-600 font-semibold space-x-1 active:scale-95 transition">
+                        <i data-lucide="flag" class="w-3.5 h-3.5 mr-1"></i>
+                        <span>Shikoyat qilish</span>
+                    </button>
                 </div>
 
                 <!-- Reviews and Trust Section (Feature 5) -->
