@@ -68,12 +68,19 @@
             </div>
 
             <div class="flex items-center space-x-1.5">
+                <button id="lang-toggle-btn" onclick="toggleLanguage()" class="px-2 py-1 rounded-lg text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 transition flex items-center space-x-0.5 active:scale-95" title="Tilni almashtirish / Сменить язык">
+                    <span id="lang-btn-text">🇺🇿 UZ</span>
+                </button>
+                <button onclick="openFavoritesModal()" class="relative inline-flex items-center space-x-1 bg-rose-50 border border-rose-200/80 text-rose-700 px-2 py-1 rounded-lg text-xs font-bold active:scale-95 transition shadow-sm" title="Sevimlilar">
+                    <i data-lucide="heart" class="w-3.5 h-3.5 fill-rose-500 text-rose-500"></i>
+                    <span id="top-fav-badge" class="text-[11px] font-extrabold">0</span>
+                </button>
                 <button onclick="openReferralModal()" class="inline-flex items-center space-x-1 bg-amber-50 border border-amber-200/80 text-amber-700 px-2 py-1 rounded-lg text-xs font-bold active:scale-95 transition shadow-sm">
-                    <span>🎁 30% Bonus</span>
+                    <span>🎁 30%</span>
                 </button>
                 <button onclick="openAddPropertyModal()" class="inline-flex items-center space-x-1 bg-emerald-50 border border-emerald-200 text-emerald-700 px-2.5 py-1 rounded-lg text-xs font-bold active:scale-95 transition">
                     <i data-lucide="plus" class="w-3.5 h-3.5"></i>
-                    <span>E'lon</span>
+                    <span id="header-add-text">E'lon</span>
                 </button>
                 <div class="w-8 h-8 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-600 font-bold text-xs" id="user-avatar">
                     AV
@@ -122,6 +129,23 @@
                 </div>
                 <button onclick="resetAiSearch()" class="text-rose-600 font-bold hover:underline text-[11px] shrink-0 bg-white/70 px-2 py-0.5 rounded-md border border-rose-100 shadow-xs">Tozalash</button>
             </div>
+        </div>
+
+        <!-- Quick Action Toolbar: Favorites, Calculator, Smart Alerts -->
+        <div class="flex items-center space-x-2 overflow-x-auto no-scrollbar py-0.5">
+            <button onclick="openFavoritesModal()" class="shrink-0 inline-flex items-center space-x-1.5 bg-white border border-rose-200/90 text-rose-700 px-3 py-1.5 rounded-xl text-xs font-bold active:scale-95 transition shadow-sm hover:bg-rose-50">
+                <i data-lucide="heart" class="w-3.5 h-3.5 fill-rose-500 text-rose-500"></i>
+                <span id="quick-fav-label">Sevimlilar</span>
+                <span id="quick-fav-badge" class="bg-rose-100 text-rose-700 text-[10px] px-1.5 py-0.2 rounded-full font-extrabold">0</span>
+            </button>
+            <button onclick="openCalculatorModal()" class="shrink-0 inline-flex items-center space-x-1.5 bg-white border border-emerald-200/90 text-emerald-800 px-3 py-1.5 rounded-xl text-xs font-bold active:scale-95 transition shadow-sm hover:bg-emerald-50">
+                <i data-lucide="calculator" class="w-3.5 h-3.5 text-emerald-600"></i>
+                <span id="quick-calc-label">🧮 Tejamkorlik</span>
+            </button>
+            <button onclick="openAlertModal()" class="shrink-0 inline-flex items-center space-x-1.5 bg-white border border-sky-200/90 text-sky-800 px-3 py-1.5 rounded-xl text-xs font-bold active:scale-95 transition shadow-sm hover:bg-sky-50">
+                <i data-lucide="bell" class="w-3.5 h-3.5 text-sky-600"></i>
+                <span id="quick-alert-label">🔔 Uylarga obuna</span>
+            </button>
         </div>
 
         <!-- View Mode Switcher & Filter Triggers -->
@@ -670,6 +694,201 @@
         </div>
     </div>
 
+    <!-- 1. Sevimlilar (Favorites) Modal -->
+    <div id="favorites-modal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden flex flex-col justify-end">
+        <div class="bg-white rounded-t-3xl max-h-[90vh] overflow-y-auto w-full max-w-lg mx-auto shadow-2xl transition-transform duration-300 transform translate-y-full flex flex-col" id="favorites-modal-container">
+            <div class="sticky top-0 bg-white/95 backdrop-blur-md px-4 py-3 border-b border-slate-100 flex items-center justify-between z-10">
+                <div class="flex items-center space-x-2">
+                    <div class="w-7 h-7 rounded-lg bg-rose-100 text-rose-600 flex items-center justify-center">
+                        <i data-lucide="heart" class="w-4 h-4 fill-rose-500 text-rose-500"></i>
+                    </div>
+                    <div>
+                        <span class="text-sm font-extrabold text-slate-900 block" id="fav-modal-title">Sevimlilar ro'yxati</span>
+                        <span class="text-[10px] text-slate-500" id="fav-modal-subtitle">Saqlangan xonadonlar</span>
+                    </div>
+                </div>
+                <button onclick="closeFavoritesModal()" class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center hover:bg-slate-200">
+                    <i data-lucide="x" class="w-4 h-4"></i>
+                </button>
+            </div>
+
+            <div class="p-4 space-y-3" id="favorites-modal-content">
+                <!-- Injected via JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. Taqqoslash (Comparison) Modal -->
+    <div id="comparison-modal" class="fixed inset-0 z-50 bg-slate-900/70 backdrop-blur-sm hidden flex flex-col justify-end">
+        <div class="bg-white rounded-t-3xl max-h-[92vh] overflow-y-auto w-full max-w-lg mx-auto shadow-2xl transition-transform duration-300 transform translate-y-full flex flex-col" id="comparison-modal-container">
+            <div class="sticky top-0 bg-white/95 backdrop-blur-md px-4 py-3 border-b border-slate-100 flex items-center justify-between z-10">
+                <div class="flex items-center space-x-2">
+                    <div class="w-7 h-7 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center">
+                        <i data-lucide="columns" class="w-4 h-4"></i>
+                    </div>
+                    <div>
+                        <span class="text-sm font-extrabold text-slate-900 block" id="comp-modal-title">Xonadonlarni taqqoslash</span>
+                        <span class="text-[10px] text-slate-500" id="comp-modal-subtitle">Yonma-yon solishtiring</span>
+                    </div>
+                </div>
+                <button onclick="closeComparisonModal()" class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center hover:bg-slate-200">
+                    <i data-lucide="x" class="w-4 h-4"></i>
+                </button>
+            </div>
+
+            <div class="p-3 overflow-x-auto" id="comparison-modal-content">
+                <!-- Comparison Matrix injected via JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. Tejamkorlik Kalkulyatori (Calculator) Modal -->
+    <div id="calculator-modal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-sm w-full p-5 space-y-4 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-400 text-white flex items-center justify-center shadow-sm">
+                        <i data-lucide="calculator" class="w-4 h-4"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-sm font-extrabold text-slate-900" id="calc-modal-title">Tejamkorlik Kalkulyatori</h3>
+                        <p class="text-[10px] text-slate-500" id="calc-modal-subtitle">RentTrust 2% vs Rieltor 50%</p>
+                    </div>
+                </div>
+                <button onclick="closeCalculatorModal()" class="w-7 h-7 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center hover:bg-slate-200">
+                    <i data-lucide="x" class="w-3.5 h-3.5"></i>
+                </button>
+            </div>
+
+            <div class="space-y-4 text-xs">
+                <!-- Rent Input & Slider -->
+                <div class="space-y-2">
+                    <div class="flex justify-between items-center font-bold text-slate-700">
+                        <span id="calc-input-label">Mo'ljaldagi oylik ijara:</span>
+                        <span id="calc-rent-display" class="text-sm text-emerald-600 font-extrabold">6 000 000 so'm</span>
+                    </div>
+                    <input type="range" id="calc-rent-slider" min="2000000" max="25000000" step="500000" value="6000000" oninput="updateCalculator(this.value)" class="w-full accent-emerald-600 cursor-pointer">
+                    <div class="flex justify-between text-[10px] text-slate-400">
+                        <span>2 mln</span>
+                        <span>10 mln</span>
+                        <span>25 mln so'm</span>
+                    </div>
+                </div>
+
+                <!-- Comparison Cards -->
+                <div class="grid grid-cols-2 gap-2 text-center">
+                    <div class="bg-rose-50 border border-rose-100 p-2.5 rounded-2xl space-y-1">
+                        <span class="text-[10px] font-bold text-rose-500 block" id="calc-old-broker-label">Makler to'lovi (50%)</span>
+                        <span id="calc-old-broker-fee" class="text-sm font-black text-rose-600 line-through">3 000 000 so'm</span>
+                        <span class="text-[9px] text-rose-400 block" id="calc-waste-label">Ortiqcha xarajat ❌</span>
+                    </div>
+                    <div class="bg-emerald-50 border border-emerald-200 p-2.5 rounded-2xl space-y-1">
+                        <span class="text-[10px] font-bold text-emerald-700 block" id="calc-rt-label">RentTrust (2%)</span>
+                        <span id="calc-rt-fee" class="text-sm font-black text-emerald-700">120 000 so'm</span>
+                        <span class="text-[9px] text-emerald-600 block" id="calc-fair-label">Qonuniy va adolatli ✅</span>
+                    </div>
+                </div>
+
+                <!-- Net Savings Hero Box -->
+                <div class="bg-gradient-to-br from-emerald-600 to-teal-700 text-white rounded-2xl p-4 shadow-lg shadow-emerald-600/20 text-center space-y-1.5">
+                    <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-200" id="calc-savings-header">Sizning cho'ntagingizda qoladi:</span>
+                    <h2 class="text-2xl font-black tracking-tight" id="calc-savings-val">2 880 000 so'm</h2>
+                    <div class="inline-flex items-center space-x-1 bg-white/20 px-2.5 py-0.5 rounded-full text-[10px] font-extrabold text-white">
+                        <span id="calc-percent-saved">🎉 96% mablag' tejaldi!</span>
+                    </div>
+                </div>
+
+                <!-- Real life comparison tip -->
+                <div class="bg-slate-50 border border-slate-100 rounded-xl p-3 text-[11px] text-slate-600 flex items-start space-x-2">
+                    <i data-lucide="lightbulb" class="w-4 h-4 text-amber-500 shrink-0 mt-0.5"></i>
+                    <p id="calc-benefit-tip" class="leading-relaxed">
+                        Ushbu tejab qolingan <strong>2.8 mln so'mga</strong> Toshkentda bir oylik to'liq oziq-ovqat mahsulotlarini xarid qilishingiz mumkin!
+                    </p>
+                </div>
+
+                <button onclick="closeCalculatorModal(); scrollToTop();" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl shadow-md transition active:scale-95 text-xs flex items-center justify-center space-x-1.5">
+                    <i data-lucide="check" class="w-4 h-4"></i>
+                    <span id="calc-view-props-btn">Tejamkor uylarni ko'rish</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. Smart Alerts (Uylarga obuna) Modal -->
+    <div id="alert-modal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-sm w-full p-5 space-y-4 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-sky-500 to-blue-600 text-white flex items-center justify-center shadow-sm">
+                        <i data-lucide="bell-ring" class="w-4 h-4"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-sm font-extrabold text-slate-900" id="alert-modal-title">Yangi Uylarga Obuna</h3>
+                        <p class="text-[10px] text-slate-500" id="alert-modal-subtitle">Mos variant chiqishi bilan xabar beramiz</p>
+                    </div>
+                </div>
+                <button onclick="closeAlertModal()" class="w-7 h-7 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center hover:bg-slate-200">
+                    <i data-lucide="x" class="w-3.5 h-3.5"></i>
+                </button>
+            </div>
+
+            <form onsubmit="submitAlertSubscription(event)" class="space-y-3 text-xs text-slate-700">
+                <div class="space-y-1">
+                    <label class="font-bold text-slate-700 block" id="alert-lbl-dist">Qaysi tumandan qidiryapsiz?</label>
+                    <select id="alert-district" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs bg-slate-50">
+                        <option value="all">Barcha tumanlar</option>
+                        <option value="Chilonzor">Chilonzor tumani</option>
+                        <option value="Yunusobod">Yunusobod tumani</option>
+                        <option value="Mirzo Ulug‘bek">Mirzo Ulug‘bek tumani</option>
+                        <option value="Yakkasaroy">Yakkasaroy tumani</option>
+                        <option value="Shayxontohur">Shayxontohur tumani</option>
+                        <option value="Mirobod">Mirobod tumani</option>
+                        <option value="Olmazor">Olmazor tumani</option>
+                        <option value="Uchtepa">Uchtepa tumani</option>
+                        <option value="Yashnobod">Yashnobod tumani</option>
+                        <option value="Sergeli">Sergeli tumani</option>
+                    </select>
+                </div>
+
+                <div class="space-y-1">
+                    <label class="font-bold text-slate-700 block" id="alert-lbl-rooms">Xonalar soni:</label>
+                    <select id="alert-rooms" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs bg-slate-50">
+                        <option value="all">Ixtiyoriy (Farqi yo'q)</option>
+                        <option value="1">1 xonali</option>
+                        <option value="2">2 xonali</option>
+                        <option value="3">3 xonali</option>
+                        <option value="4">4+ xonali</option>
+                    </select>
+                </div>
+
+                <div class="space-y-1">
+                    <div class="flex justify-between items-center font-bold">
+                        <span id="alert-lbl-budget">Maksimal oylik byudjet:</span>
+                        <span id="alert-budget-val" class="text-sky-700 font-extrabold text-xs">5 000 000 so'm</span>
+                    </div>
+                    <input type="range" id="alert-budget-slider" min="2000000" max="15000000" step="500000" value="5000000" oninput="document.getElementById('alert-budget-val').innerText = formatMoney(this.value)" class="w-full accent-sky-600 cursor-pointer">
+                </div>
+
+                <div class="space-y-1 border-t border-slate-100 pt-2">
+                    <label class="font-bold text-slate-700 block" id="alert-lbl-name">Ismingiz *</label>
+                    <input type="text" id="alert-name" required value="Foydalanuvchi" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs">
+                </div>
+
+                <div class="space-y-1">
+                    <label class="font-bold text-slate-700 block" id="alert-lbl-contact">Telegram ID yoki Telefon *</label>
+                    <input type="text" id="alert-contact" required placeholder="+998 90 123 45 67 yoki TG ID" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs">
+                </div>
+
+                <div class="pt-2">
+                    <button type="submit" id="btn-submit-alert" class="w-full bg-gradient-to-r from-sky-600 to-blue-600 text-white font-bold py-3 rounded-xl shadow-lg shadow-sky-500/25 active:scale-95 transition text-xs flex items-center justify-center space-x-1.5">
+                        <i data-lucide="bell" class="w-4 h-4"></i>
+                        <span id="alert-btn-text">🔔 Xabarnomalarni yoqish</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- Client-side Logic Script -->
     <script>
         const SUPABASE_URL = "https://jicqycwmswpxagmnnyoj.supabase.co";
@@ -775,6 +994,10 @@
                     <div onclick="openPropertyModal('${item.id}')" class="bg-white rounded-2xl overflow-hidden border border-slate-100 shadow-sm hover:shadow-md transition active:scale-[0.99] cursor-pointer">
                         <div class="relative h-48 w-full bg-slate-100">
                             <img src="${photo}" alt="${item.title}" class="w-full h-full object-cover">
+                            <!-- Favorite Heart Button (Top-Right) -->
+                            <button onclick="event.stopPropagation(); toggleFavorite('${item.id}', this)" class="absolute top-2.5 right-2.5 w-8 h-8 rounded-full bg-white/90 backdrop-blur-md flex items-center justify-center shadow-md active:scale-90 transition z-10 hover:bg-white" title="Sevimlilarga saqlash">
+                                <i data-lucide="heart" class="w-4 h-4 ${isFavorited(item.id) ? 'fill-rose-500 text-rose-500' : 'text-slate-600'}"></i>
+                            </button>
                             <div class="absolute top-2.5 left-2.5 flex flex-wrap gap-1.5">
                                 ${item.is_verified ? `
                                     <span class="inline-flex items-center text-[10px] font-bold px-2 py-0.5 rounded-md bg-emerald-600/90 text-white backdrop-blur-sm shadow-sm">
@@ -1018,6 +1241,10 @@
             body.innerHTML = `
                 <div class="relative h-56 rounded-2xl overflow-hidden bg-slate-100">
                     <img src="${photo}" class="w-full h-full object-cover">
+                    <!-- Favorite Heart Button inside Modal -->
+                    <button onclick="toggleFavorite('${item.id}', this)" class="absolute top-2.5 right-2.5 w-9 h-9 rounded-full bg-white/90 backdrop-blur-md flex items-center justify-center shadow-md active:scale-90 transition z-10 hover:bg-white" title="Sevimlilar">
+                        <i data-lucide="heart" class="w-4 h-4 ${isFavorited(item.id) ? 'fill-rose-500 text-rose-500' : 'text-slate-600'}"></i>
+                    </button>
                     <div class="absolute bottom-2 left-2 bg-black/60 backdrop-blur-md px-2.5 py-1 rounded-lg text-white text-xs font-semibold">
                         📍 ${item.address}
                     </div>
@@ -1084,12 +1311,51 @@
                     </p>
                     <p>Shartnoma ijara.soliq.uz tizimida rasmiylashtiriladi. Talabalarga berilganda uy egasi daromad solig'idan (12%) ozod bo'ladi.</p>
                 </div>
+
+                <!-- Reviews and Trust Section (Feature 5) -->
+                <div class="border-t border-slate-100 pt-3 space-y-2.5">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-1.5">
+                            <i data-lucide="star" class="w-4 h-4 fill-amber-400 text-amber-400"></i>
+                            <span class="text-xs font-bold text-slate-900" id="prop-reviews-title">Sharhlar va Reyting</span>
+                            <span id="prop-avg-rating-badge" class="text-[11px] font-extrabold bg-amber-50 text-amber-700 px-1.5 py-0.5 rounded-md border border-amber-200">5.0</span>
+                        </div>
+                        <button onclick="toggleWriteReview()" class="text-[11px] font-bold text-emerald-600 hover:text-emerald-700 bg-emerald-50 px-2 py-1 rounded-lg">
+                            + Sharh qoldirish
+                        </button>
+                    </div>
+
+                    <!-- Write Review Inline Form -->
+                    <div id="write-review-box" class="hidden bg-slate-50 border border-slate-200 rounded-xl p-3 space-y-2 text-xs">
+                        <span class="font-bold text-slate-800 block">Ushbu xonadonga sharh yozing:</span>
+                        <div class="flex items-center space-x-1 text-amber-400" id="star-picker">
+                            <button type="button" onclick="setReviewRating(1)" class="star-btn"><i data-lucide="star" class="w-4 h-4 fill-amber-400 text-amber-400"></i></button>
+                            <button type="button" onclick="setReviewRating(2)" class="star-btn"><i data-lucide="star" class="w-4 h-4 fill-amber-400 text-amber-400"></i></button>
+                            <button type="button" onclick="setReviewRating(3)" class="star-btn"><i data-lucide="star" class="w-4 h-4 fill-amber-400 text-amber-400"></i></button>
+                            <button type="button" onclick="setReviewRating(4)" class="star-btn"><i data-lucide="star" class="w-4 h-4 fill-amber-400 text-amber-400"></i></button>
+                            <button type="button" onclick="setReviewRating(5)" class="star-btn"><i data-lucide="star" class="w-4 h-4 fill-amber-400 text-amber-400"></i></button>
+                            <span id="selected-stars-text" class="text-[11px] font-bold text-slate-600 ml-1.5">5/5 a'lo</span>
+                        </div>
+                        <input type="text" id="review-author" placeholder="Ismingiz (masalan, Ali Valiyev)" class="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 text-xs">
+                        <textarea id="review-comment" rows="2" placeholder="Xonadon tozaligi, mebellari, uy egasi haqida fikringiz..." class="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 text-xs"></textarea>
+                        <div class="flex justify-end space-x-2">
+                            <button type="button" onclick="toggleWriteReview()" class="px-2.5 py-1 text-slate-500 font-semibold">Bekor qilish</button>
+                            <button type="button" onclick="submitPropertyReview('${item.id}')" class="bg-emerald-600 text-white font-bold px-3 py-1 rounded-lg shadow-sm">Yuborish</button>
+                        </div>
+                    </div>
+
+                    <!-- Reviews List Container -->
+                    <div id="property-reviews-container" class="space-y-2">
+                        <p class="text-[11px] text-slate-400 py-2 text-center">Sharhlar yuklanmoqda...</p>
+                    </div>
+                </div>
             `;
 
             modal.classList.remove('hidden');
             setTimeout(() => {
                 container.classList.remove('translate-y-full');
             }, 10);
+            loadPropertyReviews(item.id);
             lucide.createIcons();
         }
 
@@ -1806,7 +2072,518 @@
             window.open(shareUrl, '_blank');
         }
 
+        // ---------------------------------------------------------
+        // FEATURE 4: i18n Translation Dictionary (UZ / RU)
+        // ---------------------------------------------------------
+        let currentLang = localStorage.getItem('renttrust_lang') || 'uz';
+        const I18N = {
+            uz: {
+                flag: "🇺🇿 UZ",
+                slogan: "Ishonch va Escrow tizimi",
+                quick_fav: "Sevimlilar",
+                quick_calc: "🧮 Tejamkorlik",
+                quick_alert: "🔔 Uylarga obuna",
+                ai_placeholder: "AI: masalan, 'Chilonzorda 2 xona 400$ gacha'...",
+                add_prop: "E'lon",
+                fav_title: "Sevimlilar ro'yxati",
+                fav_subtitle: "Saqlangan xonadonlar",
+                calc_title: "Tejamkorlik Kalkulyatori",
+                calc_subtitle: "RentTrust 2% vs Rieltor 50%",
+                calc_rent_lbl: "Mo'ljaldagi oylik ijara:",
+                calc_old_fee: "Makler to'lovi (50%)",
+                calc_rt_fee: "RentTrust (2%)",
+                calc_savings_hdr: "Sizning cho'ntagingizda qoladi:",
+                calc_view_btn: "Tejamkor uylarni ko'rish",
+                alert_title: "Yangi Uylarga Obuna",
+                alert_subtitle: "Mos variant chiqishi bilan xabar beramiz",
+                alert_btn: "🔔 Xabarnomalarni yoqish",
+                comp_title: "Xonadonlarni taqqoslash",
+                comp_subtitle: "Yonma-yon solishtiring"
+            },
+            ru: {
+                flag: "🇷🇺 RU",
+                slogan: "Система доверия и Эскроу",
+                quick_fav: "Избранное",
+                quick_calc: "🧮 Калькулятор",
+                quick_alert: "🔔 Подписка",
+                ai_placeholder: "AI: например, '2-комн на Чиланзаре до $400'...",
+                add_prop: "Подать",
+                fav_title: "Избранные квартиры",
+                fav_subtitle: "Сохраненные варианты",
+                calc_title: "Калькулятор Экономии",
+                calc_subtitle: "RentTrust 2% против Риелтора 50%",
+                calc_rent_lbl: "Планируемая аренда в месяц:",
+                calc_old_fee: "Комиссия маклера (50%)",
+                calc_rt_fee: "RentTrust (2%)",
+                calc_savings_hdr: "Останется в вашем кармане:",
+                calc_view_btn: "Смотреть выгодные квартиры",
+                alert_title: "Подписка на новые квартиры",
+                alert_subtitle: "Уведомим, как только появится подходящий вариант",
+                alert_btn: "🔔 Включить уведомления",
+                comp_title: "Сравнение квартир",
+                comp_subtitle: "Сравните характеристики рядом"
+            }
+        };
+
+        function toggleLanguage() {
+            currentLang = (currentLang === 'uz') ? 'ru' : 'uz';
+            localStorage.setItem('renttrust_lang', currentLang);
+            applyLanguage();
+        }
+
+        function applyLanguage() {
+            const t = I18N[currentLang] || I18N.uz;
+            const flagEl = document.getElementById('lang-btn-text');
+            if (flagEl) flagEl.innerText = t.flag;
+
+            const headerAdd = document.getElementById('header-add-text');
+            if (headerAdd) headerAdd.innerText = t.add_prop;
+
+            const qFav = document.getElementById('quick-fav-label');
+            if (qFav) qFav.innerText = t.quick_fav;
+
+            const qCalc = document.getElementById('quick-calc-label');
+            if (qCalc) qCalc.innerText = t.quick_calc;
+
+            const qAlert = document.getElementById('quick-alert-label');
+            if (qAlert) qAlert.innerText = t.quick_alert;
+
+            const aiInput = document.getElementById('ai-search-input');
+            if (aiInput) aiInput.placeholder = t.ai_placeholder;
+
+            const favTitle = document.getElementById('fav-modal-title');
+            if (favTitle) favTitle.innerText = t.fav_title;
+            const favSub = document.getElementById('fav-modal-subtitle');
+            if (favSub) favSub.innerText = t.fav_subtitle;
+
+            const calcTitle = document.getElementById('calc-modal-title');
+            if (calcTitle) calcTitle.innerText = t.calc_title;
+            const calcSub = document.getElementById('calc-modal-subtitle');
+            if (calcSub) calcSub.innerText = t.calc_subtitle;
+            const calcInp = document.getElementById('calc-input-label');
+            if (calcInp) calcInp.innerText = t.calc_rent_lbl;
+            const calcSaveHdr = document.getElementById('calc-savings-header');
+            if (calcSaveHdr) calcSaveHdr.innerText = t.calc_savings_hdr;
+            const calcViewBtn = document.getElementById('calc-view-props-btn');
+            if (calcViewBtn) calcViewBtn.innerText = t.calc_view_btn;
+
+            const alertTitle = document.getElementById('alert-modal-title');
+            if (alertTitle) alertTitle.innerText = t.alert_title;
+            const alertSub = document.getElementById('alert-modal-subtitle');
+            if (alertSub) alertSub.innerText = t.alert_subtitle;
+            const alertBtn = document.getElementById('alert-btn-text');
+            if (alertBtn) alertBtn.innerText = t.alert_btn;
+
+            const compTitle = document.getElementById('comp-modal-title');
+            if (compTitle) compTitle.innerText = t.comp_title;
+            const compSub = document.getElementById('comp-modal-subtitle');
+            if (compSub) compSub.innerText = t.comp_subtitle;
+        }
+
+        // ---------------------------------------------------------
+        // FEATURE 1: Favorites & Comparison Engine
+        // ---------------------------------------------------------
+        function getFavorites() {
+            try {
+                return JSON.parse(localStorage.getItem('renttrust_favorites') || '[]');
+            } catch (e) {
+                return [];
+            }
+        }
+
+        function isFavorited(id) {
+            return getFavorites().includes(String(id));
+        }
+
+        function toggleFavorite(id, btnEl) {
+            let favs = getFavorites();
+            const strId = String(id);
+            const index = favs.indexOf(strId);
+            let added = false;
+            if (index > -1) {
+                favs.splice(index, 1);
+            } else {
+                favs.push(strId);
+                added = true;
+            }
+            localStorage.setItem('renttrust_favorites', JSON.stringify(favs));
+            updateFavoritesBadges();
+
+            if (btnEl) {
+                const icon = btnEl.querySelector('i');
+                if (icon) {
+                    if (added) {
+                        icon.classList.add('fill-rose-500', 'text-rose-500');
+                        icon.classList.remove('text-slate-600');
+                    } else {
+                        icon.classList.remove('fill-rose-500', 'text-rose-500');
+                        icon.classList.add('text-slate-600');
+                    }
+                }
+            }
+
+            if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.HapticFeedback) {
+                window.Telegram.WebApp.HapticFeedback.impactOccurred('light');
+            }
+        }
+
+        function updateFavoritesBadges() {
+            const count = getFavorites().length;
+            const topBadge = document.getElementById('top-fav-badge');
+            if (topBadge) topBadge.innerText = count;
+            const quickBadge = document.getElementById('quick-fav-badge');
+            if (quickBadge) quickBadge.innerText = count;
+        }
+
+        function openFavoritesModal() {
+            const modal = document.getElementById('favorites-modal');
+            const container = document.getElementById('favorites-modal-container');
+            const content = document.getElementById('favorites-modal-content');
+            const favIds = getFavorites();
+            const favItems = allProperties.filter(p => favIds.includes(String(p.id)));
+
+            if (favItems.length === 0) {
+                content.innerHTML = `
+                    <div class="py-12 text-center text-slate-400 space-y-2">
+                        <i data-lucide="heart" class="w-12 h-12 mx-auto text-rose-300 stroke-[1.5]"></i>
+                        <h4 class="text-sm font-bold text-slate-700">Hozircha saqlangan xonadonlar yo'q</h4>
+                        <p class="text-xs text-slate-400 max-w-xs mx-auto">
+                            Uylar ro'yxatidagi ❤️ tugmasini bosib, o'zingizga ma'qul xonadonlarni shu yerda to'plang.
+                        </p>
+                    </div>
+                `;
+            } else {
+                let html = '';
+                if (favItems.length >= 2) {
+                    html += `
+                        <div class="bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-2xl p-3 flex items-center justify-between shadow-sm">
+                            <div class="text-xs">
+                                <span class="font-extrabold block">Taqqoslash rejimi faol</span>
+                                <span class="text-[10px] text-emerald-100">${favItems.length} ta saqlangan uyni yonma-yon solishtiring</span>
+                            </div>
+                            <button onclick="openComparisonModal()" class="bg-white text-emerald-800 font-extrabold text-xs px-3 py-1.5 rounded-xl shadow-sm active:scale-95 transition flex items-center space-x-1">
+                                <i data-lucide="columns" class="w-3.5 h-3.5"></i>
+                                <span>⚖️ Solishtirish</span>
+                            </button>
+                        </div>
+                    `;
+                }
+
+                html += favItems.map(item => {
+                    const photo = (item.photos && item.photos.length > 0) ? item.photos[0] : 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800';
+                    return `
+                        <div class="bg-white border border-slate-200/90 rounded-2xl p-3 flex items-center space-x-3 shadow-xs hover:border-emerald-300 transition">
+                            <img src="${photo}" class="w-20 h-20 rounded-xl object-cover shrink-0 cursor-pointer" onclick="closeFavoritesModal(); openPropertyModal('${item.id}')">
+                            <div class="flex-1 min-w-0 cursor-pointer" onclick="closeFavoritesModal(); openPropertyModal('${item.id}')">
+                                <h4 class="font-bold text-xs text-slate-900 truncate">${item.title}</h4>
+                                <p class="text-[10px] text-slate-500 truncate">${item.district} tumani • ${item.rooms} xona</p>
+                                <div class="mt-1 flex items-baseline space-x-1">
+                                    <span class="text-xs font-black text-emerald-600">${formatMoney(item.monthly_rent_uzs)}</span>
+                                    <span class="text-[9px] text-slate-400">/oy</span>
+                                </div>
+                            </div>
+                            <div class="flex flex-col space-y-1.5 shrink-0">
+                                <button onclick="closeFavoritesModal(); openPropertyModal('${item.id}')" class="bg-emerald-600 text-white font-bold text-[11px] px-2.5 py-1 rounded-lg active:scale-95 transition">
+                                    Ko'rish
+                                </button>
+                                <button onclick="toggleFavorite('${item.id}'); openFavoritesModal();" class="text-slate-400 hover:text-rose-600 text-[10px] font-semibold text-center">
+                                    O'chirish
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+                content.innerHTML = html;
+            }
+
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                container.classList.remove('translate-y-full');
+            }, 10);
+            lucide.createIcons();
+        }
+
+        function closeFavoritesModal() {
+            const container = document.getElementById('favorites-modal-container');
+            container.classList.add('translate-y-full');
+            setTimeout(() => {
+                document.getElementById('favorites-modal').classList.add('hidden');
+            }, 250);
+        }
+
+        function openComparisonModal() {
+            closeFavoritesModal();
+            const modal = document.getElementById('comparison-modal');
+            const container = document.getElementById('comparison-modal-container');
+            const content = document.getElementById('comparison-modal-content');
+            const favIds = getFavorites();
+            const items = allProperties.filter(p => favIds.includes(String(p.id)));
+
+            if (items.length < 2) {
+                alert("Taqqoslash uchun kamida 2 ta xonadonni sevimlilar (❤️) ro'yxatiga qo'shing.");
+                return;
+            }
+
+            let html = `
+                <div class="min-w-[620px] pb-4">
+                    <div class="grid grid-cols-${items.length + 1} gap-2 text-xs">
+                        <div class="space-y-4 pt-28 font-bold text-slate-500 text-[11px]">
+                            <div class="h-8 flex items-center border-b border-slate-100">Oylik ijara:</div>
+                            <div class="h-8 flex items-center border-b border-slate-100">Xavfsiz depozit:</div>
+                            <div class="h-8 flex items-center border-b border-slate-100 text-emerald-700">RentTrust 2%:</div>
+                            <div class="h-8 flex items-center border-b border-slate-100 text-rose-500">Makler 50%:</div>
+                            <div class="h-8 flex items-center border-b border-slate-100">Tuman:</div>
+                            <div class="h-8 flex items-center border-b border-slate-100">Xonalar / Maydon:</div>
+                            <div class="h-8 flex items-center border-b border-slate-100">Qavat:</div>
+                            <div class="h-10 flex items-center">Amal:</div>
+                        </div>
+            `;
+
+            items.forEach(item => {
+                const photo = (item.photos && item.photos.length > 0) ? item.photos[0] : 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800';
+                const splitFee = item.monthly_rent_uzs * 0.02;
+                const maklerFee = item.monthly_rent_uzs * 0.50;
+
+                html += `
+                    <div class="bg-slate-50 border border-slate-200 rounded-2xl p-2.5 text-center space-y-4">
+                        <div class="h-28 flex flex-col items-center justify-between">
+                            <img src="${photo}" class="w-full h-16 rounded-xl object-cover mb-1">
+                            <h4 class="font-bold text-xs text-slate-900 line-clamp-1">${item.title}</h4>
+                        </div>
+                        <div class="h-8 flex items-center justify-center font-extrabold text-slate-900 border-b border-slate-200">${formatMoney(item.monthly_rent_uzs)}</div>
+                        <div class="h-8 flex items-center justify-center font-semibold text-slate-700 border-b border-slate-200">${formatMoney(item.deposit_uzs)}</div>
+                        <div class="h-8 flex items-center justify-center font-bold text-emerald-600 border-b border-slate-200">${formatMoney(splitFee)}</div>
+                        <div class="h-8 flex items-center justify-center font-bold text-rose-500 line-through border-b border-slate-200">${formatMoney(maklerFee)}</div>
+                        <div class="h-8 flex items-center justify-center font-medium text-slate-700 border-b border-slate-200">${item.district}</div>
+                        <div class="h-8 flex items-center justify-center font-medium text-slate-700 border-b border-slate-200">${item.rooms} xona • ${item.area_sqm} m²</div>
+                        <div class="h-8 flex items-center justify-center font-medium text-slate-700 border-b border-slate-200">${item.floor}/${item.total_floors}</div>
+                        <div class="h-10 flex items-center justify-center">
+                            <button onclick="closeComparisonModal(); openPropertyModal('${item.id}')" class="w-full bg-emerald-600 text-white font-bold py-1.5 px-2 rounded-xl text-[11px] shadow-sm active:scale-95 transition">
+                                Tanlash
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            html += `</div></div>`;
+            content.innerHTML = html;
+
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                container.classList.remove('translate-y-full');
+            }, 10);
+            lucide.createIcons();
+        }
+
+        function closeComparisonModal() {
+            const container = document.getElementById('comparison-modal-container');
+            container.classList.add('translate-y-full');
+            setTimeout(() => {
+                document.getElementById('comparison-modal').classList.add('hidden');
+            }, 250);
+        }
+
+        // ---------------------------------------------------------
+        // FEATURE 2: Savings Calculator Engine
+        // ---------------------------------------------------------
+        function openCalculatorModal() {
+            const modal = document.getElementById('calculator-modal');
+            modal.classList.remove('hidden');
+            const slider = document.getElementById('calc-rent-slider');
+            updateCalculator(slider ? slider.value : 6000000);
+            lucide.createIcons();
+        }
+
+        function closeCalculatorModal() {
+            document.getElementById('calculator-modal').classList.add('hidden');
+        }
+
+        function updateCalculator(rentVal) {
+            const rent = parseInt(rentVal) || 6000000;
+            const brokerFee = rent * 0.50;
+            const rtFee = rent * 0.02;
+            const savings = brokerFee - rtFee;
+
+            document.getElementById('calc-rent-display').innerText = formatMoney(rent);
+            document.getElementById('calc-old-broker-fee').innerText = formatMoney(brokerFee);
+            document.getElementById('calc-rt-fee').innerText = formatMoney(rtFee);
+            document.getElementById('calc-savings-val').innerText = formatMoney(savings);
+
+            const tipEl = document.getElementById('calc-benefit-tip');
+            if (tipEl) {
+                if (savings >= 4000000) {
+                    tipEl.innerHTML = `Ushbu tejab qolingan <strong>${formatMoney(savings)}</strong> ga Toshkentda zamonaviy yangi noutbuk yoki smartfon xarid qilishingiz mumkin! 📱💻`;
+                } else {
+                    tipEl.innerHTML = `Ushbu tejab qolingan <strong>${formatMoney(savings)}</strong> ga Toshkentda butun bir oylik to'liq oziq-ovqat mahsulotlarini sotib olishingiz mumkin! 🛒🥩`;
+                }
+            }
+        }
+
+        // ---------------------------------------------------------
+        // FEATURE 3: Smart Alerts Engine
+        // ---------------------------------------------------------
+        function openAlertModal() {
+            const modal = document.getElementById('alert-modal');
+            modal.classList.remove('hidden');
+
+            if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe && window.Telegram.WebApp.initDataUnsafe.user) {
+                const u = window.Telegram.WebApp.initDataUnsafe.user;
+                if (u.first_name) document.getElementById('alert-name').value = `${u.first_name} ${u.last_name || ''}`.trim();
+                if (u.id) document.getElementById('alert-contact').value = String(u.id);
+            }
+            lucide.createIcons();
+        }
+
+        function closeAlertModal() {
+            document.getElementById('alert-modal').classList.add('hidden');
+        }
+
+        async function submitAlertSubscription(event) {
+            event.preventDefault();
+            const btn = document.getElementById('btn-submit-alert');
+            btn.disabled = true;
+            btn.innerHTML = `<span>⏳ Saqlanmoqda...</span>`;
+
+            const payload = {
+                telegram_id: document.getElementById('alert-contact').value.trim(),
+                full_name: document.getElementById('alert-name').value.trim(),
+                district: document.getElementById('alert-district').value,
+                rooms: document.getElementById('alert-rooms').value,
+                max_price_uzs: parseInt(document.getElementById('alert-budget-slider').value)
+            };
+
+            try {
+                const res = await fetch('/api/alerts/subscribe', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+                if (data.success) {
+                    alert("🎉 Tabriklaymiz! Siz yangi uylar xabarnomasiga muvaffaqiyatli obuna bo'ldingiz. Mezonlarga mos xonadon chiqishi bilan darhol Telegramingizga xabar boradi!");
+                    closeAlertModal();
+                    if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.HapticFeedback) {
+                        window.Telegram.WebApp.HapticFeedback.notificationOccurred('success');
+                    }
+                } else {
+                    alert("Xatolik: " + (data.error || "Obunani saqlab bo'lmadi"));
+                }
+            } catch (err) {
+                alert("Server xatosi: " + err.message);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = `<i data-lucide="bell" class="w-4 h-4"></i><span id="alert-btn-text">🔔 Xabarnomalarni yoqish</span>`;
+                lucide.createIcons();
+            }
+        }
+
+        // ---------------------------------------------------------
+        // FEATURE 5: Real Reviews & Trust Score Engine
+        // ---------------------------------------------------------
+        let currentReviewRating = 5;
+
+        function toggleWriteReview() {
+            const box = document.getElementById('write-review-box');
+            if (box) box.classList.toggle('hidden');
+        }
+
+        function setReviewRating(rating) {
+            currentReviewRating = rating;
+            const buttons = document.querySelectorAll('#star-picker .star-btn i');
+            buttons.forEach((icon, idx) => {
+                if (idx < rating) {
+                    icon.classList.add('fill-amber-400', 'text-amber-400');
+                    icon.classList.remove('text-slate-300');
+                } else {
+                    icon.classList.remove('fill-amber-400', 'text-amber-400');
+                    icon.classList.add('text-slate-300');
+                }
+            });
+            const textEl = document.getElementById('selected-stars-text');
+            if (textEl) textEl.innerText = `${rating}/5 ball`;
+        }
+
+        async function loadPropertyReviews(propId) {
+            const container = document.getElementById('property-reviews-container');
+            const avgBadge = document.getElementById('prop-avg-rating-badge');
+            if (!container) return;
+
+            try {
+                const res = await fetch(`/api/properties/${propId}/reviews`);
+                const json = await res.json();
+                if (json.success && json.data) {
+                    const data = json.data;
+                    if (avgBadge) avgBadge.innerText = `⭐ ${data.average_rating}`;
+
+                    if (!data.reviews || data.reviews.length === 0) {
+                        container.innerHTML = `<p class="text-[11px] text-slate-400 py-2 text-center">Hali sharhlar yo'q. Birinchi bo'lib sharh qoldiring!</p>`;
+                        return;
+                    }
+
+                    container.innerHTML = data.reviews.map(r => `
+                        <div class="bg-slate-50 border border-slate-100 rounded-xl p-2.5 space-y-1 text-xs">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-1.5">
+                                    <span class="font-bold text-slate-900">${r.author}</span>
+                                    <span class="text-[10px] text-slate-400">(${r.role || 'Ijarachi'})</span>
+                                    ${r.verified ? `<span class="text-[9px] bg-emerald-100 text-emerald-800 font-bold px-1.5 py-0.2 rounded">✓ Tasdiqlangan</span>` : ''}
+                                </div>
+                                <div class="text-amber-400 font-bold text-[11px]">
+                                    ${'★'.repeat(r.rating || 5)}${'☆'.repeat(5 - (r.rating || 5))}
+                                </div>
+                            </div>
+                            <p class="text-slate-600 text-[11px] leading-relaxed">${r.comment}</p>
+                            <span class="text-[9px] text-slate-400 block">${r.date || 'Yaqinda'}</span>
+                        </div>
+                    `).join('');
+                }
+            } catch (err) {
+                console.error("Reviews load error:", err);
+                container.innerHTML = `<p class="text-[11px] text-slate-400 py-1 text-center">Sharhlarni yuklashda xatolik</p>`;
+            }
+        }
+
+        async function submitPropertyReview(propId) {
+            const author = document.getElementById('review-author').value.trim() || "Foydalanuvchi";
+            const comment = document.getElementById('review-comment').value.trim();
+
+            if (!comment) {
+                alert("Iltimos, sharh matnini kiriting");
+                return;
+            }
+
+            try {
+                const res = await fetch(`/api/properties/${propId}/reviews`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        author: author,
+                        rating: currentReviewRating,
+                        comment: comment,
+                        role: "Ijarachi"
+                    })
+                });
+                const json = await res.json();
+                if (json.success) {
+                    toggleWriteReview();
+                    document.getElementById('review-comment').value = '';
+                    loadPropertyReviews(propId);
+                    alert("Sharhingiz qabul qilindi va e'lon qilindi! Rahmat!");
+                    if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.HapticFeedback) {
+                        window.Telegram.WebApp.HapticFeedback.notificationOccurred('success');
+                    }
+                } else {
+                    alert(json.error || "Sharh saqlanmadi");
+                }
+            } catch (err) {
+                alert("Server xatosi: " + err.message);
+            }
+        }
+
         // Initial Load
+        updateFavoritesBadges();
+        applyLanguage();
         fetchProperties();
         lucide.createIcons();
     </script>

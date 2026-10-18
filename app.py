@@ -9,6 +9,8 @@ import re
 from contract_generator import generate_rental_contract_pdf
 from ai_search_engine import parse_ai_query, filter_properties_ai
 from referral_manager import record_referral, reward_referral_on_deal, get_user_referral_stats
+from alerts_manager import subscribe_alert, check_and_notify_subscribers
+from reviews_manager import get_property_reviews, add_property_review
 
 # Windows konsolida UTF-8 xatoliklarini oldini olish
 if sys.platform == "win32":
@@ -519,6 +521,12 @@ def add_property():
             publish_property_to_channel(created[0], landlord_name=landlord_name)
         except Exception as ch_err:
             print("Kanalga post chiqarishda xatolik:", ch_err)
+
+        # D) Yangi uylar bo'yicha obunachilarga shaxsiy xabar yuborish (Smart Alerts)
+        try:
+            check_and_notify_subscribers(created[0])
+        except Exception as alert_err:
+            print("Obunachilarga xabar yuborishda xatolik:", alert_err)
 
         return jsonify({"success": True, "data": created[0]})
     except Exception as e:
@@ -1133,6 +1141,62 @@ def api_referral_stats():
         return jsonify({"success": False, "error": str(e)}), 500
 
 # -------------------------------------------------------------
+# Smart Alerts API
+# -------------------------------------------------------------
+@app.route("/api/alerts/subscribe", methods=["POST"])
+def api_subscribe_alert():
+    try:
+        data = request.json or {}
+        telegram_id = data.get("telegram_id")
+        full_name = data.get("full_name", "Foydalanuvchi")
+        phone_number = data.get("phone_number", "")
+        district = data.get("district", "all")
+        max_price_uzs = data.get("max_price_uzs", 10000000)
+        rooms = data.get("rooms", "all")
+        
+        if not telegram_id:
+            admin_ch = get_admin_chat_id()
+            if admin_ch:
+                telegram_id = str(admin_ch)
+            else:
+                return jsonify({"success": False, "error": "Telegram ID kiritilmadi"}), 400
+                
+        sub = subscribe_alert(telegram_id, full_name, phone_number, district, max_price_uzs, rooms)
+        return jsonify({"success": True, "data": sub})
+    except Exception as e:
+        print("api_subscribe_alert xatoligi:", e)
+        return jsonify({"success": False, "error": str(e)}), 500
+
+# -------------------------------------------------------------
+# Property Reviews & Trust Score API
+# -------------------------------------------------------------
+@app.route("/api/properties/<property_id>/reviews", methods=["GET"])
+def api_get_reviews(property_id):
+    try:
+        res = get_property_reviews(property_id)
+        return jsonify({"success": True, "data": res})
+    except Exception as e:
+        print("api_get_reviews xatosi:", e)
+        return jsonify({"success": False, "error": str(e)}), 500
+
+@app.route("/api/properties/<property_id>/reviews", methods=["POST"])
+def api_add_review(property_id):
+    try:
+        data = request.json or {}
+        author = data.get("author", "Mehmon")
+        rating = data.get("rating", 5)
+        comment = data.get("comment", "")
+        role = data.get("role", "Ijarachi")
+        if not comment:
+            return jsonify({"success": False, "error": "Sharh matni kiritilmadi"}), 400
+            
+        res = add_property_review(property_id, author, rating, comment, role)
+        return jsonify({"success": True, "data": res})
+    except Exception as e:
+        print("api_add_review xatosi:", e)
+        return jsonify({"success": False, "error": str(e)}), 500
+
+# -------------------------------------------------------------
 # Telegram Webhook Endpoint (24/7 Cloud Bot & WebApp Controller)
 # -------------------------------------------------------------
 @app.route("/webhook", methods=["POST"])
@@ -1253,7 +1317,23 @@ def telegram_webhook():
             send_telegram_notification(chat_id, msg_ref, keyboard)
             return "OK", 200
 
-        # 4. Tizim holati
+        # 4. Yangi uylar xabarnomasi obunasi (/obuna, /alert)
+        if text.startswith("/obuna") or text.startswith("/alert"):
+            sub = subscribe_alert(chat_id, first_name, "", "all", 10000000, "all")
+            msg_sub = (
+                f"🔔 <b>Siz RentTrust UZ yangi uylar xabarnomasiga obuna bo'ldingiz!</b>\n\n"
+                f"Toshkentda yangi tekshirilgan xonadon e'lon qilinishi bilan sizga darhol Telegramda xabar yuboramiz.\n"
+                f"Mezonlarni (tuman, xona, narx) Web App ichidagi 🔔 tugmasi orqali aniqroq sozlab olishingiz mumkin."
+            )
+            keyboard = {
+                "inline_keyboard": [
+                    [{"text": "⚙️ Web App'da aniq sozlash", "web_app": {"url": app_host}}]
+                ]
+            }
+            send_telegram_notification(chat_id, msg_sub, keyboard)
+            return "OK", 200
+
+        # 5. Tizim holati
         if text == "/status":
             try:
                 props = supabase_get("properties?select=id")
