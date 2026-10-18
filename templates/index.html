@@ -67,10 +67,13 @@
                 </div>
             </div>
 
-            <div class="flex items-center space-x-2">
+            <div class="flex items-center space-x-1.5">
+                <button onclick="openReferralModal()" class="inline-flex items-center space-x-1 bg-amber-50 border border-amber-200/80 text-amber-700 px-2 py-1 rounded-lg text-xs font-bold active:scale-95 transition shadow-sm">
+                    <span>🎁 30% Bonus</span>
+                </button>
                 <button onclick="openAddPropertyModal()" class="inline-flex items-center space-x-1 bg-emerald-50 border border-emerald-200 text-emerald-700 px-2.5 py-1 rounded-lg text-xs font-bold active:scale-95 transition">
                     <i data-lucide="plus" class="w-3.5 h-3.5"></i>
-                    <span>E'lon berish</span>
+                    <span>E'lon</span>
                 </button>
                 <div class="w-8 h-8 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-600 font-bold text-xs" id="user-avatar">
                     AV
@@ -97,6 +100,28 @@
                     <span class="flex items-center"><i data-lucide="check" class="w-3.5 h-3.5 text-emerald-400 mr-1"></i> Fakesiz uylar</span>
                     <span class="flex items-center"><i data-lucide="check" class="w-3.5 h-3.5 text-emerald-400 mr-1"></i> Depozit himoyasi</span>
                 </div>
+            </div>
+        </div>
+
+        <!-- AI Smart Natural Language Search Input (Pillar 3) -->
+        <div class="relative bg-white border border-emerald-200/80 rounded-2xl p-2.5 shadow-sm space-y-2">
+            <div class="flex items-center space-x-2">
+                <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-400 text-white flex items-center justify-center shrink-0 shadow-sm">
+                    <i data-lucide="sparkles" class="w-4 h-4"></i>
+                </div>
+                <input type="text" id="ai-search-input" placeholder="AI: masalan, 'Chilonzorda 2 xona 400$ gacha'..." class="w-full text-xs bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-800 placeholder-slate-400 focus:outline-none focus:border-emerald-500 focus:bg-white transition" onkeydown="if(event.key === 'Enter') handleAiSearch()">
+                <button onclick="handleAiSearch()" id="btn-ai-search" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs px-3.5 py-2 rounded-xl shrink-0 transition active:scale-95 shadow-sm flex items-center space-x-1">
+                    <i data-lucide="search" class="w-3.5 h-3.5"></i>
+                    <span>Topish</span>
+                </button>
+            </div>
+            <!-- AI Result Indicator Chip -->
+            <div id="ai-search-status" class="hidden bg-emerald-50 border border-emerald-100 rounded-xl p-2 text-[11px] text-emerald-900 flex items-start justify-between">
+                <div class="flex items-start space-x-1.5 flex-1 pr-2">
+                    <span class="font-bold text-emerald-700 shrink-0">✨ AI:</span>
+                    <span id="ai-search-summary-text" class="leading-tight text-slate-700"></span>
+                </div>
+                <button onclick="resetAiSearch()" class="text-rose-500 font-bold hover:underline text-[10px] shrink-0">Tozalash</button>
             </div>
         </div>
 
@@ -560,6 +585,86 @@
                 <div class="space-y-1">
                     <h4 class="font-bold text-slate-800 text-xs">3. ijara.soliq.uz va 12% Soliq Imtiyozi</h4>
                     <p>Barcha ijara bitimlari Soliq Qo'mitasi portalida rasmiylashtirilishi shart. Oliy ta'lim talabalariga ijara bergan uy egalari <strong>12% daromad solig'idan (JSHODS) to'liq ozod</strong> hisoblanadi.</p>
+                </div>
+            </div>
+    </div>
+
+    <!-- Referral & 30% Cashback Modal (Pillar 4) -->
+    <div id="referral-modal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden flex flex-col justify-end">
+        <div class="bg-white rounded-t-3xl max-h-[85vh] overflow-y-auto w-full max-w-lg mx-auto shadow-2xl transition-transform duration-300 transform translate-y-full flex flex-col" id="referral-modal-container">
+            <div class="sticky top-0 bg-white/95 backdrop-blur-md px-4 py-3 border-b border-slate-100 flex items-center justify-between z-10">
+                <div class="flex items-center space-x-2">
+                    <div class="w-7 h-7 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center">
+                        <i data-lucide="gift" class="w-4 h-4"></i>
+                    </div>
+                    <span class="text-sm font-extrabold text-slate-900">30% Keshbek & Do'stlar Dasturi</span>
+                </div>
+                <button onclick="closeReferralModal()" class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center hover:bg-slate-200">
+                    <i data-lucide="x" class="w-4 h-4"></i>
+                </button>
+            </div>
+
+            <div class="p-4 space-y-3.5 text-xs text-slate-600 leading-relaxed">
+                <!-- Promo banner -->
+                <div class="bg-gradient-to-br from-amber-500 via-amber-600 to-emerald-700 text-white rounded-2xl p-4 shadow-md space-y-2">
+                    <div class="inline-flex items-center space-x-1.5 bg-white/20 backdrop-blur-sm px-2.5 py-0.5 rounded-full text-[11px] font-bold">
+                        <span>🎁 Doimiy Keshbek</span>
+                    </div>
+                    <h3 class="text-base font-extrabold leading-tight">Do'stlaringizni taklif qiling — komissiyaning 30% ini oling!</h3>
+                    <p class="text-[11px] text-amber-100">
+                        Har bir taklif qilgan do'stingiz RentTrust UZ da xonadonga ko'chib kirganda, biz o'z xizmat haqimizning 30% ini to'g'ridan-to'g'ri kartangizga keshbek qilamiz.
+                    </p>
+                </div>
+
+                <!-- Stats summary -->
+                <div class="grid grid-cols-3 gap-2 text-center">
+                    <div class="bg-slate-50 border border-slate-100 p-2.5 rounded-xl">
+                        <span class="text-[10px] text-slate-400 font-medium block">Takliflar</span>
+                        <span id="ref-stat-invited" class="text-sm font-extrabold text-slate-800">0 ta</span>
+                    </div>
+                    <div class="bg-slate-50 border border-slate-100 p-2.5 rounded-xl">
+                        <span class="text-[10px] text-slate-400 font-medium block">Bitimlar</span>
+                        <span id="ref-stat-deals" class="text-sm font-extrabold text-emerald-600">0 ta</span>
+                    </div>
+                    <div class="bg-slate-50 border border-slate-100 p-2.5 rounded-xl">
+                        <span class="text-[10px] text-slate-400 font-medium block">Keshbek</span>
+                        <span id="ref-stat-cashback" class="text-sm font-extrabold text-amber-600">0 UZS</span>
+                    </div>
+                </div>
+
+                <!-- Personal Link Box -->
+                <div class="space-y-1.5 pt-1">
+                    <label class="font-bold text-slate-800 block text-xs">Sizning shaxsiy taklif havolangiz:</label>
+                    <div class="flex items-center space-x-2">
+                        <input type="text" id="referral-link-input" readonly value="https://t.me/RentTrust_Uz_Bot?start=ref_me" class="w-full bg-slate-100 border border-slate-200 rounded-xl px-3 py-2 text-xs font-mono text-slate-700 select-all">
+                        <button onclick="copyReferralLink()" id="btn-copy-ref" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs px-3.5 py-2 rounded-xl shrink-0 transition active:scale-95 shadow-sm flex items-center space-x-1">
+                            <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                            <span id="copy-ref-text">Nusxa</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Share to Telegram Button -->
+                <button onclick="shareReferralTelegram()" class="w-full bg-sky-500 hover:bg-sky-600 text-white font-bold py-2.5 rounded-xl shadow-md active:scale-95 transition text-xs flex items-center justify-center space-x-2">
+                    <i data-lucide="send" class="w-4 h-4"></i>
+                    <span>Telegram orqali do'stlarga yuborish</span>
+                </button>
+
+                <!-- Benefits checklist -->
+                <div class="bg-slate-50 border border-slate-100 rounded-xl p-3 space-y-1.5 text-[11px] text-slate-600">
+                    <span class="font-bold text-slate-800 block">Qanday ishlaydi?</span>
+                    <div class="flex items-center space-x-1.5">
+                        <span class="w-4 h-4 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-[10px] font-bold">1</span>
+                        <span>Havolani do'stlaringiz yoki guruhlarga yuboring</span>
+                    </div>
+                    <div class="flex items-center space-x-1.5">
+                        <span class="w-4 h-4 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-[10px] font-bold">2</span>
+                        <span>Do'stingiz 50% lik makler to'lovisiz (atigi 2%) xonadonga kiradi</span>
+                    </div>
+                    <div class="flex items-center space-x-1.5">
+                        <span class="w-4 h-4 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-[10px] font-bold">3</span>
+                        <span>RentTrust o'z daromadining 30% ini avtomatik sizga beradi</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1285,11 +1390,20 @@
                                 </div>
                             </div>
                         ` : (isReleased ? `
-                            <div class="bg-emerald-50/90 border border-emerald-200 rounded-xl p-2.5 text-[11px] text-emerald-900 leading-relaxed flex items-start space-x-2">
-                                <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-600 shrink-0 mt-0.5"></i>
-                                <div>
-                                    <span class="font-bold">Ko'chib kirish tasdiqlangan:</span>
-                                    <span>Dalolatnoma imzolangan, kalit topshirilgan va shartnoma kuchga kirgan.</span>
+                            <div class="bg-emerald-50/90 border border-emerald-200 rounded-xl p-2.5 text-[11px] text-emerald-900 leading-relaxed space-y-2">
+                                <div class="flex items-start space-x-2">
+                                    <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-600 shrink-0 mt-0.5"></i>
+                                    <div>
+                                        <span class="font-bold">Ko'chib kirish tasdiqlangan:</span>
+                                        <span>Dalolatnoma imzolangan, kalit topshirilgan va shartnoma kuchga kirgan.</span>
+                                    </div>
+                                </div>
+                                <div class="pt-1.5 border-t border-emerald-200/60 flex items-center justify-between">
+                                    <span class="text-[10px] text-emerald-800 font-bold">📄 Rasmiy Shartnoma (PDF):</span>
+                                    <a href="/api/contract/${item.escrow_id}/download" target="_blank" download class="inline-flex items-center space-x-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-2.5 py-1 rounded-lg text-[11px] shadow-sm transition active:scale-95">
+                                        <i data-lucide="download" class="w-3.5 h-3.5"></i>
+                                        <span>Yuklab olish</span>
+                                    </a>
                                 </div>
                             </div>
                         ` : `
@@ -1522,8 +1636,125 @@
             }
         }
 
-        function scrollToTop() {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+        // ==========================================
+        // AI Smart Natural Language Search (Pillar 3)
+        // ==========================================
+        async function handleAiSearch() {
+            const input = document.getElementById('ai-search-input');
+            const q = input.value.trim();
+            if (!q) {
+                resetAiSearch();
+                return;
+            }
+
+            const btn = document.getElementById('btn-ai-search');
+            const originalBtn = btn.innerHTML;
+            btn.innerHTML = `<div class="animate-spin w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full mx-auto"></div>`;
+
+            try {
+                const res = await fetch(`/api/ai-search?q=${encodeURIComponent(q)}`);
+                const data = await res.json();
+                if (data.success) {
+                    // Update AI summary chip
+                    const statusEl = document.getElementById('ai-search-status');
+                    const summaryEl = document.getElementById('ai-search-summary-text');
+                    statusEl.classList.remove('hidden');
+                    summaryEl.innerHTML = data.ai_summary;
+
+                    filteredProperties = data.data || [];
+                    renderPropertiesList(filteredProperties);
+                    if (viewMode === 'map') {
+                        renderMapMarkers(filteredProperties);
+                    }
+                    lucide.createIcons();
+                } else {
+                    alert(data.error || "AI qidiruvda xatolik");
+                }
+            } catch (err) {
+                console.error("AI Search error:", err);
+                alert("AI qidiruv serveriga ulanib bo'lmadi.");
+            } finally {
+                btn.innerHTML = originalBtn;
+                lucide.createIcons();
+            }
+        }
+
+        function resetAiSearch() {
+            document.getElementById('ai-search-input').value = '';
+            document.getElementById('ai-search-status').classList.add('hidden');
+            applyFilters();
+        }
+
+        // ==========================================
+        // Referral & 30% Cashback Modal (Pillar 4)
+        // ==========================================
+        function getTelegramUserId() {
+            if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe && window.Telegram.WebApp.initDataUnsafe.user) {
+                return window.Telegram.WebApp.initDataUnsafe.user.id;
+            }
+            return '111222333';
+        }
+
+        async function openReferralModal() {
+            const uid = getTelegramUserId();
+            const botUser = "RentTrust_Uz_Bot";
+            const link = `https://t.me/${botUser}?start=ref_${uid}`;
+            
+            document.getElementById('referral-link-input').value = link;
+
+            // Load live referral stats
+            try {
+                const res = await fetch(`/api/referral/stats?user_id=${uid}`);
+                const data = await res.json();
+                if (data.success && data.data) {
+                    document.getElementById('ref-stat-invited').innerText = `${data.data.total_invited || 0} ta`;
+                    document.getElementById('ref-stat-deals').innerText = `${data.data.completed_deals || 0} ta`;
+                    document.getElementById('ref-stat-cashback').innerText = `${(data.data.total_cashback_uzs || 0).toLocaleString()} UZS`;
+                }
+            } catch (e) {
+                console.log("Stats fetch error:", e);
+            }
+
+            const modal = document.getElementById('referral-modal');
+            const container = document.getElementById('referral-modal-container');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                container.classList.remove('translate-y-full');
+            }, 10);
+            lucide.createIcons();
+        }
+
+        function closeReferralModal() {
+            const container = document.getElementById('referral-modal-container');
+            container.classList.add('translate-y-full');
+            setTimeout(() => {
+                document.getElementById('referral-modal').classList.add('hidden');
+            }, 300);
+        }
+
+        function copyReferralLink() {
+            const input = document.getElementById('referral-link-input');
+            input.select();
+            input.setSelectionRange(0, 99999);
+            navigator.clipboard.writeText(input.value);
+
+            const copyText = document.getElementById('copy-ref-text');
+            copyText.innerText = "Nusxalandi! ✅";
+            setTimeout(() => {
+                copyText.innerText = "Nusxa";
+            }, 2000);
+        }
+
+        function shareReferralTelegram() {
+            const input = document.getElementById('referral-link-input');
+            const link = input.value;
+            const text = "RentTrust UZ orqali 50% lik rieltor komissiyasisiz, 100% Escrow kafolati bilan Toshkentdan xonadon toping! Havola orqali kiring va 30% chegirma oling:";
+            const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(link)}&text=${encodeURIComponent(text)}`;
+            if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.openTelegramLink) {
+                window.Telegram.WebApp.openTelegramLink(shareUrl);
+            } else {
+                window.open(shareUrl, '_blank');
+            }
         }
 
         // Initial Load
