@@ -36,6 +36,10 @@ def supabase_post(endpoint, data):
 def index():
     return render_template("index.html")
 
+@app.route("/admin")
+def admin_panel():
+    return render_template("admin.html")
+
 @app.route("/api/properties", methods=["GET"])
 def get_properties():
     try:

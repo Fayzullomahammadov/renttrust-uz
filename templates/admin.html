@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RentTrust UZ — Admin & Operator Paneli</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-slate-100 text-slate-900 min-h-screen antialiased">
+
+    <!-- Top Admin Bar -->
+    <header class="bg-slate-900 text-white border-b border-slate-800 sticky top-0 z-30 px-6 py-3.5">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center text-slate-950 font-bold shadow-lg shadow-emerald-500/20">
+                    <i data-lucide="shield" class="w-5 h-5 text-white"></i>
+                </div>
+                <div>
+                    <div class="flex items-center space-x-2">
+                        <span class="font-extrabold text-base tracking-tight text-white">RentTrust UZ</span>
+                        <span class="bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase">Admin Console</span>
+                    </div>
+                    <p class="text-xs text-slate-400">Escrow va Arizalar boshqaruv markazi</p>
+                </div>
+            </div>
+
+            <div class="flex items-center space-x-4">
+                <div class="text-right hidden sm:block">
+                    <span class="text-xs font-bold text-white block">Fayzullo Mahammadov</span>
+                    <span class="text-[11px] text-emerald-400">Bosh Operator / Asoschi</span>
+                </div>
+                <a href="/" target="_blank" class="inline-flex items-center space-x-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-1.5 rounded-lg text-xs font-semibold transition border border-slate-700">
+                    <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+                    <span>Saytni ochish</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-6">
+
+        <!-- 4 Stat Cards -->
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            
+            <div class="bg-white rounded-2xl p-4 border border-slate-200/80 shadow-sm flex items-center justify-between">
+                <div>
+                    <span class="text-xs font-semibold text-slate-500 block">Jami Xonadonlar</span>
+                    <span class="text-2xl font-black text-slate-900 mt-1 block" id="stat-properties">0</span>
+                    <span class="text-[10px] text-emerald-600 font-medium">Bazada faol e'lonlar</span>
+                </div>
+                <div class="w-11 h-11 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
+                    <i data-lucide="home" class="w-5 h-5"></i>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-2xl p-4 border border-slate-200/80 shadow-sm flex items-center justify-between">
+                <div>
+                    <span class="text-xs font-semibold text-slate-500 block">Faol Arizalar</span>
+                    <span class="text-2xl font-black text-slate-900 mt-1 block" id="stat-applications">0</span>
+                    <span class="text-[10px] text-amber-600 font-medium">Ijarachilar so'rovlari</span>
+                </div>
+                <div class="w-11 h-11 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center">
+                    <i data-lucide="calendar" class="w-5 h-5"></i>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-2xl p-4 border border-slate-200/80 shadow-sm flex items-center justify-between">
+                <div>
+                    <span class="text-xs font-semibold text-slate-500 block">Escrowdagi Pullar</span>
+                    <span class="text-lg font-black text-emerald-700 mt-1 block" id="stat-escrow">0 so'm</span>
+                    <span class="text-[10px] text-slate-400 font-medium">Muzlatilgan mablag'</span>
+                </div>
+                <div class="w-11 h-11 rounded-2xl bg-teal-50 text-teal-600 flex items-center justify-center">
+                    <i data-lucide="lock" class="w-5 h-5"></i>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-2xl p-4 border border-slate-200/80 shadow-sm flex items-center justify-between">
+                <div>
+                    <span class="text-xs font-semibold text-slate-500 block">Platforma Foydasi (4%)</span>
+                    <span class="text-lg font-black text-indigo-700 mt-1 block" id="stat-revenue">0 so'm</span>
+                    <span class="text-[10px] text-indigo-500 font-medium">Split komissiya marjasi</span>
+                </div>
+                <div class="w-11 h-11 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
+                    <i data-lucide="coins" class="w-5 h-5"></i>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Tab Controls -->
+        <div class="flex items-center space-x-2 border-b border-slate-200 pb-2">
+            <button onclick="switchTab('properties')" id="tab-btn-properties" class="tab-btn px-4 py-2 rounded-xl text-xs font-bold bg-slate-900 text-white transition">
+                🏠 Uylar katalogi (<span id="count-prop">0</span>)
+            </button>
+            <button onclick="switchTab('escrow')" id="tab-btn-escrow" class="tab-btn px-4 py-2 rounded-xl text-xs font-bold bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 transition">
+                🔒 Escrow va Bitimlar (<span id="count-escrow">0</span>)
+            </button>
+            <button onclick="switchTab('users')" id="tab-btn-users" class="tab-btn px-4 py-2 rounded-xl text-xs font-bold bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 transition">
+                👥 Foydalanuvchilar (<span id="count-users">0</span>)
+            </button>
+        </div>
+
+        <!-- TAB 1: PROPERTIES MANAGEMENT -->
+        <div id="tab-properties" class="space-y-4">
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                <div class="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
+                    <div>
+                        <h3 class="font-bold text-sm text-slate-900">Barcha e'lonlar ro'yxati</h3>
+                        <p class="text-xs text-slate-500">Uylarni tekshirish (Verified) va statuslarini boshqarish</p>
+                    </div>
+                    <button onclick="loadAdminData()" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-lg font-semibold inline-flex items-center space-x-1">
+                        <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+                        <span>Yangilash</span>
+                    </button>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse text-xs">
+                        <thead>
+                            <tr class="bg-slate-50 text-slate-500 border-b border-slate-100">
+                                <th class="py-3 px-4 font-semibold">Xonadon</th>
+                                <th class="py-3 px-4 font-semibold">Tuman / Manzil</th>
+                                <th class="py-3 px-4 font-semibold">Ijara narxi</th>
+                                <th class="py-3 px-4 font-semibold">Depozit</th>
+                                <th class="py-3 px-4 font-semibold">Status</th>
+                                <th class="py-3 px-4 font-semibold">Verified</th>
+                                <th class="py-3 px-4 font-semibold text-right">Amallar</th>
+                            </tr>
+                        </thead>
+                        <tbody id="properties-table-body" class="divide-y divide-slate-100">
+                            <!-- Dynamic Content -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 2: ESCROW & TRANSACTIONS -->
+        <div id="tab-escrow" class="space-y-4 hidden">
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                <div class="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
+                    <div>
+                        <h3 class="font-bold text-sm text-slate-900">Escrow Tranzaksiyalari & Nizolar arbitraji</h3>
+                        <p class="text-xs text-slate-500">Muzlatilgan pullarni uy egasiga o'tkazish yoki ijarachiga qaytarish</p>
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse text-xs">
+                        <thead>
+                            <tr class="bg-slate-50 text-slate-500 border-b border-slate-100">
+                                <th class="py-3 px-4 font-semibold">Tranzaksiya ID</th>
+                                <th class="py-3 px-4 font-semibold">Turi</th>
+                                <th class="py-3 px-4 font-semibold">Summa</th>
+                                <th class="py-3 px-4 font-semibold">Komissiya (4%)</th>
+                                <th class="py-3 px-4 font-semibold">Status</th>
+                                <th class="py-3 px-4 font-semibold text-right">Arbitraj amallari</th>
+                            </tr>
+                        </thead>
+                        <tbody id="escrow-table-body" class="divide-y divide-slate-100">
+                            <!-- Dynamic Content -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 3: USERS LIST -->
+        <div id="tab-users" class="space-y-4 hidden">
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                <div class="px-5 py-4 border-b border-slate-100">
+                    <h3 class="font-bold text-sm text-slate-900">Foydalanuvchilar (Ijarachilar va Uy egalari)</h3>
+                    <p class="text-xs text-slate-500">Telefon raqamlar va ishonch reytinglari (Trust Score)</p>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse text-xs">
+                        <thead>
+                            <tr class="bg-slate-50 text-slate-500 border-b border-slate-100">
+                                <th class="py-3 px-4 font-semibold">Ism-familiya</th>
+                                <th class="py-3 px-4 font-semibold">Telefon</th>
+                                <th class="py-3 px-4 font-semibold">Roli</th>
+                                <th class="py-3 px-4 font-semibold">Reyting</th>
+                                <th class="py-3 px-4 font-semibold">Ro'yxatdan o'tgan</th>
+                            </tr>
+                        </thead>
+                        <tbody id="users-table-body" class="divide-y divide-slate-100">
+                            <!-- Dynamic Content -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Client-side Admin Logic -->
+    <script>
+        const SUPABASE_URL = "https://jicqycwmswpxagmnnyoj.supabase.co";
+        const SUPABASE_KEY = "sb_publishable_Hk3qScveZpR6IVhfaGU0LA_X6Mx2AvH";
+
+        function formatMoney(amount) {
+            return new Intl.NumberFormat('uz-UZ').format(amount || 0) + " so'm";
+        }
+
+        function switchTab(tabName) {
+            ['properties', 'escrow', 'users'].forEach(t => {
+                document.getElementById(`tab-${t}`).classList.add('hidden');
+                document.getElementById(`tab-btn-${t}`).classList.remove('bg-slate-900', 'text-white');
+                document.getElementById(`tab-btn-${t}`).classList.add('bg-white', 'text-slate-600');
+            });
+
+            document.getElementById(`tab-${tabName}`).classList.remove('hidden');
+            document.getElementById(`tab-btn-${tabName}`).classList.add('bg-slate-900', 'text-white');
+            document.getElementById(`tab-btn-${tabName}`).classList.remove('bg-white', 'text-slate-600');
+        }
+
+        async function loadAdminData() {
+            try {
+                // 1. Fetch properties
+                const pRes = await fetch(`${SUPABASE_URL}/rest/v1/properties?select=*&order=created_at.desc`, {
+                    headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+                });
+                const properties = await pRes.json();
+                document.getElementById('stat-properties').innerText = properties.length;
+                document.getElementById('count-prop').innerText = properties.length;
+                renderPropertiesTable(properties);
+
+                // 2. Fetch users
+                const uRes = await fetch(`${SUPABASE_URL}/rest/v1/users?select=*&order=created_at.desc`, {
+                    headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+                });
+                const users = await uRes.json();
+                document.getElementById('count-users').innerText = users.length;
+                renderUsersTable(users);
+
+                // 3. Fetch applications
+                const aRes = await fetch(`${SUPABASE_URL}/rest/v1/applications?select=*`, {
+                    headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+                });
+                const applications = await aRes.json();
+                document.getElementById('stat-applications').innerText = applications.length;
+
+                // 4. Fetch escrow transactions
+                const eRes = await fetch(`${SUPABASE_URL}/rest/v1/escrow_transactions?select=*&order=created_at.desc`, {
+                    headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+                });
+                const escrows = await eRes.json();
+                document.getElementById('count-escrow').innerText = escrows.length;
+
+                let totalHeld = 0;
+                let totalRev = 0;
+                escrows.forEach(e => {
+                    if (e.status === 'held') totalHeld += (e.amount_uzs || 0);
+                    totalRev += (e.total_platform_fee_uzs || 0);
+                });
+                document.getElementById('stat-escrow').innerText = formatMoney(totalHeld);
+                document.getElementById('stat-revenue').innerText = formatMoney(totalRev);
+                renderEscrowTable(escrows);
+
+            } catch (err) {
+                console.error("Admin ma'lumotlarini yuklashda xatolik:", err);
+            }
+        }
+
+        function renderPropertiesTable(list) {
+            const tbody = document.getElementById('properties-table-body');
+            tbody.innerHTML = list.map(item => `
+                <tr class="hover:bg-slate-50 transition">
+                    <td class="py-3 px-4 font-bold text-slate-900">${item.title}</td>
+                    <td class="py-3 px-4 text-slate-600"><span class="px-2 py-0.5 rounded-md bg-slate-100 font-semibold">${item.district}</span> ${item.address}</td>
+                    <td class="py-3 px-4 font-bold text-emerald-700">${formatMoney(item.monthly_rent_uzs)}</td>
+                    <td class="py-3 px-4 text-slate-600">${formatMoney(item.deposit_uzs)}</td>
+                    <td class="py-3 px-4">
+                        <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${item.status === 'available' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-800'}">
+                            ${item.status}
+                        </span>
+                    </td>
+                    <td class="py-3 px-4">
+                        ${item.is_verified ? '<span class="text-emerald-600 font-bold">✅ Ha</span>' : '<span class="text-slate-400">Yo\'q</span>'}
+                    </td>
+                    <td class="py-3 px-4 text-right">
+                        <button onclick="toggleVerify('${item.id}', ${!item.is_verified})" class="px-2.5 py-1 rounded-lg text-[10px] font-bold border border-slate-200 hover:bg-slate-100 transition">
+                            ${item.is_verified ? 'Unverify' : 'Verify qilish'}
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+            lucide.createIcons();
+        }
+
+        function renderEscrowTable(list) {
+            const tbody = document.getElementById('escrow-table-body');
+            if (list.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="py-8 text-center text-slate-400">Hozircha faol Escrow tranzaksiyalari yo'q.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = list.map(item => `
+                <tr class="hover:bg-slate-50 transition">
+                    <td class="py-3 px-4 font-mono text-[11px] text-slate-500">${item.id.slice(0, 8)}...</td>
+                    <td class="py-3 px-4 font-semibold text-slate-800">${item.type}</td>
+                    <td class="py-3 px-4 font-bold text-slate-900">${formatMoney(item.amount_uzs)}</td>
+                    <td class="py-3 px-4 font-bold text-emerald-600">${formatMoney(item.total_platform_fee_uzs)}</td>
+                    <td class="py-3 px-4">
+                        <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${item.status === 'held' ? 'bg-amber-100 text-amber-800' : (item.status === 'released_to_landlord' ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800')}">
+                            ${item.status}
+                        </span>
+                    </td>
+                    <td class="py-3 px-4 text-right space-x-1">
+                        ${item.status === 'held' ? `
+                            <button onclick="resolveEscrow('${item.id}', 'release')" class="px-2 py-1 bg-emerald-600 text-white rounded-lg text-[10px] font-bold hover:bg-emerald-700">
+                                Uy egasiga o'tkazish
+                            </button>
+                            <button onclick="resolveEscrow('${item.id}', 'refund')" class="px-2 py-1 bg-rose-600 text-white rounded-lg text-[10px] font-bold hover:bg-rose-700">
+                                Qaytarish (Refund)
+                            </button>
+                        ` : '<span class="text-slate-400 text-[11px]">Yakunlangan</span>'}
+                    </td>
+                </tr>
+            `).join('');
+            lucide.createIcons();
+        }
+
+        function renderUsersTable(list) {
+            const tbody = document.getElementById('users-table-body');
+            tbody.innerHTML = list.map(u => `
+                <tr class="hover:bg-slate-50 transition">
+                    <td class="py-3 px-4 font-bold text-slate-900">${u.full_name}</td>
+                    <td class="py-3 px-4 font-mono text-slate-600">${u.phone_number}</td>
+                    <td class="py-3 px-4">
+                        <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${u.role === 'landlord' ? 'bg-indigo-100 text-indigo-700' : 'bg-emerald-100 text-emerald-700'}">
+                            ${u.role}
+                        </span>
+                    </td>
+                    <td class="py-3 px-4 font-bold text-amber-500">⭐ ${u.trust_score}</td>
+                    <td class="py-3 px-4 text-slate-400 text-[11px]">${new Date(u.created_at).toLocaleDateString('uz-UZ')}</td>
+                </tr>
+            `).join('');
+            lucide.createIcons();
+        }
+
+        async function toggleVerify(id, newStatus) {
+            await fetch(`${SUPABASE_URL}/rest/v1/properties?id=eq.${id}`, {
+                method: 'PATCH',
+                headers: {
+                    'apikey': SUPABASE_KEY,
+                    'Authorization': `Bearer ${SUPABASE_KEY}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ is_verified: newStatus })
+            });
+            loadAdminData();
+        }
+
+        async function resolveEscrow(id, action) {
+            const newStatus = action === 'release' ? 'released_to_landlord' : 'refunded_to_tenant';
+            const confirmMsg = action === 'release' ? "Haqiqatan ham pulni uy egasiga o'tkazmoqchimisiz?" : "Pulni ijarachiga qaytarmoqchimisiz?";
+            if (!confirm(confirmMsg)) return;
+
+            await fetch(`${SUPABASE_URL}/rest/v1/escrow_transactions?id=eq.${id}`, {
+                method: 'PATCH',
+                headers: {
+                    'apikey': SUPABASE_KEY,
+                    'Authorization': `Bearer ${SUPABASE_KEY}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ status: newStatus })
+            });
+            loadAdminData();
+        }
+
+        // Initial Load
+        loadAdminData();
+        lucide.createIcons();
+    </script>
+</body>
+</html>
