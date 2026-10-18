@@ -4,6 +4,7 @@ import urllib.parse
 import json
 import os
 import sys
+import datetime
 
 # Windows konsolida UTF-8 xatoliklarini oldini olish
 if sys.platform == "win32":
@@ -361,7 +362,7 @@ def create_hold():
             "tenant_id": tenant_id,
             "move_in_date": move_in_date,
             "note": note,
-            "status": "approved"
+            "status": "accepted"
         })
         application_id = app_res[0]["id"]
 
@@ -369,6 +370,7 @@ def create_hold():
         tenant_fee = amount * 0.02
         landlord_fee = amount * 0.02
         total_fee = tenant_fee + landlord_fee
+        now_iso = datetime.datetime.now(datetime.timezone.utc).isoformat()
 
         escrow_res = supabase_post("escrow_transactions", {
             "application_id": application_id,
@@ -382,7 +384,7 @@ def create_hold():
             "total_platform_fee_uzs": total_fee,
             "payment_provider": "click",
             "status": "held",
-            "held_at": "NOW()"
+            "held_at": now_iso
         })
 
         # 5. Mulk statusini "on_hold" ga o'zgartirish
@@ -457,10 +459,11 @@ def resolve_escrow_admin():
 
         amount = escrow.get("amount_uzs", 0)
 
+        now_iso = datetime.datetime.now(datetime.timezone.utc).isoformat()
         if action == "release":
             supabase_patch(f"escrow_transactions?id=eq.{escrow_id}", {
                 "status": "released_to_landlord",
-                "released_at": "NOW()"
+                "released_at": now_iso
             })
             supabase_patch(f"properties?id=eq.{escrow['property_id']}", {"status": "rented"})
 
@@ -487,7 +490,7 @@ def resolve_escrow_admin():
         elif action == "refund":
             supabase_patch(f"escrow_transactions?id=eq.{escrow_id}", {
                 "status": "refunded_to_tenant",
-                "refunded_at": "NOW()"
+                "refunded_at": now_iso
             })
             supabase_patch(f"properties?id=eq.{escrow['property_id']}", {"status": "available"})
 
