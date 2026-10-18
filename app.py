@@ -134,6 +134,28 @@ def index():
 def admin_panel():
     return render_template("admin.html")
 
+@app.route("/robots.txt")
+def robots_txt():
+    content = "User-agent: *\nAllow: /\nSitemap: https://renttrust-uz.onrender.com/sitemap.xml\n"
+    return content, 200, {"Content-Type": "text/plain"}
+
+@app.route("/sitemap.xml")
+def sitemap_xml():
+    xml = """<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://renttrust-uz.onrender.com/</loc>
+    <priority>1.0</priority>
+    <changefreq>daily</changefreq>
+  </url>
+  <url>
+    <loc>https://renttrust-uz.onrender.com/admin</loc>
+    <priority>0.5</priority>
+    <changefreq>weekly</changefreq>
+  </url>
+</urlset>"""
+    return xml, 200, {"Content-Type": "application/xml"}
+
 UPLOAD_FOLDER = os.path.join(os.path.dirname(__file__), 'static', 'uploads')
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'webp', 'gif'}
