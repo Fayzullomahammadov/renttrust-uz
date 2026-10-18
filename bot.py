@@ -10,7 +10,7 @@ if sys.platform == "win32":
     sys.stderr.reconfigure(encoding='utf-8')
 
 # Sizning joriy HTTPS Web App manzilingiz:
-WEB_APP_URL = "https://f3d13fd4a4b83b.lhr.life"
+WEB_APP_URL = "https://e11e72a18c5436.lhr.life"
 
 def send_telegram_request(token, method, data=None):
     url = f"https://api.telegram.org/bot{token}/{method}"

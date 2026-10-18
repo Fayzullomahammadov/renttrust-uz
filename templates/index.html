@@ -324,12 +324,64 @@
                 </div>
                 <span class="text-[10px] font-bold">E'lon berish</span>
             </button>
-            <button onclick="alert('RentTrust UZ Yordam xizmati: @renttrust_admin')" class="flex flex-col items-center text-slate-400 hover:text-slate-700 space-y-1">
+            <button onclick="openTermsModal()" class="flex flex-col items-center text-slate-400 hover:text-slate-700 space-y-1">
+                <i data-lucide="scale" class="w-5 h-5"></i>
+                <span class="text-[10px] font-medium">Qoidalar</span>
+            </button>
+            <button onclick="alert('RentTrust UZ Qo\'llab-quvvatlash xizmati: @renttrust_admin')" class="flex flex-col items-center text-slate-400 hover:text-slate-700 space-y-1">
                 <i data-lucide="help-circle" class="w-5 h-5"></i>
                 <span class="text-[10px] font-medium">Yordam</span>
             </button>
         </div>
     </nav>
+
+    <!-- Ommaviy Oferta va Qoidalar Modal -->
+    <div id="terms-modal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden flex flex-col justify-end">
+        <div class="bg-white rounded-t-3xl max-h-[85vh] overflow-y-auto w-full max-w-lg mx-auto shadow-2xl transition-transform duration-300 transform translate-y-full flex flex-col" id="terms-modal-container">
+            <div class="sticky top-0 bg-white/95 backdrop-blur-md px-4 py-3 border-b border-slate-100 flex items-center justify-between z-10">
+                <div class="flex items-center space-x-2">
+                    <div class="w-7 h-7 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center">
+                        <i data-lucide="shield-check" class="w-4 h-4"></i>
+                    </div>
+                    <span class="text-sm font-extrabold text-slate-900">Foydalanish Qoidalari va Oferta</span>
+                </div>
+                <button onclick="closeTermsModal()" class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center hover:bg-slate-200">
+                    <i data-lucide="x" class="w-4 h-4"></i>
+                </button>
+            </div>
+
+            <div class="p-4 space-y-3.5 text-xs text-slate-600 leading-relaxed">
+                <div class="bg-emerald-50 border border-emerald-200 rounded-xl p-3 text-emerald-900">
+                    <h4 class="font-bold text-xs mb-1">🛡️ 100% Escrow va Xavfsiz To'lov</h4>
+                    <p class="text-[11px]">RentTrust UZ — to'lov agenti hisoblanadi. Siz to'lagan ijara va depozit to'g'ridan-to'g'ri uy egasiga o'tmaydi. Ko'chib kirib, uyni tasdiqlamaguningizcha platformaning muzlatilgan hisobida turadi.</p>
+                </div>
+
+                <div class="space-y-1">
+                    <h4 class="font-bold text-slate-800 text-xs">1. Split Komissiya (2% + 2%)</h4>
+                    <p>Maklerlarning 50% lik qimmat to'loviga chek qo'yish maqsadida xizmat haqi har ikkala tomondan atigi 2% dan (jami 4%) tashkil etadi.</p>
+                </div>
+
+                <div class="space-y-1">
+                    <h4 class="font-bold text-slate-800 text-xs">2. Bekor qilish va Pulni qaytarish (Refund)</h4>
+                    <p>• <strong>Ko'chishdan 3 kun (72 soat) oldin:</strong> bekor qilinsa, to'lov 100% ijarachiga qaytariladi.<br>
+                    • <strong>72 soatdan kam vaqt qolganda:</strong> bekor qilinsa, hold to'lovi uy egasiga bo'sh turgan vaqt uchun kompensatsiya sifatida o'tkaziladi.<br>
+                    • <strong>Uy egasi aybi bilan (feyk rasm, kalit berilmasa):</strong> mablag' zudlik bilan to'liq qaytariladi va uy egasi bloklanadi.</p>
+                </div>
+
+                <div class="space-y-1">
+                    <h4 class="font-bold text-slate-800 text-xs">3. ijara.soliq.uz va 12% Soliq Imtiyozi</h4>
+                    <p>Barcha ijara bitimlari Soliq Qo'mitasi portalida rasmiylashtirilishi shart. Oliy ta'lim talabalariga ijara bergan uy egalari <strong>12% daromad solig'idan (JSHODS) to'liq ozod</strong> hisoblanadi.</p>
+                </div>
+
+                <div class="border-t border-slate-100 pt-3">
+                    <a href="https://t.me/renttrust_admin" class="w-full inline-flex items-center justify-center space-x-1.5 bg-slate-100 text-slate-700 font-bold py-2.5 rounded-xl hover:bg-slate-200 transition text-xs">
+                        <i data-lucide="message-square" class="w-4 h-4"></i>
+                        <span>Yurist yoki Operator bilan bog'lanish</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Client-side Logic Script -->
     <script>
@@ -619,6 +671,25 @@
             container.classList.add('translate-y-full');
             setTimeout(() => {
                 document.getElementById('add-modal').classList.add('hidden');
+            }, 300);
+        }
+
+        // Terms Modal Functions
+        function openTermsModal() {
+            const modal = document.getElementById('terms-modal');
+            const container = document.getElementById('terms-modal-container');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                container.classList.remove('translate-y-full');
+            }, 10);
+            lucide.createIcons();
+        }
+
+        function closeTermsModal() {
+            const container = document.getElementById('terms-modal-container');
+            container.classList.add('translate-y-full');
+            setTimeout(() => {
+                document.getElementById('terms-modal').classList.add('hidden');
             }, 300);
         }
 
