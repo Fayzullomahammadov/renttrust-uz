@@ -237,8 +237,22 @@ def publish_property_to_channel(prop, landlord_name=None):
     floor = prop.get("floor", 1)
     total_floors = prop.get("total_floors", 5)
     monthly_rent = prop.get("monthly_rent_uzs", 0)
-    deposit = prop.get("deposit_uzs", 0)
-    amenities = ", ".join(prop.get("amenities", [])) if prop.get("amenities") else "Barcha qulayliklar mavjud"
+    amenity_labels = {
+        "ac": "❄️ Konditsioner",
+        "wifi": "📶 Wi-Fi",
+        "elevator": "🛗 Lift",
+        "refrigerator": "🧊 Muzlatgich",
+        "washing_machine": "🧺 Kir yuvish mashinasi",
+        "tv": "📺 Televizor",
+        "parking": "🚗 Avtoturargoh",
+        "balcony": "🌿 Balkon",
+        "furniture": "🛋 Mebel"
+    }
+    raw_amenities = prop.get("amenities", [])
+    if raw_amenities:
+        amenities = ", ".join([amenity_labels.get(a, a) for a in raw_amenities])
+    else:
+        amenities = "Barcha qulayliklar mavjud"
     prop_id = prop.get("id")
     
     caption = (
