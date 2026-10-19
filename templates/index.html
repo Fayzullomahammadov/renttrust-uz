@@ -390,18 +390,21 @@
                     </div>
                 </div>
 
-                <!-- Camera / Gallery Rasm Yuklash -->
+                <!-- Camera / Gallery Rasm Yuklash (Ko'p rasm yuklash) -->
                 <div class="space-y-1.5 border-t border-slate-100 pt-2">
-                    <label class="font-bold text-slate-700 block">Xonadon rasmlari (Kamera yoki Galereyadan)</label>
-                    <label class="flex items-center justify-center space-x-2 border-2 border-dashed border-emerald-300 bg-emerald-50/50 hover:bg-emerald-50 rounded-xl p-3.5 cursor-pointer transition">
-                        <i data-lucide="camera" class="w-5 h-5 text-emerald-600"></i>
-                        <span class="text-xs font-bold text-emerald-700" id="upload-label">Rasm yuklash (Kamera / Galereya)</span>
-                        <input type="file" id="prop-file-input" accept="image/*" class="hidden" onchange="handleFileSelect(event)">
-                    </label>
-                    <div id="image-preview-container" class="hidden relative rounded-xl overflow-hidden h-32 border border-slate-200 mt-2">
-                        <img id="image-preview" src="" class="w-full h-full object-cover">
-                        <button type="button" onclick="clearSelectedImage()" class="absolute top-2 right-2 w-7 h-7 rounded-full bg-black/70 text-white flex items-center justify-center text-xs font-bold shadow-md">✕</button>
+                    <div class="flex items-center justify-between">
+                        <label class="font-bold text-slate-700 text-xs block">Xonadon rasmlari (Kamera yoki Galereyadan)</label>
+                        <span id="prop-photos-count" class="text-[10px] font-semibold text-emerald-600">0 ta rasm tanlandi</span>
                     </div>
+                    
+                    <div id="prop-photos-grid" class="grid grid-cols-3 gap-2 pt-1">
+                        <label class="h-24 rounded-xl border-2 border-dashed border-emerald-300 bg-emerald-50/50 flex flex-col items-center justify-center cursor-pointer hover:bg-emerald-100/50 transition active:scale-95">
+                            <i data-lucide="camera" class="w-6 h-6 text-emerald-600 mb-1"></i>
+                            <span class="text-[10px] font-bold text-emerald-700 text-center px-1" id="upload-label">Rasm yuklash</span>
+                            <input type="file" id="prop-file-input" accept="image/*" multiple class="hidden" onchange="handleFileSelect(event)">
+                        </label>
+                    </div>
+                    <p class="text-[10px] text-slate-400">Bir nechta rasm tanlashingiz mumkin (maksimal 10 ta). Birinchi rasm asosiy bo'ladi.</p>
                     <input type="hidden" id="prop-photo" value="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800">
                 </div>
 
@@ -1601,6 +1604,11 @@
                                     <i data-lucide="shield" class="w-3 h-3 mr-1 text-emerald-400"></i> ${t.prop_escrow_badge}
                                 </span>
                             </div>
+                            ${(item.photos && item.photos.length > 1) ? `
+                                <div class="absolute bottom-2.5 left-2.5 bg-black/60 backdrop-blur-md px-2 py-0.5 rounded-md text-white text-[10px] font-bold flex items-center shadow-sm">
+                                    <i data-lucide="camera" class="w-3 h-3 mr-1 inline"></i> ${item.photos.length} rasm
+                                </div>
+                            ` : ''}
                             <div class="absolute bottom-2.5 right-2.5 bg-black/75 backdrop-blur-md px-2 py-1 rounded-lg text-white font-extrabold text-xs">
                                 ${formatMoney(item.monthly_rent_uzs)} <span class="text-[9px] font-normal text-slate-300">${t.prop_month}</span>
                             </div>
@@ -1817,49 +1825,149 @@
             }
         }
 
+        let uploadedPropertyPhotos = [];
+
         async function handleFileSelect(event) {
-            const file = event.target.files[0];
-            if (!file) return;
+            const files = event.target.files;
+            if (!files || files.length === 0) return;
 
             const label = document.getElementById('upload-label');
-            label.innerText = "Yuklanmoqda...";
+            const totalToUpload = files.length;
 
-            const formData = new FormData();
-            formData.append('file', file);
-
-            try {
-                const res = await fetch('/api/upload', {
-                    method: 'POST',
-                    body: formData
-                });
-                const data = await res.json();
-                if (data.success) {
-                    document.getElementById('prop-photo').value = data.url;
-                    document.getElementById('image-preview').src = data.url;
-                    document.getElementById('image-preview-container').classList.remove('hidden');
-                    label.innerText = "Boshqa rasm tanlash";
-                } else {
-                    alert("Rasm yuklashda xatolik: " + data.error);
-                    label.innerText = "Rasm yuklash (Kamera / Galereya)";
-                }
-            } catch (err) {
-                // Fallback to local FileReader preview
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    document.getElementById('prop-photo').value = e.target.result;
-                    document.getElementById('image-preview').src = e.target.result;
-                    document.getElementById('image-preview-container').classList.remove('hidden');
-                    label.innerText = "Rasm tanlandi";
-                };
-                reader.readAsDataURL(file);
+            if (uploadedPropertyPhotos.length + totalToUpload > 10) {
+                alert("Maksimal 10 tagacha rasm yuklash mumkin.");
+                event.target.value = "";
+                return;
             }
+
+            if (label) label.innerText = `Yuklanmoqda (0/${totalToUpload})...`;
+
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                if (label) label.innerText = `Yuklanmoqda (${i + 1}/${totalToUpload})...`;
+
+                const formData = new FormData();
+                formData.append('file', file);
+
+                try {
+                    const res = await fetch('/api/upload', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    const data = await res.json();
+                    if (data.success && data.url) {
+                        uploadedPropertyPhotos.push(data.url);
+                        renderUploadedPhotosGrid();
+                    } else {
+                        console.warn("Upload error:", data.error);
+                    }
+                } catch (err) {
+                    console.error("Upload error:", err);
+                    try {
+                        const dataUrl = await new Promise(resolve => {
+                            const r = new FileReader();
+                            r.onload = ev => resolve(ev.target.result);
+                            r.onerror = () => resolve(null);
+                            r.readAsDataURL(file);
+                        });
+                        if (dataUrl) {
+                            uploadedPropertyPhotos.push(dataUrl);
+                            renderUploadedPhotosGrid();
+                        }
+                    } catch (e) {}
+                }
+            }
+
+            event.target.value = "";
+            if (label) label.innerText = "Rasm yuklash";
+            renderUploadedPhotosGrid();
+        }
+
+        function removeUploadedPhoto(index) {
+            uploadedPropertyPhotos.splice(index, 1);
+            renderUploadedPhotosGrid();
+        }
+
+        function renderUploadedPhotosGrid() {
+            const grid = document.getElementById('prop-photos-grid');
+            const counter = document.getElementById('prop-photos-count');
+            const hiddenInput = document.getElementById('prop-photo');
+            if (!grid) return;
+
+            if (counter) {
+                counter.innerText = `${uploadedPropertyPhotos.length} / 10 ta rasm tanlandi`;
+            }
+
+            if (hiddenInput) {
+                hiddenInput.value = (uploadedPropertyPhotos.length > 0) ? uploadedPropertyPhotos[0] : "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800";
+            }
+
+            const canAddMore = uploadedPropertyPhotos.length < 10;
+            let html = '';
+
+            if (canAddMore) {
+                html += `
+                    <label class="h-24 rounded-xl border-2 border-dashed border-emerald-300 bg-emerald-50/50 flex flex-col items-center justify-center cursor-pointer hover:bg-emerald-100/50 transition active:scale-95">
+                        <i data-lucide="${uploadedPropertyPhotos.length > 0 ? 'plus' : 'camera'}" class="w-6 h-6 text-emerald-600 mb-1"></i>
+                        <span class="text-[10px] font-bold text-emerald-700 text-center px-1" id="upload-label">
+                            ${uploadedPropertyPhotos.length > 0 ? 'Yana qo\'shish' : 'Rasm yuklash'}
+                        </span>
+                        <input type="file" id="prop-file-input" accept="image/*" multiple class="hidden" onchange="handleFileSelect(event)">
+                    </label>
+                `;
+            }
+
+            uploadedPropertyPhotos.forEach((url, idx) => {
+                html += `
+                    <div class="relative h-24 rounded-xl overflow-hidden border border-slate-200 group shadow-sm bg-slate-100">
+                        <img src="${url}" class="w-full h-full object-cover">
+                        ${idx === 0 ? `
+                            <span class="absolute bottom-1 left-1 bg-emerald-600/95 text-white text-[9px] font-bold px-1.5 py-0.5 rounded shadow">
+                                Asosiy
+                            </span>
+                        ` : ''}
+                        <button type="button" onclick="removeUploadedPhoto(${idx})" class="absolute top-1 right-1 w-6 h-6 rounded-full bg-black/75 text-white flex items-center justify-center text-xs font-bold shadow-md hover:bg-rose-600 transition active:scale-90">
+                            ✕
+                        </button>
+                    </div>
+                `;
+            });
+
+            grid.innerHTML = html;
+            if (window.lucide) lucide.createIcons();
         }
 
         function clearSelectedImage() {
-            document.getElementById('prop-photo').value = "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800";
-            document.getElementById('image-preview-container').classList.add('hidden');
-            document.getElementById('prop-file-input').value = "";
-            document.getElementById('upload-label').innerText = "Rasm yuklash (Kamera / Galereya)";
+            uploadedPropertyPhotos = [];
+            renderUploadedPhotosGrid();
+        }
+
+        function scrollCarouselTo(idx) {
+            const carousel = document.getElementById('modal-photos-carousel');
+            if (!carousel) return;
+            carousel.scrollTo({ left: carousel.clientWidth * idx, behavior: 'smooth' });
+            updateCarouselThumbnails(idx);
+        }
+
+        function onCarouselScroll(el) {
+            const idx = Math.round(el.scrollLeft / el.clientWidth);
+            const counterText = document.getElementById('modal-photo-counter-text');
+            const total = el.children.length;
+            if (counterText) counterText.innerText = `${idx + 1} / ${total}`;
+            updateCarouselThumbnails(idx);
+        }
+
+        function updateCarouselThumbnails(activeIdx) {
+            const thumbs = document.querySelectorAll('.carousel-thumb-btn');
+            thumbs.forEach((t, i) => {
+                if (i === activeIdx) {
+                    t.classList.add('border-emerald-500', 'ring-2', 'ring-emerald-500/20');
+                    t.classList.remove('border-transparent', 'opacity-60');
+                } else {
+                    t.classList.remove('border-emerald-500', 'ring-2', 'ring-emerald-500/20');
+                    t.classList.add('border-transparent', 'opacity-60');
+                }
+            });
         }
 
         // Property Modal
@@ -1877,12 +1985,51 @@
             document.getElementById('modal-price-footer').innerText = formatMoney(item.monthly_rent_uzs) + " " + t.prop_month;
 
             const photo = (item.photos && item.photos.length > 0) ? item.photos[0] : '';
+            const propPhotos = (item.photos && item.photos.length > 0) ? item.photos : (photo ? [photo] : []);
+            const hasMultiplePhotos = propPhotos.length > 1;
+
             const landlord = item.users || { full_name: (currentLang === 'ru' ? "Собственник" : "Uy Egasi"), trust_score: 4.95, total_reviews: 14 };
             const splitFee = item.monthly_rent_uzs * 0.02;
             const maklerFee = item.monthly_rent_uzs * 0.50;
             const savings = maklerFee - splitFee;
 
-            body.innerHTML = `
+            const galleryHtml = hasMultiplePhotos ? `
+                <div class="space-y-2">
+                    <div class="relative h-60 rounded-2xl overflow-hidden bg-slate-900 shadow-sm">
+                        <div id="modal-photos-carousel" class="flex overflow-x-auto snap-x snap-mandatory hide-scrollbar h-full w-full" onscroll="onCarouselScroll(this)">
+                            ${propPhotos.map((p, idx) => `
+                                <div class="snap-center shrink-0 w-full h-full relative">
+                                    <img src="${p}" class="w-full h-full object-cover" alt="Xonadon surati ${idx + 1}">
+                                </div>
+                            `).join('')}
+                        </div>
+
+                        <!-- Favorite Heart Button -->
+                        <button onclick="toggleFavorite('${item.id}', this)" class="absolute top-2.5 right-2.5 w-9 h-9 rounded-full bg-white/90 backdrop-blur-md flex items-center justify-center shadow-md active:scale-90 transition z-10 hover:bg-white" title="Sevimlilar">
+                            <i data-lucide="heart" class="w-4 h-4 ${isFavorited(item.id) ? 'fill-rose-500 text-rose-500' : 'text-slate-600'}"></i>
+                        </button>
+
+                        <!-- Address Badge -->
+                        <div class="absolute bottom-2.5 left-2.5 bg-black/60 backdrop-blur-md px-2.5 py-1 rounded-lg text-white text-xs font-semibold z-10">
+                            📍 ${item.address}
+                        </div>
+
+                        <!-- Photo Counter -->
+                        <div id="modal-photo-counter" class="absolute bottom-2.5 right-2.5 bg-black/70 backdrop-blur-md px-2.5 py-1 rounded-full text-white text-[11px] font-bold z-10 flex items-center">
+                            <i data-lucide="camera" class="w-3 h-3 mr-1 inline"></i> <span id="modal-photo-counter-text">1 / ${propPhotos.length}</span>
+                        </div>
+                    </div>
+
+                    <!-- Thumbnails row -->
+                    <div class="flex items-center space-x-2 overflow-x-auto hide-scrollbar py-0.5">
+                        ${propPhotos.map((p, idx) => `
+                            <button type="button" onclick="scrollCarouselTo(${idx})" class="w-14 h-12 rounded-xl overflow-hidden border-2 transition shrink-0 ${idx === 0 ? 'border-emerald-500 ring-2 ring-emerald-500/20' : 'border-transparent opacity-60 hover:opacity-100'} carousel-thumb-btn" data-thumb-idx="${idx}">
+                                <img src="${p}" class="w-full h-full object-cover">
+                            </button>
+                        `).join('')}
+                    </div>
+                </div>
+            ` : `
                 <div class="relative h-56 rounded-2xl overflow-hidden bg-slate-100">
                     <img src="${photo}" class="w-full h-full object-cover">
                     <!-- Favorite Heart Button inside Modal -->
@@ -1893,6 +2040,10 @@
                         📍 ${item.address}
                     </div>
                 </div>
+            `;
+
+            body.innerHTML = `
+                ${galleryHtml}
 
                 <div class="space-y-1">
                     <h2 class="text-base font-extrabold text-slate-900">${item.title}</h2>
@@ -2127,6 +2278,8 @@
             setTimeout(() => {
                 document.getElementById('add-modal').classList.add('hidden');
             }, 300);
+            uploadedPropertyPhotos = [];
+            renderUploadedPhotosGrid();
         }
 
         async function handleCreateProperty(e) {
@@ -2136,6 +2289,10 @@
             btn.innerHTML = `<div class="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full mx-auto"></div>`;
 
             const tgUser = (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe) ? window.Telegram.WebApp.initDataUnsafe.user : null;
+
+            const photoList = (uploadedPropertyPhotos && uploadedPropertyPhotos.length > 0)
+                ? uploadedPropertyPhotos
+                : [document.getElementById('prop-photo').value || "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800"];
 
             const payload = {
                 title: document.getElementById('prop-title').value,
@@ -2148,7 +2305,7 @@
                 monthly_rent_uzs: parseFloat(document.getElementById('prop-rent').value),
                 deposit_uzs: parseFloat(document.getElementById('prop-deposit').value),
                 description: document.getElementById('prop-desc').value || "Barcha qulayliklari bor shinam xonadon.",
-                photos: [document.getElementById('prop-photo').value],
+                photos: photoList,
                 landlord_name: document.getElementById('prop-landlord-name').value,
                 landlord_phone: document.getElementById('prop-landlord-phone').value,
                 landlord_tg_id: tgUser ? tgUser.id : null,

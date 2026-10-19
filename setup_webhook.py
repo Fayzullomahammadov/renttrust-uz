@@ -1,11 +1,17 @@
+import os
 import urllib.request
 import urllib.parse
 import json
 import sys
 
-BOT_TOKEN = "8909483662:AAFGrtJGPGSEVf5jr60ikamdGMCRLPM8XZc"
+BOT_TOKEN = os.environ.get("BOT_TOKEN", "")
 
-def set_webhook(base_url):
+def set_webhook(base_url, token=None):
+    global BOT_TOKEN
+    if token:
+        BOT_TOKEN = token
+    if not BOT_TOKEN:
+        BOT_TOKEN = input("Telegram Bot Tokenini kiriting: ").strip()
     base_url = base_url.rstrip("/")
     webhook_url = f"{base_url}/webhook"
     
@@ -32,10 +38,7 @@ def set_webhook(base_url):
     print("\n✅ Bot endi 24/7 serverda to'liq avtomatik ishlaydi!")
 
 if __name__ == "__main__":
-    if len(sys.argv) > 1:
-        url = sys.argv[1]
-        set_webhook(url)
-    else:
-        url = input("Serveringizning HTTPS havolasini kiriting (masalan: https://renttrust-uz.onrender.com): ").strip()
-        if url:
-            set_webhook(url)
+    url = sys.argv[1] if len(sys.argv) > 1 else input("Server HTTPS havolasi (masalan: https://renttrust-uz.onrender.com): ").strip()
+    token = sys.argv[2] if len(sys.argv) > 2 else None
+    if url:
+        set_webhook(url, token)
