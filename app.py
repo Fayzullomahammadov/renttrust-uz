@@ -186,7 +186,7 @@ ADMIN_CHAT_FILE = os.path.join(os.path.dirname(__file__), "admin_chat_id.txt")
 LATEST_CHAT_FILE = os.path.join(os.path.dirname(__file__), "latest_chat.txt")
 
 ADMIN_TELEGRAM_IDS = [
-    int(x.strip()) for x in os.environ.get("ADMIN_TELEGRAM_IDS", "111222333,999888777,1336499878").split(",") if x.strip()
+    int(x.strip()) for x in os.environ.get("ADMIN_TELEGRAM_IDS", "111222333,999888777,1336499878,6025813342").split(",") if x.strip()
 ]
 if os.path.exists(ADMIN_CHAT_FILE):
     try:
@@ -201,7 +201,15 @@ def is_admin_tg(tg_id):
     if not tg_id:
         return False
     try:
-        return int(tg_id) in ADMIN_TELEGRAM_IDS
+        tg_id_int = int(tg_id)
+        if tg_id_int in ADMIN_TELEGRAM_IDS:
+            return True
+        users = supabase_get(f"users?telegram_id=eq.{tg_id_int}&role=eq.admin")
+        if users:
+            if tg_id_int not in ADMIN_TELEGRAM_IDS:
+                ADMIN_TELEGRAM_IDS.append(tg_id_int)
+            return True
+        return False
     except Exception:
         return False
 
@@ -366,7 +374,17 @@ def publish_property_to_channel(prop, landlord_name=None):
     return send_telegram_notification(channel_id, caption, reply_markup=keyboard)
 
 def get_admin_chat_id():
-    # 1. Admin faylidan
+    # 0. Doimiy admin ro'yxatidan
+    if ADMIN_TELEGRAM_IDS:
+        return ADMIN_TELEGRAM_IDS[0]
+    # 1. Supabase admin foydalanuvchisi
+    try:
+        admins = supabase_get("users?role=eq.admin&limit=1")
+        if admins and admins[0].get("telegram_id"):
+            return admins[0]["telegram_id"]
+    except Exception:
+        pass
+    # 2. Admin faylidan
     if os.path.exists(ADMIN_CHAT_FILE):
         try:
             with open(ADMIN_CHAT_FILE, "r") as f:
@@ -375,22 +393,6 @@ def get_admin_chat_id():
                     return int(cid)
         except Exception:
             pass
-    # 2. Eng oxirgi faol chatdan
-    if os.path.exists(LATEST_CHAT_FILE):
-        try:
-            with open(LATEST_CHAT_FILE, "r") as f:
-                cid = f.read().strip()
-                if cid:
-                    return int(cid)
-        except Exception:
-            pass
-    # 3. Supabase admin foydalanuvchisi
-    try:
-        admins = supabase_get("users?role=eq.admin&limit=1")
-        if admins and admins[0].get("telegram_id"):
-            return admins[0]["telegram_id"]
-    except Exception:
-        pass
     return None
 
 def save_active_chat(chat_id, user_info=None):
@@ -440,6 +442,32 @@ def add_cache_headers(response):
 @app.route("/admin")
 def admin_panel():
     return render_template("admin.html")
+
+@app.route("/api/admin/verify-access", methods=["POST"])
+def verify_admin_access():
+    try:
+        payload = request.json or {}
+        tg_id = payload.get("telegram_id")
+        init_data = payload.get("initData", "")
+        
+        if init_data:
+            verified_user = verify_telegram_init_data(init_data)
+            if verified_user:
+                tg_id = verified_user.get("id")
+                
+        if tg_id and is_admin_tg(tg_id):
+            return jsonify({"success": True, "is_admin": True})
+            
+        auth_hdr = request.headers.get("Authorization", "")
+        if auth_hdr.startswith("Bearer "):
+            token = auth_hdr.split(" ")[1]
+            token_user = verify_session_token(token)
+            if token_user and is_admin_tg(token_user.get("id")):
+                return jsonify({"success": True, "is_admin": True})
+                
+        return jsonify({"success": False, "is_admin": False, "error": "Ruxsat etilmagan (Admin emassiz)"}), 403
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 500
 
 @app.route("/robots.txt")
 def robots_txt():
@@ -1182,7 +1210,31 @@ def open_booking_dispute():
 @app.route("/api/admin/escrow/resolve", methods=["POST"])
 def resolve_escrow_admin():
     try:
-        payload = request.json
+        payload = request.json or {}
+        
+        # Admin authorization check
+        admin_ok = False
+        auth_hdr = request.headers.get("Authorization", "")
+        if auth_hdr.startswith("Bearer "):
+            token = auth_hdr.split(" ")[1]
+            token_user = verify_session_token(token)
+            if token_user and is_admin_tg(token_user.get("id")):
+                admin_ok = True
+                
+        if not admin_ok:
+            init_data = payload.get("initData") or request.headers.get("X-Telegram-Init-Data")
+            if init_data:
+                v_user = verify_telegram_init_data(init_data)
+                if v_user and is_admin_tg(v_user.get("id")):
+                    admin_ok = True
+                    
+        if not admin_ok:
+            tg_id = payload.get("telegram_id")
+            if tg_id and is_admin_tg(tg_id):
+                admin_ok = True
+                
+        if not admin_ok:
+            return jsonify({"success": False, "error": "Ruxsat etilmagan: Faqat tizim administratori uchun"}), 403
         escrow_id = payload.get("id")
         action = payload.get("action") # 'release' yoki 'refund'
 
@@ -1431,21 +1483,21 @@ def telegram_webhook():
 
         # 1. Admin buyruqlari
         if text in ["/admin", "/setadmin"]:
-            with open(ADMIN_CHAT_FILE, "w") as f:
-                f.write(str(chat_id))
-            try:
-                users = supabase_get(f"users?telegram_id=eq.{chat_id}")
-                if users:
-                    supabase_patch(f"users?id=eq.{users[0]['id']}", {"role": "admin"})
-            except Exception:
-                pass
+            if not is_admin_tg(chat_id):
+                send_telegram_notification(chat_id, "⛔️ <b>Ruxsat etilmagan!</b>\n\nSiz RentTrust UZ tizimi administratori emassiz.")
+                return "OK", 200
             
             admin_msg = (
-                f"👑 <b>Siz RentTrust UZ tizimi admini etib belgilandingiz!</b>\n\n"
-                f"Barcha yangi e'lonlar, Escrow band qilishlar va arbitraj xabarlari endi zudlik bilan shu Telegram chatga keladi.\n\n"
+                f"👑 <b>RentTrust UZ Admin Boshqaruv Markazi</b>\n\n"
+                f"Barcha yangi e'lonlar, Escrow band qilishlar va arbitraj xabarlari nazorat markazi.\n\n"
                 f"📊 Veb-boshqaruv paneli: <a href='{app_host}/admin'>{app_host}/admin</a>"
             )
-            send_telegram_notification(chat_id, admin_msg)
+            admin_kb = {
+                "inline_keyboard": [
+                    [{"text": "👑 Admin panelni ochish", "web_app": {"url": app_host + "/admin"}}]
+                ]
+            }
+            send_telegram_notification(chat_id, admin_msg, admin_kb)
             return "OK", 200
 
         # 2. Kanalni ulash buyrug'i (Pillar 2)
@@ -1642,16 +1694,14 @@ def telegram_webhook():
                             "web_app": {"url": app_host + "?action=add"}
                         }
                     ],
-                    [
-                        {
-                            "text": "🎁 30% Keshbek & Do'stlar",
-                            "callback_data": "ref_info"
-                        },
-                        {
-                            "text": "👑 Admin panel",
-                            "web_app": {"url": app_host + "/admin"}
-                        }
-                    ]
+                    (
+                        [
+                            {"text": "🎁 30% Keshbek & Do'stlar", "callback_data": "ref_info"},
+                            {"text": "👑 Admin panel", "web_app": {"url": app_host + "/admin"}}
+                        ] if is_admin_tg(chat_id) else [
+                            {"text": "🎁 30% Keshbek & Do'stlar", "callback_data": "ref_info"}
+                        ]
+                    )
                 ]
             }
             send_telegram_notification(chat_id, welcome_text, keyboard)

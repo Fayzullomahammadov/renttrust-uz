@@ -6,11 +6,32 @@
     <title>RentTrust UZ — Admin & Operator Paneli</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Telegram WebApp SDK -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body class="bg-slate-100 text-slate-900 min-h-screen antialiased">
 
+    <!-- Admin Gatekeeper Auth Overlay -->
+    <div id="admin-gatekeeper" class="fixed inset-0 z-50 bg-slate-950 flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl p-8 max-w-md w-full text-center shadow-2xl">
+            <div id="gate-icon" class="w-16 h-16 mx-auto mb-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+                <i data-lucide="shield" class="w-8 h-8 animate-pulse"></i>
+            </div>
+            <h2 id="gate-title" class="text-xl font-bold text-white mb-2">Xavfsizlik tekshiruvi</h2>
+            <p id="gate-desc" class="text-xs text-slate-400 mb-6 leading-relaxed">Admin va bosh operatorlik huquqlari tekshirilmoqda, iltimos kuting...</p>
+            <div id="gate-actions" class="hidden flex flex-col gap-2.5">
+                <a href="/" class="w-full py-3 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold transition border border-slate-700 flex items-center justify-center space-x-2">
+                    <i data-lucide="home" class="w-4 h-4"></i>
+                    <span>Bosh sahifaga qaytish</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Protected Content (Hidden until authorized) -->
+    <div id="admin-content" class="hidden">
     <!-- Top Admin Bar -->
     <header class="bg-slate-900 text-white border-b border-slate-800 sticky top-0 z-30 px-6 py-3.5">
         <div class="max-w-7xl mx-auto flex items-center justify-between">
@@ -229,6 +250,7 @@
         </div>
 
     </main>
+    </div>
 
     <!-- Client-side Admin Logic -->
     <script>
@@ -452,10 +474,20 @@
             if (!confirm(`Haqiqatan ham ${actionText}`)) return;
 
             try {
+                const tg = window.Telegram?.WebApp;
+                const token = localStorage.getItem('renttrust_session_token') || '';
+                const headers = { 'Content-Type': 'application/json' };
+                if (token) headers['Authorization'] = `Bearer ${token}`;
+
                 const res = await fetch('/api/admin/escrow/resolve', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ id: id, action: action })
+                    headers: headers,
+                    body: JSON.stringify({
+                        id: id,
+                        action: action,
+                        initData: tg?.initData || '',
+                        telegram_id: tg?.initDataUnsafe?.user?.id
+                    })
                 });
                 const resData = await res.json();
                 if (resData.success) {
@@ -470,9 +502,83 @@
             }
         }
 
-        // Initial Load
-        loadAdminData(); loadReports();
-        lucide.createIcons();
+        async function checkAdminAuth() {
+            lucide.createIcons();
+            const tg = window.Telegram?.WebApp;
+            if (tg) {
+                try {
+                    tg.ready();
+                    tg.expand();
+                } catch(e){}
+            }
+
+            const initData = tg?.initData || '';
+            const tgUser = tg?.initDataUnsafe?.user || {};
+            const sessionToken = localStorage.getItem('renttrust_session_token') || '';
+            let sessionUser = null;
+            try {
+                sessionUser = JSON.parse(localStorage.getItem('renttrust_user') || 'null');
+            } catch(e){}
+
+            const checkTgId = tgUser.id || (sessionUser ? sessionUser.telegram_id : null);
+
+            try {
+                const headers = { 'Content-Type': 'application/json' };
+                if (sessionToken) headers['Authorization'] = `Bearer ${sessionToken}`;
+
+                const res = await fetch('/api/admin/verify-access', {
+                    method: 'POST',
+                    headers: headers,
+                    body: JSON.stringify({
+                        initData: initData,
+                        telegram_id: checkTgId
+                    })
+                });
+
+                const data = await res.json();
+                if (res.ok && data.is_admin) {
+                    // Admin ruxsati tasdiqlandi!
+                    const gate = document.getElementById('admin-gatekeeper');
+                    if (gate) gate.remove();
+                    const content = document.getElementById('admin-content');
+                    if (content) content.classList.remove('hidden');
+                    loadAdminData();
+                    loadReports();
+                    lucide.createIcons();
+                } else {
+                    showAccessDenied("⛔️ Ruxsat etilmagan: Siz administrator emassiz. Ushbu konsol faqat RentTrust bosh administratoriga tegishli.");
+                }
+            } catch (err) {
+                console.error("Admin tekshiruvida xatolik:", err);
+                showAccessDenied("Server bilan bog'lanishda xatolik yuz berdi yoki ruxsat tasdiqlanmadi.");
+            }
+        }
+
+        function showAccessDenied(msg) {
+            const icon = document.getElementById('gate-icon');
+            const title = document.getElementById('gate-title');
+            const desc = document.getElementById('gate-desc');
+            const actions = document.getElementById('gate-actions');
+
+            if (icon) {
+                icon.className = "w-16 h-16 mx-auto mb-4 rounded-2xl bg-rose-500/10 border border-rose-500/20 flex items-center justify-center text-rose-500";
+                icon.innerHTML = '<i data-lucide="shield-alert" class="w-8 h-8"></i>';
+            }
+            if (title) {
+                title.innerText = "Ruxsat etilmagan";
+                title.className = "text-xl font-bold text-rose-400 mb-2";
+            }
+            if (desc) {
+                desc.innerText = msg;
+            }
+            if (actions) {
+                actions.classList.remove('hidden');
+            }
+            lucide.createIcons();
+        }
+
+        // Start Auth Verification on load
+        checkAdminAuth();
     </script>
 </body>
 </html>
