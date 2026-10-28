@@ -348,17 +348,40 @@
             </div>
         </div>
 
-        <!-- District Filter Pills -->
-        <div class="space-y-1.5">
+        <!-- District Filter Pills & Tagma-tag Vertical List -->
+        <div class="space-y-2">
             <div class="flex items-center justify-between">
-                <span class="text-xs font-bold text-slate-800 uppercase tracking-wider" id="districts-header-title">Toshkent tumanlari</span>
-                <span class="text-[11px] text-emerald-600 font-semibold" id="properties-count">Yuklanmoqda...</span>
+                <div class="flex items-center space-x-2">
+                    <span class="text-xs font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider" id="districts-header-title">Toşkent tumanlari</span>
+                    <button type="button" onclick="toggleDistrictsVerticalList()" id="btn-toggle-districts" class="inline-flex items-center space-x-1 text-[11px] font-bold text-[#059669] dark:text-[#10b981] bg-[#e8f5ed] dark:bg-[#142319] hover:bg-[#d6ecdf] dark:hover:bg-[#1a3322] px-2.5 py-1 rounded-xl border border-[#bbf0ce] dark:border-[#1d3524] transition active:scale-95 shadow-xs" title="Hamma tumanlarni ro'yxat qilib ochish">
+                        <i data-lucide="layers" class="w-3.5 h-3.5"></i>
+                        <span id="btn-districts-toggle-label">Hamma tumanlar</span>
+                        <i data-lucide="chevron-down" id="districts-chevron-icon" class="w-3.5 h-3.5 transition-transform duration-200"></i>
+                    </button>
+                </div>
+                <span class="text-[11px] text-[#059669] dark:text-[#10b981] font-semibold" id="properties-count">Yuklanmoqda...</span>
             </div>
+
+            <!-- Horizontal Carousel (Swipable) -->
             <div id="district-pills-container" class="flex items-center space-x-2 overflow-x-auto hide-scrollbar py-1 text-xs">
-                <button onclick="filterDistrict('Barchasi')" class="district-btn px-3 py-1.5 rounded-full font-bold bg-[#059669] dark:bg-[#10b981] text-white dark:text-slate-950 shrink-0 transition active:scale-95 shadow-xs" id="district-pill-all">Barchasi</button>
+                <button onclick="filterDistrict('Barchasi')" class="district-btn px-3 py-1.5 rounded-full font-bold bg-[#059669] dark:bg-[#10b981] text-white dark:text-slate-950 shrink-0 transition active:scale-95 shadow-xs" id="district-pill-all" data-district="Barchasi">Barçasi</button>
                 {% for d in districts %}
-                <button onclick="filterDistrict('{{ d }}')" class="district-btn px-3 py-1.5 rounded-full font-medium bg-white dark:bg-[#111a14] text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-[#16231c] shrink-0 transition active:scale-95 border border-slate-200/80 dark:border-[#1b2b20]">{{ d }}</button>
+                <button onclick="filterDistrict('{{ d }}')" class="district-btn px-3 py-1.5 rounded-full font-medium bg-white dark:bg-[#111a14] text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-[#16231c] shrink-0 transition active:scale-95 border border-slate-200/80 dark:border-[#1b2b20]" data-district="{{ d }}">{{ d }}</button>
                 {% endfor %}
+            </div>
+
+            <!-- Tagma-tag Vertical List Panel (Collapsed by default, opens on button click) -->
+            <div id="districts-vertical-panel" class="hidden bg-white dark:bg-[#0e1711] border border-slate-200/90 dark:border-[#1a2d21] rounded-2xl p-2.5 shadow-lg space-y-1 transition-all">
+                <div class="px-2 py-1.5 flex items-center justify-between border-b border-slate-100 dark:border-[#17261c] mb-1">
+                    <span class="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider" id="districts-vertical-title">Toşkent tumanlari (tagma-tag röyxat)</span>
+                    <button type="button" onclick="toggleDistrictsVerticalList(false)" class="text-[11px] font-bold text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 flex items-center space-x-1">
+                        <span id="districts-vertical-close-txt">Yopiş</span>
+                        <i data-lucide="x" class="w-3.5 h-3.5"></i>
+                    </button>
+                </div>
+                <div class="space-y-1 max-h-80 overflow-y-auto pr-1" id="districts-vertical-list">
+                    <!-- Dynamic tagma-tag items -->
+                </div>
             </div>
         </div>
 
@@ -1275,7 +1298,12 @@
                 booking_btn_confirm: "🔑 Uyni qabul qildim (Kalitni oldim)",
                 booking_btn_cancel: "Bandlikni bekor qiliş (Pulni qaytariş)",
                 quick_ref_label: "Döst taklif qiling",
-                quick_ref_badge: "30% Keşbek"
+                quick_ref_badge: "30% Keşbek",
+                districts_toggle_btn: "Hamma tumanlar",
+                districts_close_btn: "Yopiş",
+                districts_vertical_title: "Toşkent tumanlari (tagma-tag röyxat)",
+                district_all_label: "Barçasi (Toşkent şahri)",
+                district_ads_count: "ta xonadon"
             },
             ru: {
                 flag: "RU",
@@ -1440,7 +1468,12 @@
                 booking_btn_confirm: "🔑 Принять квартиру (Получить ключи)",
                 booking_btn_cancel: "Отменить бронь (Вернуть деньги)",
                 quick_ref_label: "Пригласить друга",
-                quick_ref_badge: "30% Кэшбэк"
+                quick_ref_badge: "30% Кэшбэк",
+                districts_toggle_btn: "Все районы",
+                districts_close_btn: "Свернуть",
+                districts_vertical_title: "Районы Ташкента (список)",
+                district_all_label: "Все районы (г. Ташкент)",
+                district_ads_count: "кв."
             },
             en: {
                 flag: "EN",
@@ -1605,7 +1638,12 @@
                 booking_btn_confirm: "🔑 Accept Property (Get Keys)",
                 booking_btn_cancel: "Cancel Booking (Refund Payment)",
                 quick_ref_label: "Invite a Friend",
-                quick_ref_badge: "30% Cashback"
+                quick_ref_badge: "30% Cashback",
+                districts_toggle_btn: "All districts",
+                districts_close_btn: "Collapse",
+                districts_vertical_title: "Tashkent Districts (list)",
+                district_all_label: "All districts (Tashkent city)",
+                district_ads_count: "homes"
             }
         };
 
@@ -1708,6 +1746,10 @@
                 setTxt('filter-price-title', t.filter_price);
                 setTxt('room-btn-all', t.room_all);
                 setTxt('districts-header-title', t.districts_header);
+                setTxt('btn-districts-toggle-label', t.districts_toggle_btn);
+                setTxt('districts-vertical-title', t.districts_vertical_title);
+                setTxt('districts-vertical-close-txt', t.districts_close_btn);
+                if (typeof renderDistrictsVerticalList === 'function') renderDistrictsVerticalList();
                 setTxt('district-pill-all', t.district_all);
 
                 setTxt('nav-home', t.nav_home);
@@ -2008,6 +2050,7 @@
                 if (!res.ok) throw new Error("Tarmoq xatosi: " + res.status);
                 const data = await res.json();
                 allProperties = (data && data.success && Array.isArray(data.data)) ? data.data : (Array.isArray(data) ? data : []);
+                if (typeof renderDistrictsVerticalList === 'function') renderDistrictsVerticalList();
                 applyFilters();
             } catch (err) {
                 console.error("Xatolik:", err);
@@ -2228,18 +2271,100 @@
             drawer.classList.toggle('hidden');
         }
 
-        function filterDistrict(district) {
-            currentDistrict = district;
+        function updateDistrictPillsStyles() {
             document.querySelectorAll('.district-btn').forEach(btn => {
-                if (btn.innerText.trim().includes(district) || (district === 'Barchasi' && btn.innerText.includes('Barchasi'))) {
-                    btn.classList.add('bg-emerald-600', 'text-white');
-                    btn.classList.remove('bg-white', 'text-slate-700');
+                const d = btn.getAttribute('data-district') || btn.innerText.trim();
+                const isMatch = (d === currentDistrict) || (currentDistrict === 'Barchasi' && (d === 'Barchasi' || d === 'Barçasi'));
+                if (isMatch) {
+                    btn.className = "district-btn px-3 py-1.5 rounded-full font-bold bg-[#059669] dark:bg-[#10b981] text-white dark:text-slate-950 shrink-0 transition active:scale-95 shadow-xs";
                 } else {
-                    btn.classList.remove('bg-emerald-600', 'text-white');
-                    btn.classList.add('bg-white', 'text-slate-700');
+                    btn.className = "district-btn px-3 py-1.5 rounded-full font-medium bg-white dark:bg-[#111a14] text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-[#16231c] shrink-0 transition active:scale-95 border border-slate-200/80 dark:border-[#1b2b20]";
                 }
             });
+        }
+
+        function filterDistrict(district) {
+            currentDistrict = district;
+            updateDistrictPillsStyles();
+            renderDistrictsVerticalList();
             applyFilters();
+        }
+
+        function toggleDistrictsVerticalList(forceState) {
+            const panel = document.getElementById('districts-vertical-panel');
+            const chevron = document.getElementById('districts-chevron-icon');
+            const label = document.getElementById('btn-districts-toggle-label');
+            if (!panel) return;
+
+            const t = (typeof I18N !== 'undefined' && I18N[currentLang]) ? I18N[currentLang] : (typeof I18N !== 'undefined' ? I18N.uz : {});
+            const willOpen = (typeof forceState === 'boolean') ? forceState : panel.classList.contains('hidden');
+
+            if (willOpen) {
+                renderDistrictsVerticalList();
+                panel.classList.remove('hidden');
+                if (chevron) chevron.classList.add('rotate-180');
+                if (label) label.innerText = t.districts_close_btn || 'Yopiş';
+            } else {
+                panel.classList.add('hidden');
+                if (chevron) chevron.classList.remove('rotate-180');
+                if (label) label.innerText = t.districts_toggle_btn || 'Hamma tumanlar';
+            }
+        }
+
+        function renderDistrictsVerticalList() {
+            const listEl = document.getElementById('districts-vertical-list');
+            if (!listEl) return;
+            const t = (typeof I18N !== 'undefined' && I18N[currentLang]) ? I18N[currentLang] : (typeof I18N !== 'undefined' ? I18N.uz : {});
+            
+            const allDistricts = ["Barchasi", ...TASHKENT_DISTRICTS];
+            const unit = t.district_ads_count || "ta xonadon";
+
+            listEl.innerHTML = allDistricts.map(d => {
+                const isAll = (d === "Barchasi");
+                const count = isAll 
+                    ? (allProperties ? allProperties.length : 0)
+                    : (allProperties ? allProperties.filter(p => p.district === d).length : 0);
+                
+                let label = d;
+                if (isAll) {
+                    label = t.district_all_label || "Barçasi (Toşkent şahri)";
+                } else if (currentLang === 'uz') {
+                    label = d.replace("Chilonzor", "Çilonzor")
+                             .replace("Mirzo Ulug'bek", "Mirzo Uluğbek")
+                             .replace("Shayxontohur", "Şayxontohur")
+                             .replace("Uchtepa", "Uçtepa")
+                             .replace("Yashnobod", "Yaşnobod");
+                }
+
+                const isSelected = (currentDistrict === d) || (isAll && currentDistrict === "Barchasi");
+
+                return `
+                    <button type="button" onclick="selectDistrictFromVerticalList('${d}')" class="w-full flex items-center justify-between px-3 py-2.5 rounded-xl transition text-xs text-left ${isSelected ? 'bg-emerald-50 dark:bg-[#142319] text-[#059669] dark:text-[#10b981] font-bold border border-emerald-200 dark:border-[#1d3524]' : 'hover:bg-slate-50 dark:hover:bg-[#121f16] text-slate-800 dark:text-slate-200 border border-transparent'}">
+                        <div class="flex items-center space-x-2.5 min-w-0">
+                            <div class="w-6 h-6 rounded-lg ${isSelected ? 'bg-[#059669] text-white dark:bg-[#10b981] dark:text-slate-950' : 'bg-slate-100 dark:bg-[#18281d] text-slate-500 dark:text-slate-400'} flex items-center justify-center shrink-0 text-[11px]">
+                                ${isSelected ? '<i data-lucide="check" class="w-3.5 h-3.5"></i>' : '<i data-lucide="map-pin" class="w-3.5 h-3.5"></i>'}
+                            </div>
+                            <span class="truncate ${isSelected ? 'font-extrabold' : 'font-medium'}">${label}</span>
+                        </div>
+                        <span class="text-[11px] font-semibold px-2 py-0.5 rounded-full ${isSelected ? 'bg-emerald-200/60 dark:bg-[#1c3826] text-emerald-900 dark:text-[#6ee7b7]' : 'bg-slate-100 dark:bg-[#152319] text-slate-500 dark:text-slate-400'} shrink-0 ml-2">
+                            ${count} ${unit}
+                        </span>
+                    </button>
+                `;
+            }).join('');
+
+            if (window.lucide) lucide.createIcons();
+        }
+
+        function selectDistrictFromVerticalList(district) {
+            filterDistrict(district);
+            const activePill = document.querySelector(`.district-btn[data-district="${district}"]`);
+            if (activePill) {
+                activePill.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+            }
+            setTimeout(() => {
+                toggleDistrictsVerticalList(false);
+            }, 250);
         }
 
         function filterRooms(rooms) {
