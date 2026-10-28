@@ -368,26 +368,18 @@
             </div>
         </div>
 
-        <!-- District Filter Pills & Tagma-tag Vertical List -->
+        <!-- District Filter & Tagma-tag Vertical List -->
         <div class="space-y-2">
             <div class="flex items-center justify-between">
                 <div class="flex items-center space-x-2">
                     <span class="text-xs font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider" id="districts-header-title">Toşkent tumanlari</span>
-                    <button type="button" onclick="toggleDistrictsVerticalList()" id="btn-toggle-districts" class="inline-flex items-center space-x-1 text-[11px] font-bold text-[#059669] dark:text-[#10b981] bg-[#e8f5ed] dark:bg-[#142319] hover:bg-[#d6ecdf] dark:hover:bg-[#1a3322] px-2.5 py-1 rounded-xl border border-[#bbf0ce] dark:border-[#1d3524] transition active:scale-95 shadow-xs" title="Hamma tumanlarni ro'yxat qilib ochish">
-                        <i data-lucide="layers" class="w-3.5 h-3.5"></i>
+                    <button type="button" onclick="toggleDistrictsVerticalList()" id="btn-toggle-districts" class="inline-flex items-center space-x-1.5 text-[11px] font-bold text-[#059669] dark:text-[#10b981] bg-[#e8f5ed] dark:bg-[#142319] hover:bg-[#d6ecdf] dark:hover:bg-[#1a3322] px-3 py-1.5 rounded-xl border border-[#bbf0ce] dark:border-[#1d3524] transition active:scale-95 shadow-xs" title="Tumanlarni tanlash">
+                        <i data-lucide="map-pin" class="w-3.5 h-3.5"></i>
                         <span id="btn-districts-toggle-label">Hamma tumanlar</span>
                         <i data-lucide="chevron-down" id="districts-chevron-icon" class="w-3.5 h-3.5 transition-transform duration-200"></i>
                     </button>
                 </div>
                 <span class="text-[11px] text-[#059669] dark:text-[#10b981] font-semibold" id="properties-count">Yuklanmoqda...</span>
-            </div>
-
-            <!-- Horizontal Carousel (Swipable) -->
-            <div id="district-pills-container" class="flex items-center space-x-2 overflow-x-auto hide-scrollbar py-1 text-xs">
-                <button onclick="filterDistrict('Barchasi')" class="district-btn px-3 py-1.5 rounded-full font-bold bg-[#059669] dark:bg-[#10b981] text-white dark:text-slate-950 shrink-0 transition active:scale-95 shadow-xs" id="district-pill-all" data-district="Barchasi">Barçasi</button>
-                {% for d in districts %}
-                <button onclick="filterDistrict('{{ d }}')" class="district-btn px-3 py-1.5 rounded-full font-medium bg-white dark:bg-[#111a14] text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-[#16231c] shrink-0 transition active:scale-95 border border-slate-200/80 dark:border-[#1b2b20]" data-district="{{ d }}">{{ d }}</button>
-                {% endfor %}
             </div>
 
             <!-- Tagma-tag Vertical List Panel (Collapsed by default, opens on button click) -->
@@ -2291,21 +2283,28 @@
             drawer.classList.toggle('hidden');
         }
 
-        function updateDistrictPillsStyles() {
-            document.querySelectorAll('.district-btn').forEach(btn => {
-                const d = btn.getAttribute('data-district') || btn.innerText.trim();
-                const isMatch = (d === currentDistrict) || (currentDistrict === 'Barchasi' && (d === 'Barchasi' || d === 'Barçasi'));
-                if (isMatch) {
-                    btn.className = "district-btn px-3 py-1.5 rounded-full font-bold bg-[#059669] dark:bg-[#10b981] text-white dark:text-slate-950 shrink-0 transition active:scale-95 shadow-xs";
-                } else {
-                    btn.className = "district-btn px-3 py-1.5 rounded-full font-medium bg-white dark:bg-[#111a14] text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-[#16231c] shrink-0 transition active:scale-95 border border-slate-200/80 dark:border-[#1b2b20]";
+        function updateDistrictButtonLabel() {
+            const label = document.getElementById('btn-districts-toggle-label');
+            if (!label) return;
+            const t = (typeof I18N !== 'undefined' && I18N[currentLang]) ? I18N[currentLang] : (typeof I18N !== 'undefined' ? I18N.uz : {});
+            if (currentDistrict === 'Barchasi' || !currentDistrict) {
+                label.innerText = t.districts_toggle_btn || 'Hamma tumanlar';
+            } else {
+                let dName = currentDistrict;
+                if (currentLang === 'uz') {
+                    dName = dName.replace("Chilonzor", "Çilonzor")
+                                 .replace("Mirzo Ulug'bek", "Mirzo Uluğbek")
+                                 .replace("Shayxontohur", "Şayxontohur")
+                                 .replace("Uchtepa", "Uçtepa")
+                                 .replace("Yashnobod", "Yaşnobod");
                 }
-            });
+                label.innerText = dName;
+            }
         }
 
         function filterDistrict(district) {
             currentDistrict = district;
-            updateDistrictPillsStyles();
+            updateDistrictButtonLabel();
             renderDistrictsVerticalList();
             applyFilters();
         }
@@ -2313,21 +2312,18 @@
         function toggleDistrictsVerticalList(forceState) {
             const panel = document.getElementById('districts-vertical-panel');
             const chevron = document.getElementById('districts-chevron-icon');
-            const label = document.getElementById('btn-districts-toggle-label');
             if (!panel) return;
 
-            const t = (typeof I18N !== 'undefined' && I18N[currentLang]) ? I18N[currentLang] : (typeof I18N !== 'undefined' ? I18N.uz : {});
             const willOpen = (typeof forceState === 'boolean') ? forceState : panel.classList.contains('hidden');
 
             if (willOpen) {
                 renderDistrictsVerticalList();
                 panel.classList.remove('hidden');
                 if (chevron) chevron.classList.add('rotate-180');
-                if (label) label.innerText = t.districts_close_btn || 'Yopiş';
             } else {
                 panel.classList.add('hidden');
                 if (chevron) chevron.classList.remove('rotate-180');
-                if (label) label.innerText = t.districts_toggle_btn || 'Hamma tumanlar';
+                updateDistrictButtonLabel();
             }
         }
 
@@ -2378,13 +2374,9 @@
 
         function selectDistrictFromVerticalList(district) {
             filterDistrict(district);
-            const activePill = document.querySelector(`.district-btn[data-district="${district}"]`);
-            if (activePill) {
-                activePill.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
-            }
             setTimeout(() => {
                 toggleDistrictsVerticalList(false);
-            }, 250);
+            }, 200);
         }
 
         function filterRooms(rooms) {
