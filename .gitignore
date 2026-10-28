@@ -10,3 +10,5 @@ channel_config.txt
 referrals_data.json
 property_alerts.json
 property_reviews.json
+*.db
+payme_transactions.json

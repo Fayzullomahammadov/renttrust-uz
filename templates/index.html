@@ -474,6 +474,33 @@
                 Bu pul to'g'ridan-to'g'ri uy egasiga o'tmaydi, RentTrust nazoratida saqlanadi. Uy egasi tasdiqlamasa yoki ko'chib kirish bo'lmasa, qoidalarga muvofiq qaytariladi.
             </div>
 
+            <!-- To'lov tizimini tanlash (Payment Provider Options) -->
+            <div class="space-y-1.5 pt-1">
+                <label class="block text-[11px] font-bold text-slate-700 dark:text-slate-300" id="escrow-provider-lbl">
+                    To'lov tizimini tanlang:
+                </label>
+                <div class="grid grid-cols-3 gap-2" id="payment-provider-selector">
+                    <!-- Click -->
+                    <label class="relative flex flex-col items-center justify-center p-2.5 rounded-xl border-2 border-emerald-500 bg-emerald-50/40 dark:bg-emerald-950/30 cursor-pointer transition active:scale-95" id="lbl-pay-click" onclick="selectPaymentProvider('click')">
+                        <input type="radio" name="payment_provider" value="click" checked class="hidden">
+                        <span class="text-xs font-black text-sky-600 dark:text-sky-400">CLICK</span>
+                        <span class="text-[9px] text-slate-500 dark:text-slate-400 font-medium mt-0.5">Avtomatik</span>
+                    </label>
+                    <!-- Payme -->
+                    <label class="relative flex flex-col items-center justify-center p-2.5 rounded-xl border-2 border-slate-200 dark:border-[#1c2e21] bg-white dark:bg-[#121c15] cursor-pointer transition active:scale-95" id="lbl-pay-payme" onclick="selectPaymentProvider('payme')">
+                        <input type="radio" name="payment_provider" value="payme" class="hidden">
+                        <span class="text-xs font-black text-teal-600 dark:text-teal-400">PAYME</span>
+                        <span class="text-[9px] text-slate-500 dark:text-slate-400 font-medium mt-0.5">Paycom</span>
+                    </label>
+                    <!-- Uzum -->
+                    <label class="relative flex flex-col items-center justify-center p-2.5 rounded-xl border-2 border-slate-200 dark:border-[#1c2e21] bg-white dark:bg-[#121c15] cursor-pointer transition active:scale-95" id="lbl-pay-uzum" onclick="selectPaymentProvider('uzum')">
+                        <input type="radio" name="payment_provider" value="uzum" class="hidden">
+                        <span class="text-xs font-black text-purple-600 dark:text-purple-400">UZUM</span>
+                        <span class="text-[9px] text-slate-500 dark:text-slate-400 font-medium mt-0.5">Bank</span>
+                    </label>
+                </div>
+            </div>
+
             <div class="space-y-2">
                 <button onclick="confirmEscrowPayment()" id="pay-btn" class="w-full bg-emerald-600 text-white font-bold py-2.5 rounded-xl shadow-md active:scale-95 transition flex items-center justify-center space-x-2 text-xs">
                     <span id="escrow-pay-btn-text">Click / Payme orqali to'lash</span>
@@ -1358,6 +1385,7 @@
                 comp_subtitle: "Yonma-yon soliştiring",
                 escrow_modal_title: "Himoyalangan tölov",
                 escrow_modal_sub: "Uyni 24 soatga band qiliş",
+                escrow_provider_lbl: "To'lov tizimini tanlang:",
                 escrow_hold_label: "Bron (Depozitdan oldindan):",
                 escrow_fee_label: "Platforma xizmat haqi (2%):",
                 escrow_total_label: "Jami hozir tölanadi:",
@@ -1969,6 +1997,7 @@
                 // Modals
                 setTxt('escrow-modal-title', t.escrow_modal_title);
                 setTxt('escrow-modal-sub', t.escrow_modal_sub);
+                setTxt('escrow-provider-lbl', t.escrow_provider_lbl);
                 setTxt('escrow-hold-lbl', t.escrow_hold_label);
                 setTxt('escrow-fee-lbl', t.escrow_fee_label);
                 setTxt('escrow-total-lbl', t.escrow_total_label);
@@ -3033,7 +3062,22 @@
             document.getElementById('escrow-modal').classList.add('hidden');
         }
 
-        async function confirmEscrowPayment() {
+        async         let currentSelectedPaymentProvider = 'click';
+        function selectPaymentProvider(prov) {
+            currentSelectedPaymentProvider = prov;
+            ['click', 'payme', 'uzum'].forEach(p => {
+                const el = document.getElementById('lbl-pay-' + p);
+                if (el) {
+                    if (p === prov) {
+                        el.className = "relative flex flex-col items-center justify-center p-2.5 rounded-xl border-2 border-emerald-500 bg-emerald-50/40 dark:bg-emerald-950/30 cursor-pointer transition active:scale-95";
+                    } else {
+                        el.className = "relative flex flex-col items-center justify-center p-2.5 rounded-xl border-2 border-slate-200 dark:border-[#1c2e21] bg-white dark:bg-[#121c15] cursor-pointer transition active:scale-95";
+                    }
+                }
+            });
+        }
+
+        function confirmEscrowPayment() {
             if (!selectedProperty) return;
             const btn = document.getElementById('pay-btn');
             const originalContent = btn.innerHTML;
@@ -3050,6 +3094,7 @@
             const payload = {
                 property_id: selectedProperty.id,
                 amount: holdAmt,
+                provider: currentSelectedPaymentProvider || 'click',
                 tenant_name: tgUser ? `${tgUser.first_name || ''} ${tgUser.last_name || ''}`.trim() || 'Ijarachi' : 'Ijarachi',
                 tenant_tg_id: tgUser ? tgUser.id : null,
                 tenant_username: tgUser ? tgUser.username : null,
@@ -3075,7 +3120,14 @@
                         date: new Date().toLocaleDateString('uz-UZ')
                     };
                     document.getElementById('badge-booking').classList.remove('hidden');
-                    alert(`🎉 Tabriklaymiz!\n\n300 000 so‘m RentTrust Escrow hisobiga qabul qilindi.\n\n"${selectedProperty.title}" xonadoni 24 soatga band qilindi.\n\nTelegram botingizga rasmiy to'lov cheki va xabarnoma yuborildi! 📲`);
+                    if (resData.payment_url && resData.provider !== 'mock') {
+                        if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.openLink) {
+                            window.Telegram.WebApp.openLink(resData.payment_url);
+                        } else {
+                            window.open(resData.payment_url, '_blank');
+                        }
+                    }
+                    alert(`🎉 Tabriklaymiz!\n\n${holdAmt.toLocaleString('uz-UZ')} so‘m RentTrust Escrow hisobiga qabul qilindi.\n\n"${selectedProperty.title}" xonadoni 24 soatga band qilindi.\n\nTelegram botingizga rasmiy to'lov cheki va xabarnoma yuborildi! 📲`);
                     fetchProperties();
                 } else {
                     alert("Xatolik: " + (resData.error || "To'lovni amalga oshirib bo'lmadi"));

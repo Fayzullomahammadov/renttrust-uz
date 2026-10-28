@@ -12,7 +12,8 @@ from referral_manager import record_referral, reward_referral_on_deal, get_user_
 from alerts_manager import subscribe_alert, check_and_notify_subscribers
 from reviews_manager import get_property_reviews, add_property_review
 from fee_calculator import calculate_fees
-from payment_provider import get_payment_provider
+from payment_provider import get_payment_provider, ClickProvider, PaymeProvider, UzumProvider
+from database import DatabaseManager
 from booking_manager import (
     record_booking_event,
     get_booking_events,
@@ -721,6 +722,184 @@ def create_application():
     except Exception as e:
         return jsonify({"success": False, "error": str(e)}), 500
 
+PAYME_TX_FILE = os.path.join(os.path.dirname(__file__), "payme_transactions.json")
+
+def finalize_paid_escrow(escrow_id, provider_tx_id="", provider="click"):
+    """
+    To'lov muvaffaqiyatli o'tgach (Click, Payme, Uzum yoki Mock):
+    1. Escrow statusini 'held' ga o'tkazish
+    2. Mulk statusini 'on_hold' qilish
+    3. Uy egasi va Ijarachiga Telegram bildirishnoma yuborish
+    """
+    try:
+        escrow = DatabaseManager.get_escrow(escrow_id)
+        if not escrow:
+            # Supabase fallback
+            es = supabase_get(f"escrow_transactions?id=eq.{escrow_id}")
+            if es:
+                escrow = es[0]
+        
+        if not escrow:
+            print(f"finalize_paid_escrow: Escrow {escrow_id} topilmadi")
+            return False
+
+        now_iso = datetime.datetime.now(datetime.timezone.utc).isoformat()
+        
+        # Holatni yangilash
+        DatabaseManager.mark_escrow_paid(escrow_id, provider_tx_id=provider_tx_id, provider=provider)
+        try:
+            supabase_patch(f"escrow_transactions?id=eq.{escrow_id}", {
+                "status": "held",
+                "held_at": now_iso,
+                "provider_transaction_id": provider_tx_id,
+                "payment_provider": provider
+            })
+        except Exception:
+            pass
+
+        property_id = escrow.get("property_id")
+        amount = float(escrow.get("amount_uzs", 300000))
+        
+        # Mulkni on_hold qilish
+        try:
+            supabase_patch(f"properties?id=eq.{property_id}", {"status": "on_hold"})
+        except Exception:
+            pass
+
+        # Ma'lumotlarni olish
+        prop_list = supabase_get(f"properties?id=eq.{property_id}")
+        prop = prop_list[0] if prop_list else {"title": "Xonadon", "district": "Toshkent", "address": ""}
+
+        landlord_id = escrow.get("landlord_id") or prop.get("landlord_id")
+        landlord_list = supabase_get(f"users?id=eq.{landlord_id}") if landlord_id else []
+        landlord = landlord_list[0] if landlord_list else {}
+
+        tenant_id = escrow.get("tenant_id")
+        tenant_list = supabase_get(f"users?id=eq.{tenant_id}") if tenant_id else []
+        tenant = tenant_list[0] if tenant_list else {}
+
+        tenant_name = tenant.get("full_name", "Ijarachi")
+        tenant_phone = tenant.get("phone_number", "+998 90 000 00 00")
+        tenant_username = tenant.get("username", "")
+
+        # Telegram bildirishnomalar
+        landlord_tg = landlord.get("telegram_id")
+        if landlord_tg:
+            tg_mention = f"@{tenant_username}" if tenant_username else tenant_name
+            msg_landlord = (
+                f"🔔 <b>DIQQAT: YANGI ESCROW TO'LOVI QABUL QILINDI!</b>\n\n"
+                f"🏠 <b>Xonadon:</b> {prop.get('title')}\n"
+                f"📍 <b>Manzil:</b> {prop.get('district')}, {prop.get('address')}\n"
+                f"👤 <b>Ijarachi:</b> {tenant_name} ({tg_mention}, {tenant_phone})\n"
+                f"💰 <b>Hold summasi:</b> {int(amount):,} so'm\n"
+                f"💳 <b>To'lov tizimi:</b> {provider.upper()}\n"
+                f"🛡 <b>Xavfsizlik:</b> Mablag' RentTrust Escrow hisobida muzlatildi va xonadon 24 soatga ushbu ijarachi uchun band qilindi.\n\n"
+                f"📞 <i>Ijarachi bilan zudlik bilan bog'lanib, xonadonni ko'rish va kalit topshirish vaqtini kelishib oling.</i>"
+            )
+            send_telegram_notification(landlord_tg, msg_landlord)
+
+        tenant_recipient = tenant.get("telegram_id") or get_admin_chat_id()
+        if tenant_recipient:
+            msg_tenant = (
+                f"🎉 <b>TABRIKLAYMIZ! TO'LOV MUVAFFAQIYATLI AMALGA OSHIRILDI</b>\n\n"
+                f"🏠 <b>Xonadon:</b> {prop.get('title')}\n"
+                f"📍 <b>Manzil:</b> {prop.get('district')}, {prop.get('address')}\n"
+                f"💰 <b>Muzlatilgan depozit:</b> {int(amount):,} so'm (Escrow kafolati)\n"
+                f"💳 <b>To'lov tizimi:</b> {provider.upper()}\n"
+                f"🔑 <b>Uy egasi:</b> {landlord.get('full_name', 'Uy egasi')} ({landlord.get('phone_number', '')})\n\n"
+                f"🛡 <b>Himoyalangan to'lov Himoyasi:</b>\n"
+                f"Pulingiz to'g'ridan-to'g'ri uy egasiga o'tkazilmadi. Siz xonadonga ko'chib kirib, dalolatnomani tasdiqlamaguningizcha mablag' platforma kafolatida xavfsiz saqlanadi."
+            )
+            send_telegram_notification(tenant_recipient, msg_tenant)
+
+        admin_id = get_admin_chat_id()
+        if admin_id and admin_id != landlord_tg and admin_id != tenant_recipient:
+            msg_admin = (
+                f"⚡️ <b>Yangi Escrow To'lovi:</b>\n"
+                f"🏠 {prop.get('title')}\n"
+                f"👤 Ijarachi: {tenant_name}\n"
+                f"💳 To'lov: {provider.upper()} ({int(amount):,} UZS)"
+            )
+            send_telegram_notification(admin_id, msg_admin)
+
+        return True
+    except Exception as e:
+        print(f"finalize_paid_escrow xatosi: {e}")
+        return False
+
+
+@app.route("/api/payments/click", methods=["POST"])
+def click_webhook():
+    """Click Shop API Webhook (Action 0 Prepare, Action 1 Complete)."""
+    data = request.form.to_dict() if request.form else (request.json or {})
+    provider = ClickProvider()
+
+    def get_order(order_id):
+        escrow = DatabaseManager.get_escrow(order_id)
+        if not escrow:
+            es = supabase_get(f"escrow_transactions?id=eq.{order_id}")
+            if es:
+                escrow = es[0]
+        return escrow
+
+    def mark_paid(order_id, provider_tx_id, provider_name):
+        finalize_paid_escrow(order_id, provider_tx_id=provider_tx_id, provider=provider_name)
+
+    action = str(data.get("action", "0"))
+    if action == "0":
+        res = provider.handle_prepare(data, get_order)
+    else:
+        res = provider.handle_complete(data, get_order, mark_paid)
+
+    return jsonify(res)
+
+
+@app.route("/api/payments/payme", methods=["POST"])
+def payme_webhook():
+    """Payme (Paycom) JSON-RPC 2.0 Webhook."""
+    auth_header = request.headers.get("Authorization", "")
+    provider = PaymeProvider()
+
+    if os.environ.get("FLASK_ENV") == "production" and not provider.verify_auth_header(auth_header):
+        return jsonify({
+            "jsonrpc": "2.0",
+            "id": request.json.get("id") if request.json else None,
+            "error": {"code": -32504, "message": {"ru": "Недостаточно привилегий", "uz": "Ruxsat etilmagan"}}
+        })
+
+    tx_store = load_json_store(PAYME_TX_FILE)
+    if not isinstance(tx_store, dict):
+        tx_store = {}
+
+    def get_order(order_id):
+        escrow = DatabaseManager.get_escrow(order_id)
+        if not escrow:
+            es = supabase_get(f"escrow_transactions?id=eq.{order_id}")
+            if es:
+                escrow = es[0]
+        return escrow
+
+    def mark_paid(order_id, provider_tx_id, provider_name):
+        finalize_paid_escrow(order_id, provider_tx_id=provider_tx_id, provider=provider_name)
+
+    req_data = request.json or {}
+    res = provider.handle_json_rpc(req_data, get_order, mark_paid, tx_store)
+    save_json_store(PAYME_TX_FILE, tx_store)
+    return jsonify(res)
+
+
+@app.route("/api/payments/uzum", methods=["POST"])
+def uzum_webhook():
+    """Uzum Bank Webhook."""
+    data = request.json or {}
+    order_id = data.get("order_id")
+    tx_id = data.get("transaction_id", f"uzum_{uuid.uuid4().hex[:8]}")
+    if order_id:
+        finalize_paid_escrow(order_id, provider_tx_id=tx_id, provider="uzum")
+        return jsonify({"success": True, "status": "CONFIRMED"})
+    return jsonify({"success": False, "error": "Order ID required"}), 400
+
+
 @app.route("/api/escrow/hold", methods=["POST"])
 @require_telegram_auth
 def create_hold():
@@ -775,11 +954,16 @@ def create_hold():
         })
         application_id = app_res[0]["id"]
 
-        # 4. Escrow tranzaksiyasini yaratish (2% + 2% komissiya)
+        # 4. To'lov provayderi va Escrow tranzaksiyasini yaratish (2% + 2% komissiya)
+        provider_name = (payload.get("provider") or os.environ.get("PAYMENT_MODE", "mock")).lower().strip()
+        provider_obj = get_payment_provider(provider_name)
+
         tenant_fee = amount * 0.02
         landlord_fee = amount * 0.02
         total_fee = tenant_fee + landlord_fee
         now_iso = datetime.datetime.now(datetime.timezone.utc).isoformat()
+
+        initial_status = "held" if provider_name in ["mock", "demo"] else "initiated"
 
         escrow_res = supabase_post("escrow_transactions", {
             "application_id": application_id,
@@ -791,10 +975,20 @@ def create_hold():
             "tenant_fee_uzs": tenant_fee,
             "landlord_fee_uzs": landlord_fee,
             "total_platform_fee_uzs": total_fee,
-            "payment_provider": "click",
-            "status": "held",
-            "held_at": now_iso
+            "payment_provider": provider_name,
+            "status": initial_status,
+            "held_at": now_iso if initial_status == "held" else None
         })
+        escrow_id = escrow_res[0]["id"]
+
+        # To'lov havolasini generatsiya qilish
+        return_url = f"https://renttrust-uz.onrender.com/?payment_success=1&escrow_id={escrow_id}"
+        payment_info = provider_obj.create_payment(
+            amount=amount,
+            order_id=escrow_id,
+            description=f"RentTrust Escrow: {prop.get('title', 'Xonadon')[:30]}",
+            return_url=return_url
+        )
 
         # 5. Mulk statusini "on_hold" ga o'zgartirish
         supabase_patch(f"properties?id=eq.{property_id}", {"status": "on_hold"})
@@ -840,7 +1034,7 @@ def create_hold():
             )
             send_telegram_notification(admin_id, msg_admin)
 
-        return jsonify({"success": True, "data": escrow_res[0]})
+        return jsonify({"success": True, "data": escrow_res[0], "payment_url": payment_info.get("payment_url"), "provider": provider_name})
     except Exception as e:
         print("Escrow hold xatoligi:", e)
         return jsonify({"success": False, "error": str(e)}), 500
