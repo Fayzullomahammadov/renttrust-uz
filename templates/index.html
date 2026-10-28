@@ -2367,13 +2367,20 @@
             }
         }
 
-        if (window.Telegram && window.Telegram.WebApp) {
-            setupTelegramNavigation();
-            try { checkReferralStartParam(); } catch(e){}
-            if (window.Telegram.WebApp.initDataUnsafe && window.Telegram.WebApp.initDataUnsafe.user) {
-                const tgUser = window.Telegram.WebApp.initDataUnsafe.user;
-                document.getElementById('user-avatar').innerText = tgUser.first_name ? tgUser.first_name[0] : 'U';
+        try {
+            if (window.Telegram && window.Telegram.WebApp) {
+                setupTelegramNavigation();
+                try { checkReferralStartParam(); } catch(e){}
+                if (window.Telegram.WebApp.initDataUnsafe && window.Telegram.WebApp.initDataUnsafe.user) {
+                    const tgUser = window.Telegram.WebApp.initDataUnsafe.user;
+                    const avatarEl = document.getElementById('user-avatar') || document.getElementById('landlord-profile-avatar');
+                    if (avatarEl) {
+                        avatarEl.innerText = tgUser.first_name ? tgUser.first_name[0].toUpperCase() : 'U';
+                    }
+                }
             }
+        } catch (e) {
+            console.warn("Telegram WebApp init warning:", e);
         }
 
         const urlParams = new URLSearchParams(window.location.search);
@@ -3273,6 +3280,14 @@
                 if (nameInput && !nameInput.value) {
                     nameInput.value = `${user.first_name || ''} ${user.last_name || ''}`.trim();
                 }
+                const profileNameEl = document.getElementById('landlord-profile-name');
+                if (profileNameEl && (user.first_name || user.last_name)) {
+                    profileNameEl.innerText = `${user.first_name || ''} ${user.last_name || ''}`.trim() + (user.username ? ` (@${user.username})` : '');
+                }
+                const profileAvatarEl = document.getElementById('landlord-profile-avatar');
+                if (profileAvatarEl && user.first_name) {
+                    profileAvatarEl.innerText = user.first_name[0].toUpperCase();
+                }
             }
 
             modal.classList.remove('hidden'); if(window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.BackButton) window.Telegram.WebApp.BackButton.show();
@@ -3316,8 +3331,8 @@
                 deposit_uzs: parseFloat(document.getElementById('prop-deposit').value),
                 description: document.getElementById('prop-desc').value || "Barcha qulayliklari bor shinam xonadon.",
                 photos: photoList,
-                landlord_name: document.getElementById('prop-landlord-name').value,
-                landlord_phone: document.getElementById('prop-landlord-phone').value,
+                landlord_name: (document.getElementById('prop-landlord-name')?.value) || (tgUser ? `${tgUser.first_name || ''} ${tgUser.last_name || ''}`.trim() : 'Uy Egasi'),
+                landlord_phone: (document.getElementById('prop-landlord-phone')?.value) || (tgUser?.phone_number || '+998 90 000 00 00'),
                 landlord_tg_id: tgUser ? tgUser.id : null,
                 amenities: { "wifi": true, "ac": true, "washing_machine": true }
             };
