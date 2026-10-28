@@ -205,21 +205,21 @@
             <div class="flex items-center justify-between">
                 <div class="inline-flex items-center space-x-1.5 bg-[#e8f5ed] text-[#047857] text-[11px] font-bold px-3 py-1 rounded-full">
                     <i data-lucide="lock" class="w-3.5 h-3.5"></i>
-                    <span>Himoyalangan tölov</span>
+                    <span id="hero-tag-light">Himoyalangan tölov</span>
                 </div>
                 <div class="w-8 h-8 rounded-full bg-[#e8f5ed] text-[#059669] flex items-center justify-center">
                     <i data-lucide="shield-check" class="w-4 h-4"></i>
                 </div>
             </div>
-            <h1 class="text-[17px] font-extrabold text-slate-900 leading-snug">
+            <h1 id="hero-title-light" class="text-[17px] font-extrabold text-slate-900 leading-snug">
                 Siz köçib kirib, uyni tasdiqlamaguningizça mablağ RentTrust nazoratida saqlanadi.
             </h1>
-            <p class="text-xs text-slate-500 font-medium">
+            <p id="hero-desc-light" class="text-xs text-slate-500 font-medium">
                 Xizmat haqi: ijaraçidan 2%, uy egasidan 2%.
             </p>
             <div onclick="openDepositRulesModal()" class="pt-0.5 inline-flex items-center text-[#059669] text-xs font-bold hover:underline cursor-pointer">
                 <i data-lucide="file-check" class="w-4 h-4 mr-1.5"></i>
-                <span>Depozit dalolatnomasi</span>
+                <span id="hero-b2-light">Depozit dalolatnomasi</span>
             </div>
         </div>
 
@@ -227,19 +227,19 @@
         <div class="hidden dark:block bg-[#111a14] border border-[#1b2b20] rounded-3xl p-5 shadow-xl relative space-y-3.5">
             <div class="text-[#10b981] font-bold text-[11px] tracking-wider flex items-center gap-1.5">
                 <i data-lucide="lock" class="w-3.5 h-3.5"></i>
-                <span>HİMOYALANGAN TÖLOV</span>
+                <span id="hero-tag-dark">HİMOYALANGAN TÖLOV</span>
             </div>
-            <h1 class="text-[18px] font-extrabold text-white leading-snug">
+            <h1 id="hero-title-dark" class="text-[18px] font-extrabold text-white leading-snug">
                 Siz köçib kirib, uyni tasdiqlamaguningizça mablağ RentTrust nazoratida saqlanadi.
             </h1>
             <!-- 2 Fee Metric Boxes side by side -->
             <div class="grid grid-cols-2 gap-2.5 pt-1">
                 <div class="bg-[#142319] border border-[#1d3524] rounded-2xl p-3 flex flex-col justify-between">
-                    <span class="text-[#6ee7b7] text-[11px] font-medium">Xizmat haqi · ijaraçi</span>
+                    <span id="hero-fee-tenant" class="text-[#6ee7b7] text-[11px] font-medium">Xizmat haqi · ijaraçi</span>
                     <span class="text-[#10b981] text-3xl font-extrabold mt-1">2%</span>
                 </div>
                 <div class="bg-[#222116] border border-[#38331d] rounded-2xl p-3 flex flex-col justify-between">
-                    <span class="text-[#fde68a] text-[11px] font-medium">Xizmat haqi · uy egasi</span>
+                    <span id="hero-fee-landlord" class="text-[#fde68a] text-[11px] font-medium">Xizmat haqi · uy egasi</span>
                     <span class="text-[#f4c979] text-3xl font-extrabold mt-1">2%</span>
                 </div>
             </div>
@@ -247,7 +247,7 @@
             <div onclick="openDepositRulesModal()" class="bg-[#16221a] border border-[#203325] rounded-xl px-4 py-3 flex items-center justify-between text-xs font-semibold text-slate-200 hover:border-emerald-500/50 transition cursor-pointer">
                 <span class="flex items-center">
                     <i data-lucide="file-check" class="w-4 h-4 text-emerald-400 mr-2"></i>
-                    <span>Depozit dalolatnomasi</span>
+                    <span id="hero-b2-dark">Depozit dalolatnomasi</span>
                 </span>
                 <i data-lucide="chevron-right" class="w-4 h-4 text-slate-400"></i>
             </div>
@@ -470,23 +470,23 @@
                 
                 <div class="bg-emerald-50 border border-emerald-200 rounded-xl p-3 text-emerald-900 space-y-1">
                     <div class="flex items-center font-bold text-xs text-emerald-800">
-                        <i data-lucide="sparkles" class="w-4 h-4 mr-1 text-emerald-600"></i> 12% Soliq Imtiyozi!
+                        <i data-lucide="sparkles" class="w-4 h-4 mr-1 text-emerald-600"></i> <span id="add-tax-title">12% Soliq İmtiyozi!</span>
                     </div>
-                    <p class="text-[11px] text-emerald-700 leading-snug">
-                        Talabaga ijaraga bersangiz va shartnoma soliq organida ro'yxatdan o'tgan bo'lsa, ijaradan olingan daromad daromad solig'idan ozod bo'ladi. Bu yuridik maslahat emas.
+                    <p class="text-[11px] text-emerald-700 leading-snug" id="add-tax-desc">
+                        Talabaga ijaraga bersangiz va şartnoma soliq organida röyxatdan ötgan bölsa, ijaradan olingan daromad daromad solig'idan ozod böladi. Bu yuridik maslahat emas.
                     </p>
                 </div>
 
                 <!-- Sarlavha -->
                 <div class="space-y-1">
-                    <label class="font-bold text-slate-700 block">E'lon sarlavhasi *</label>
-                    <input type="text" id="prop-title" required placeholder="Masalan: Chilonzor metrosi yonida 2 xonali shinam kvartira" class="w-full px-3 py-2 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-xs">
+                    <label class="font-bold text-slate-700 block" id="add-lbl-title">E'lon sarlavhasi *</label>
+                    <input type="text" id="prop-title" required placeholder="Masalan: Çilonzor metrosi yonida 2 xonali şinam kvartira" class="w-full px-3 py-2 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-xs">
                 </div>
 
                 <!-- Tuman va Xonalar -->
                 <div class="grid grid-cols-2 gap-2">
                     <div class="space-y-1">
-                        <label class="font-bold text-slate-700 block">Tuman *</label>
+                        <label class="font-bold text-slate-700 block" id="add-lbl-district">Tuman *</label>
                         <select id="prop-district" class="w-full px-3 py-2 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-xs bg-white">
                             {% for d in districts %}
                             <option value="{{ d }}">{{ d }}</option>
@@ -494,7 +494,7 @@
                         </select>
                     </div>
                     <div class="space-y-1">
-                        <label class="font-bold text-slate-700 block">Xonalar soni *</label>
+                        <label class="font-bold text-slate-700 block" id="add-lbl-rooms">Xonalar soni *</label>
                         <select id="prop-rooms" class="w-full px-3 py-2 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-xs bg-white">
                             <option value="1">1 xona</option>
                             <option value="2" selected>2 xona</option>
@@ -506,22 +506,22 @@
 
                 <!-- Aniq manzil -->
                 <div class="space-y-1">
-                    <label class="font-bold text-slate-700 block">Aniq manzil va mo'ljal *</label>
-                    <input type="text" id="prop-address" required placeholder="Masalan: Chilonzor 7-mavze, Novza metro ro'parasida" class="w-full px-3 py-2 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-xs">
+                    <label class="font-bold text-slate-700 block" id="add-lbl-address">Aniq manzil va möljal *</label>
+                    <input type="text" id="prop-address" required placeholder="Masalan: Çilonzor 7-mavze, Novza metro röparasida" class="w-full px-3 py-2 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-xs">
                 </div>
 
                 <!-- Maydon, Qavat -->
                 <div class="grid grid-cols-3 gap-2">
                     <div class="space-y-1">
-                        <label class="font-bold text-slate-700 block">Maydoni (m²)</label>
+                        <label class="font-bold text-slate-700 block" id="add-lbl-area">Maydoni (m²)</label>
                         <input type="number" id="prop-area" value="55" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs">
                     </div>
                     <div class="space-y-1">
-                        <label class="font-bold text-slate-700 block">Qavati</label>
+                        <label class="font-bold text-slate-700 block" id="add-lbl-floor">Qavati</label>
                         <input type="number" id="prop-floor" value="3" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs">
                     </div>
                     <div class="space-y-1">
-                        <label class="font-bold text-slate-700 block">Jami qavat</label>
+                        <label class="font-bold text-slate-700 block" id="add-lbl-total-floors">Jami qavat</label>
                         <input type="number" id="prop-total-floors" value="5" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs">
                     </div>
                 </div>
@@ -529,11 +529,11 @@
                 <!-- Narx va Depozit -->
                 <div class="grid grid-cols-2 gap-2">
                     <div class="space-y-1">
-                        <label class="font-bold text-slate-700 block">Oylik ijara (so'm) *</label>
+                        <label class="font-bold text-slate-700 block" id="add-lbl-rent">Oylik ijara (söm) *</label>
                         <input type="number" id="prop-rent" required value="4500000" step="100000" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-bold text-emerald-700">
                     </div>
                     <div class="space-y-1">
-                        <label class="font-bold text-slate-700 block">Xavfsiz depozit (so'm)</label>
+                        <label class="font-bold text-slate-700 block" id="add-lbl-deposit">Xavfsiz depozit (söm)</label>
                         <input type="number" id="prop-deposit" value="1500000" step="100000" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs">
                     </div>
                 </div>
@@ -541,45 +541,45 @@
                 <!-- Camera / Gallery Rasm Yuklash (Ko'p rasm yuklash) -->
                 <div class="space-y-1.5 border-t border-slate-100 pt-2">
                     <div class="flex items-center justify-between">
-                        <label class="font-bold text-slate-700 text-xs block">Xonadon rasmlari (Kamera yoki Galereyadan)</label>
+                        <label class="font-bold text-slate-700 text-xs block" id="add-lbl-photos">Xonadon rasmlari (Kamera yoki Galereyadan)</label>
                         <span id="prop-photos-count" class="text-[10px] font-semibold text-emerald-600">0 ta rasm tanlandi</span>
                     </div>
                     
                     <div id="prop-photos-grid" class="grid grid-cols-3 gap-2 pt-1">
                         <label class="h-24 rounded-xl border-2 border-dashed border-emerald-300 bg-emerald-50/50 flex flex-col items-center justify-center cursor-pointer hover:bg-emerald-100/50 transition active:scale-95">
                             <i data-lucide="camera" class="w-6 h-6 text-emerald-600 mb-1"></i>
-                            <span class="text-[10px] font-bold text-emerald-700 text-center px-1" id="upload-label">Rasm yuklash</span>
+                            <span class="text-[10px] font-bold text-emerald-700 text-center px-1" id="upload-label">Rasm yuklaş</span>
                             <input type="file" id="prop-file-input" accept="image/*" multiple class="hidden" onchange="handleFileSelect(event)">
                         </label>
                     </div>
-                    <p class="text-[10px] text-slate-400">Bir nechta rasm tanlashingiz mumkin (maksimal 10 ta). Birinchi rasm asosiy bo'ladi.</p>
+                    <p class="text-[10px] text-slate-400" id="add-photos-help">Bir neçta rasm tanlaşingiz mumkin (maksimal 10 ta). Birinçi rasm asosiy böladi.</p>
                     <input type="hidden" id="prop-photo" value="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800">
                 </div>
 
                 <!-- Talabalarga ijara & Hujjat -->
                 <div class="bg-indigo-50/70 border border-indigo-200/60 rounded-xl p-3 flex items-center justify-between">
                     <div>
-                        <label for="prop-for-students" class="font-bold text-indigo-900 text-xs block cursor-pointer">Talabaga ijaraga beraman</label>
-                        <span class="text-[10px] text-indigo-700">12% daromad solig'idan ozod bo'lish imkoniyati</span>
+                        <label for="prop-for-students" class="font-bold text-indigo-900 text-xs block cursor-pointer" id="add-lbl-student">Talabaga ijaraga beraman</label>
+                        <span class="text-[10px] text-indigo-700" id="add-student-sub">12% daromad solig'idan ozod böliş imkoniyati</span>
                     </div>
                     <input type="checkbox" id="prop-for-students" class="w-4 h-4 text-emerald-600 rounded focus:ring-emerald-500 cursor-pointer">
                 </div>
 
                 <div class="space-y-1">
-                    <label class="font-bold text-slate-700 block">Egalik hujjati (Kadastr yoki shartnoma) - Ixtiyoriy</label>
+                    <label class="font-bold text-slate-700 block" id="add-lbl-doc">Egalik hujjati (Kadastr yoki şartnoma) - İxtiyoriy</label>
                     <label class="flex items-center justify-center space-x-2 border border-dashed border-slate-300 bg-slate-50 hover:bg-slate-100 rounded-xl p-2.5 cursor-pointer transition">
                         <i data-lucide="file-text" class="w-4 h-4 text-slate-500"></i>
-                        <span class="text-xs text-slate-600" id="doc-upload-label">Kadastr yoki shartnoma yuklash (PDF/Rasm)</span>
+                        <span class="text-xs text-slate-600" id="doc-upload-label">Kadastr yoki şartnoma yuklaş (PDF/Rasm)</span>
                         <input type="file" id="prop-doc-input" accept="image/*,application/pdf" class="hidden" onchange="handleDocSelect(event)">
                     </label>
                     <input type="hidden" id="prop-doc-url" value="">
-                    <p class="text-[10px] text-slate-400">Faqat admin tekshiruvi uchun. Ommaga ko'rsatilmaydi.</p>
+                    <p class="text-[10px] text-slate-400" id="add-doc-help">Faqat admin tekşiruvi uçun. Ommaga körsatilmaydi.</p>
                 </div>
 
                 <!-- Tavsif -->
                 <div class="space-y-1">
-                    <label class="font-bold text-slate-700 block">Qo'shimcha ma'lumotlar</label>
-                    <textarea id="prop-desc" rows="2" placeholder="Uydagi qulayliklar, kimlarga ijaraga berilishi va talablar..." class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs"></textarea>
+                    <label class="font-bold text-slate-700 block" id="add-lbl-desc">Qöşimça ma'lumotlar</label>
+                    <textarea id="prop-desc" rows="2" placeholder="Uydagi qulayliklar, kimlarga ijaraga berilişi va talablar..." class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs"></textarea>
                 </div>
 
                 <!-- Uy egasi ma'lumotlari (Telegram orqali avtomatik) -->
@@ -591,7 +591,7 @@
                         <div>
                             <span class="font-bold text-slate-800 text-xs block" id="landlord-profile-name">Telegram orqali tasdiqlangan</span>
                             <span class="text-[10px] text-emerald-600 font-medium flex items-center">
-                                <i data-lucide="shield-check" class="w-3 h-3 mr-1"></i> Telegram hisobingiz biriktiriladi
+                                <i data-lucide="shield-check" class="w-3 h-3 mr-1"></i> <span id="add-owner-tg-hint">Telegram hisobingiz biriktiriladi</span>
                             </span>
                         </div>
                     </div>
@@ -1218,7 +1218,39 @@
                 bookings_modal_title: "Mening Arizalarim va Bandlarim",
                 bookings_empty_title: "Faol band qilingan uylar yöq",
                 bookings_empty_desc: "Platformadagi xonadonlarni köring va arzon komissiya bilan uyni xavfsiz band qiling.",
-                bookings_browse_btn: "Uylarni köriş"
+                bookings_browse_btn: "Uylarni köriş",
+                hero_desc: "Xizmat haqi: ijaraçidan 2%, uy egasidan 2%.",
+                hero_fee_tenant: "Xizmat haqi · ijaraçi",
+                hero_fee_landlord: "Xizmat haqi · uy egasi",
+                add_tax_title: "12% Soliq İmtiyozi!",
+                add_tax_desc: "Talabaga ijaraga bersangiz va şartnoma soliq organida röyxatdan ötgan bölsa, ijaradan olingan daromad daromad solig'idan ozod böladi. Bu yuridik maslahat emas.",
+                add_lbl_title: "E'lon sarlavhasi *",
+                add_title_ph: "Masalan: Çilonzor metrosi yonida 2 xonali şinam kvartira",
+                add_lbl_district: "Tuman *",
+                add_lbl_rooms: "Xonalar soni *",
+                add_lbl_address: "Aniq manzil va möljal *",
+                add_address_ph: "Masalan: Çilonzor 7-mavze, Novza metro röparasida",
+                add_lbl_area: "Maydoni (m²)",
+                add_lbl_floor: "Qavati",
+                add_lbl_total_floors: "Jami qavat",
+                add_lbl_rent: "Oylik ijara (söm) *",
+                add_lbl_deposit: "Xavfsiz depozit (söm)",
+                room_1: "1 xona",
+                room_2: "2 xona",
+                room_3: "3 xona",
+                room_4: "4+ xona",
+                add_lbl_photos: "Xonadon rasmlari (Kamera yoki Galereyadan)",
+                add_photos_help: "Bir neçta rasm tanlaşingiz mumkin (maksimal 10 ta). Birinçi rasm asosiy böladi.",
+                add_upload_btn: "Rasm yuklaş",
+                add_lbl_student: "Talabaga ijaraga beraman",
+                add_student_sub: "12% daromad solig'idan ozod böliş imkoniyati",
+                add_lbl_doc: "Egalik hujjati (Kadastr yoki şartnoma) - İxtiyoriy",
+                add_doc_btn: "Kadastr yoki şartnoma yuklaş (PDF/Rasm)",
+                add_doc_help: "Faqat admin tekşiruvi uçun. Ommaga körsatilmaydi.",
+                add_lbl_desc: "Qöşimça ma'lumotlar",
+                add_desc_ph: "Uydagi qulayliklar, kimlarga ijaraga berilişi va talablar...",
+                add_owner_verified: "Telegram orqali tasdiqlangan",
+                add_owner_tg_hint: "Telegram hisobingiz biriktiriladi"
             },
             ru: {
                 flag: "RU",
@@ -1326,7 +1358,39 @@
                 bookings_modal_title: "Мои заявки и бронирования",
                 bookings_empty_title: "Нет активных бронирований",
                 bookings_empty_desc: "Просмотрите квартиры на платформе и забронируйте с комиссией всего 2%.",
-                bookings_browse_btn: "Искать квартиры"
+                bookings_browse_btn: "Искать квартиры",
+                hero_desc: "Комиссия сервиса: 2% с арендатора, 2% с арендодателя.",
+                hero_fee_tenant: "Комиссия · арендатор",
+                hero_fee_landlord: "Комиссия · арендодатель",
+                add_tax_title: "12% Налоговая льгота!",
+                add_tax_desc: "При сдаче студентам и официальной регистрации договора доход освобождается от подоходного налога. Не юридическая консультация.",
+                add_lbl_title: "Заголовок объявления *",
+                add_title_ph: "Например: Уютная 2-комн квартира возле метро Чиланзар",
+                add_lbl_district: "Район *",
+                add_lbl_rooms: "Количество комнат *",
+                add_lbl_address: "Точный адрес и ориентир *",
+                add_address_ph: "Например: Чиланзар 7-й квартал, напротив метро Новза",
+                add_lbl_area: "Площадь (м²)",
+                add_lbl_floor: "Этаж",
+                add_lbl_total_floors: "Всего этажей",
+                add_lbl_rent: "Аренда в месяц (сум) *",
+                add_lbl_deposit: "Обеспечительный депозит (сум)",
+                room_1: "1 комн.",
+                room_2: "2 комн.",
+                room_3: "3 комн.",
+                room_4: "4+ комн.",
+                add_lbl_photos: "Фотографии квартиры (с камеры или из галереи)",
+                add_photos_help: "Можно выбрать несколько фото (до 10). Первое фото будет главным.",
+                add_upload_btn: "Загрузить фото",
+                add_lbl_student: "Сдам студентам",
+                add_student_sub: "Освобождение от подоходного налога 12%",
+                add_lbl_doc: "Документ о собственности (Кадастр или договор) - Необязательно",
+                add_doc_btn: "Загрузить кадастр или договор (PDF/Фото)",
+                add_doc_help: "Только для проверки администратором. Не видно публично.",
+                add_lbl_desc: "Дополнительная информация",
+                add_desc_ph: "Удобства в квартире, требования к жильцам и прочее...",
+                add_owner_verified: "Подтверждено через Telegram",
+                add_owner_tg_hint: "Ваш Telegram аккаунт привязывается"
             },
             en: {
                 flag: "EN",
@@ -1434,7 +1498,39 @@
                 bookings_modal_title: "My Applications and Bookings",
                 bookings_empty_title: "No active bookings",
                 bookings_empty_desc: "Browse properties on the platform and book safely with only 2% fee.",
-                bookings_browse_btn: "Browse Properties"
+                bookings_browse_btn: "Browse Properties",
+                hero_desc: "Service fee: 2% from tenant, 2% from landlord.",
+                hero_fee_tenant: "Service fee · tenant",
+                hero_fee_landlord: "Service fee · landlord",
+                add_tax_title: "12% Tax Exemption!",
+                add_tax_desc: "Renting to students with an officially registered contract exempts rental earnings from income tax. Not legal advice.",
+                add_lbl_title: "Listing Title *",
+                add_title_ph: "e.g.: Cozy 2-room apartment near Chilanzar metro",
+                add_lbl_district: "District *",
+                add_lbl_rooms: "Number of rooms *",
+                add_lbl_address: "Exact address & landmark *",
+                add_address_ph: "e.g.: Chilanzar 7th block, opposite Novza metro",
+                add_lbl_area: "Area (sq.m)",
+                add_lbl_floor: "Floor",
+                add_lbl_total_floors: "Total floors",
+                add_lbl_rent: "Monthly rent (UZS) *",
+                add_lbl_deposit: "Security deposit (UZS)",
+                room_1: "1 room",
+                room_2: "2 rooms",
+                room_3: "3 rooms",
+                room_4: "4+ rooms",
+                add_lbl_photos: "Property photos (Camera or Gallery)",
+                add_photos_help: "You can select multiple photos (up to 10). First photo is primary.",
+                add_upload_btn: "Upload photos",
+                add_lbl_student: "Rent to students",
+                add_student_sub: "12% income tax exemption eligible",
+                add_lbl_doc: "Ownership document (Cadastre or lease) - Optional",
+                add_doc_btn: "Upload cadastre or lease (PDF/Photo)",
+                add_doc_help: "Only for admin verification. Not visible publicly.",
+                add_lbl_desc: "Additional information",
+                add_desc_ph: "Amenities, tenant preferences, rules...",
+                add_owner_verified: "Verified via Telegram",
+                add_owner_tg_hint: "Your Telegram account will be linked"
             }
         };
 
@@ -1468,11 +1564,67 @@
                 if (aiInput && t.ai_placeholder) aiInput.placeholder = t.ai_placeholder;
                 setTxt('ai-btn-text', t.ai_btn);
 
+                // Hero Banners (Light & Dark)
+                setTxt('hero-tag-light', t.banner_tag);
+                setTxt('hero-tag-dark', (t.banner_tag || '').toUpperCase());
+                setTxt('hero-title-light', t.banner_title);
+                setTxt('hero-title-dark', t.banner_title);
+                setTxt('hero-desc-light', t.hero_desc || t.banner_desc);
+                setTxt('hero-fee-tenant', t.hero_fee_tenant || "Xizmat haqi · ijaraçi");
+                setTxt('hero-fee-landlord', t.hero_fee_landlord || "Xizmat haqi · uy egasi");
+                setTxt('hero-b2-light', t.banner_b2);
+                setTxt('hero-b2-dark', t.banner_b2);
+
+                // Backward-compatible banner tags
                 setTxt('banner-tag', t.banner_tag);
                 setTxt('banner-title', t.banner_title);
                 if (t.banner_desc) setHtml('banner-desc', t.banner_desc);
                 setTxt('banner-b1', t.banner_b1);
                 setTxt('banner-b2', t.banner_b2);
+
+                // Add Property Modal Form Translations
+                setTxt('add-modal-title', t.add_modal_title);
+                setTxt('add-tax-title', t.add_tax_title);
+                setTxt('add-tax-desc', t.add_tax_desc);
+                setTxt('add-lbl-title', t.add_lbl_title);
+                const propTitleInp = document.getElementById('prop-title');
+                if (propTitleInp && t.add_title_ph) propTitleInp.placeholder = t.add_title_ph;
+                setTxt('add-lbl-district', t.add_lbl_district);
+                setTxt('add-lbl-rooms', t.add_lbl_rooms);
+                setTxt('add-lbl-address', t.add_lbl_address);
+                const propAddrInp = document.getElementById('prop-address');
+                if (propAddrInp && t.add_address_ph) propAddrInp.placeholder = t.add_address_ph;
+                setTxt('add-lbl-area', t.add_lbl_area);
+                setTxt('add-lbl-floor', t.add_lbl_floor);
+                setTxt('add-lbl-total-floors', t.add_lbl_total_floors);
+                setTxt('add-lbl-rent', t.add_lbl_rent);
+                setTxt('add-lbl-deposit', t.add_lbl_deposit);
+                setTxt('add-submit-text', t.add_submit_btn);
+                setTxt('add-lbl-photos', t.add_lbl_photos);
+                setTxt('add-photos-help', t.add_photos_help);
+                setTxt('upload-label', t.add_upload_btn);
+                setTxt('add-lbl-student', t.add_lbl_student);
+                setTxt('add-student-sub', t.add_student_sub);
+                setTxt('add-lbl-doc', t.add_lbl_doc);
+                setTxt('doc-upload-label', t.add_doc_btn);
+                setTxt('add-doc-help', t.add_doc_help);
+                setTxt('add-lbl-desc', t.add_lbl_desc);
+                const propDescInp = document.getElementById('prop-desc');
+                if (propDescInp && t.add_desc_ph) propDescInp.placeholder = t.add_desc_ph;
+                setTxt('landlord-profile-name', t.add_owner_verified);
+                setTxt('add-owner-tg-hint', t.add_owner_tg_hint);
+
+                // Room selector options
+                const propRoomsSelect = document.getElementById('prop-rooms');
+                if (propRoomsSelect && t.room_1) {
+                    const selVal = propRoomsSelect.value;
+                    propRoomsSelect.innerHTML = `
+                        <option value="1" ${selVal === '1' ? 'selected' : ''}>${t.room_1}</option>
+                        <option value="2" ${selVal === '2' ? 'selected' : ''}>${t.room_2}</option>
+                        <option value="3" ${selVal === '3' ? 'selected' : ''}>${t.room_3}</option>
+                        <option value="4" ${selVal === '4' ? 'selected' : ''}>${t.room_4}</option>
+                    `;
+                }
 
                 setTxt('btn-filter-text', t.btn_filter);
                 setTxt('btn-view-list-text', t.view_list);
