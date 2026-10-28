@@ -665,7 +665,7 @@
                 <i data-lucide="scale" class="w-5 h-5"><svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"></path><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"></path><path d="M7 21h10"></path><path d="M12 3v18"></path><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"></path></svg></i>
                 <span class="text-[10px] font-medium" id="nav-rules">Qoidalar</span>
             </button>
-            <button onclick="alert('RentTrust UZ Qo\'llab-quvvatlash xizmati: @renttrust_admin')" class="flex flex-col items-center text-slate-400 dark:text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 space-y-1">
+            <button onclick="openHelpModal()" class="flex flex-col items-center text-slate-400 dark:text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 space-y-1">
                 <i data-lucide="help-circle" class="w-5 h-5"><svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><path d="M12 17h.01"></path></svg></i>
                 <span class="text-[10px] font-medium" id="nav-help">Yordam</span>
             </button>
@@ -817,6 +817,131 @@
                     <p class="text-[11px] text-amber-950 leading-relaxed">
                         Ko'chib kirish dalolatnomasi ikki tomonlama amal qiladi: ijarachi fotodalillar yuklab imzolaydi, uy egasi bot orqali rasmlar bilan tanishadi. Nizo yuzaga kelsa, pul platformada <strong>muzlatiladi (DISPUTE)</strong>. Tomonlar 48 soat ichida dalillarni taqdim etadi, RentTrust arbitraj operatori xolis tekshirib qaror qabul qiladi.
                     </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Yordam va Qo'llab-quvvatlash Modal -->
+    <div id="help-modal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden flex flex-col justify-end">
+        <div class="bg-white dark:bg-[#0c140e] rounded-t-3xl max-h-[88vh] overflow-y-auto w-full max-w-lg mx-auto shadow-2xl transition-transform duration-300 transform translate-y-full flex flex-col border-t border-slate-200 dark:border-[#1a2d1f]" id="help-modal-container">
+            <!-- Sticky Modal Header -->
+            <div class="sticky top-0 bg-white/95 dark:bg-[#0c140e]/95 backdrop-blur-md px-4 py-3 border-b border-slate-100 dark:border-[#1a2d1f] flex items-center justify-between z-10 transition-colors">
+                <div class="flex items-center space-x-2.5">
+                    <div class="w-8 h-8 rounded-xl bg-emerald-100 dark:bg-emerald-950/70 text-[#059669] dark:text-[#10b981] flex items-center justify-center">
+                        <i data-lucide="help-circle" class="w-4 h-4"><svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><path d="M12 17h.01"></path></svg></i>
+                    </div>
+                    <div>
+                        <span class="text-sm font-extrabold text-slate-900 dark:text-slate-100 block leading-tight" id="help-modal-title">Yordam va Qöllab-quvvatlaş</span>
+                        <span class="text-[10px] text-slate-500 dark:text-slate-400" id="help-modal-sub">24/7 tezkor yordam va savol-javoblar</span>
+                    </div>
+                </div>
+                <button onclick="closeHelpModal()" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-[#1a291f] text-slate-500 dark:text-slate-300 flex items-center justify-center hover:bg-slate-200 dark:hover:bg-[#223528] transition-colors">
+                    <i data-lucide="x" class="w-4 h-4"><svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></i>
+                </button>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="p-4 space-y-4 text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                <!-- Telegram Direct Support Card -->
+                <a href="https://t.me/renttrust_admin" target="_blank" onclick="contactTelegramSupport(event)" class="block p-3.5 bg-gradient-to-r from-sky-500 via-sky-600 to-blue-600 text-white rounded-2xl shadow-md hover:shadow-lg transition-all active:scale-[0.99]">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center text-white">
+                                <i data-lucide="send" class="w-5 h-5"><svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg></i>
+                            </div>
+                            <div>
+                                <div class="font-bold text-sm text-white" id="help-tg-title">Telegram Operatorga Yoziş</div>
+                                <div class="text-[11px] text-sky-100" id="help-tg-sub">24/7 onlayn konsultatsiya (@renttrust_admin)</div>
+                            </div>
+                        </div>
+                        <i data-lucide="chevron-right" class="w-5 h-5 text-white/80"><svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg></i>
+                    </div>
+                </a>
+
+                <!-- Phone Hotline Card -->
+                <a href="tel:+998712000000" class="flex items-center justify-between p-3.5 bg-slate-50 dark:bg-[#121c15] border border-slate-200 dark:border-[#1c2e21] rounded-2xl hover:bg-slate-100 dark:hover:bg-[#16241a] transition-colors">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-950/60 text-[#059669] dark:text-[#10b981] flex items-center justify-center">
+                            <i data-lucide="phone-call" class="w-5 h-5"><svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15.05 5A5 5 0 0 1 19 8.95M15.05 1A9 9 0 0 1 23 8.94m-1 7.98v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg></i>
+                        </div>
+                        <div>
+                            <div class="font-bold text-sm text-slate-900 dark:text-slate-100" id="help-call-title">Qaynoq liniya</div>
+                            <div class="text-[11px] text-slate-500 dark:text-slate-400" id="help-call-sub">+998 (71) 200-00-00 (09:00 - 21:00)</div>
+                        </div>
+                    </div>
+                    <span class="text-xs font-semibold text-[#059669] dark:text-[#10b981] px-2.5 py-1 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800" id="help-call-btn">Qöng'iroq</span>
+                </a>
+
+                <!-- FAQ Title -->
+                <div class="pt-2">
+                    <h3 class="text-xs font-extrabold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-2 flex items-center" id="help-faq-title">
+                        <i data-lucide="help-circle" class="w-3.5 h-3.5 mr-1.5 text-emerald-600 dark:text-emerald-400"></i>
+                        Köp beriladigan savollar (FAQ)
+                    </h3>
+                </div>
+
+                <!-- FAQ Accordion List -->
+                <div class="space-y-2">
+                    <!-- FAQ 1 -->
+                    <div class="border border-slate-200 dark:border-[#1c2e21] rounded-2xl bg-white dark:bg-[#101912] overflow-hidden transition-colors">
+                        <button type="button" onclick="toggleFaqItem(1)" class="w-full text-left px-3.5 py-3 flex items-center justify-between font-bold text-slate-800 dark:text-slate-200 text-xs hover:bg-slate-50 dark:hover:bg-[#142117] transition-colors">
+                            <span id="help-faq-q1">1. Himoyalangan tölov (Escrow) qanday işlaydi?</span>
+                            <i id="help-faq-icon-1" data-lucide="chevron-down" class="w-4 h-4 text-slate-400 shrink-0 transition-transform duration-200"><svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></i>
+                        </button>
+                        <div id="help-faq-a1" class="hidden px-3.5 pb-3 pt-0 text-[11px] text-slate-600 dark:text-slate-400 leading-relaxed border-t border-slate-100 dark:border-[#17251a]">
+                            <p id="help-faq-ans-1">Siz tölagan mablag' tög'ridan-tög'ri uy egasiga ötmaydi. Xonadonga köçib kirib, dalolatnomani tasdiqlamaguningizça RentTrust hisobida xavfsiz saqlanadi.</p>
+                        </div>
+                    </div>
+
+                    <!-- FAQ 2 -->
+                    <div class="border border-slate-200 dark:border-[#1c2e21] rounded-2xl bg-white dark:bg-[#101912] overflow-hidden transition-colors">
+                        <button type="button" onclick="toggleFaqItem(2)" class="w-full text-left px-3.5 py-3 flex items-center justify-between font-bold text-slate-800 dark:text-slate-200 text-xs hover:bg-slate-50 dark:hover:bg-[#142117] transition-colors">
+                            <span id="help-faq-q2">2. Komissiya qança va nega maklerlardan arzon?</span>
+                            <i id="help-faq-icon-2" data-lucide="chevron-down" class="w-4 h-4 text-slate-400 shrink-0 transition-transform duration-200"><svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></i>
+                        </button>
+                        <div id="help-faq-a2" class="hidden px-3.5 pb-3 pt-0 text-[11px] text-slate-600 dark:text-slate-400 leading-relaxed border-t border-slate-100 dark:border-[#17251a]">
+                            <p id="help-faq-ans-2">Ijaraçidan 2% va uy egasidan 2% (jami 4%). Bu oddiy maklerlarning 50% lik qimmat komissiyasiga nisbatan yuz minglab sömni çöntagingizda tejab qoladi.</p>
+                        </div>
+                    </div>
+
+                    <!-- FAQ 3 -->
+                    <div class="border border-slate-200 dark:border-[#1c2e21] rounded-2xl bg-white dark:bg-[#101912] overflow-hidden transition-colors">
+                        <button type="button" onclick="toggleFaqItem(3)" class="w-full text-left px-3.5 py-3 flex items-center justify-between font-bold text-slate-800 dark:text-slate-200 text-xs hover:bg-slate-50 dark:hover:bg-[#142117] transition-colors">
+                            <span id="help-faq-q3">3. Uy rasmga mos kelmasa pulim qaytariladimi?</span>
+                            <i id="help-faq-icon-3" data-lucide="chevron-down" class="w-4 h-4 text-slate-400 shrink-0 transition-transform duration-200"><svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></i>
+                        </button>
+                        <div id="help-faq-a3" class="hidden px-3.5 pb-3 pt-0 text-[11px] text-slate-600 dark:text-slate-400 leading-relaxed border-t border-slate-100 dark:border-[#17251a]">
+                            <p id="help-faq-ans-3">Albatta! Agar uy e'londagi sharoitga tög'ri kelmasa yoki uy egasi kalitni bermasa, mablag' 100% töliq qaytariladi va vijdonsiz uy egasi platformadan bloklanadi.</p>
+                        </div>
+                    </div>
+
+                    <!-- FAQ 4 -->
+                    <div class="border border-slate-200 dark:border-[#1c2e21] rounded-2xl bg-white dark:bg-[#101912] overflow-hidden transition-colors">
+                        <button type="button" onclick="toggleFaqItem(4)" class="w-full text-left px-3.5 py-3 flex items-center justify-between font-bold text-slate-800 dark:text-slate-200 text-xs hover:bg-slate-50 dark:hover:bg-[#142117] transition-colors">
+                            <span id="help-faq-q4">4. Talabalarga 12% soliq imtiyozi qanday beriladi?</span>
+                            <i id="help-faq-icon-4" data-lucide="chevron-down" class="w-4 h-4 text-slate-400 shrink-0 transition-transform duration-200"><svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></i>
+                        </button>
+                        <div id="help-faq-a4" class="hidden px-3.5 pb-3 pt-0 text-[11px] text-slate-600 dark:text-slate-400 leading-relaxed border-t border-slate-100 dark:border-[#17251a]">
+                            <p id="help-faq-ans-4">Soliq kodeksining 378-moddasi 19-bandiga muvofiq, talabalarga uy bergan mulk egalari ijara şartnomasini ijara.soliq.uz portalida röyxatdan ötkazganda daromad solig'idan (JŞODS 12%) töliq ozod qilinadi.</p>
+                        </div>
+                    </div>
+
+                    <!-- FAQ 5 -->
+                    <div class="border border-slate-200 dark:border-[#1c2e21] rounded-2xl bg-white dark:bg-[#101912] overflow-hidden transition-colors">
+                        <button type="button" onclick="toggleFaqItem(5)" class="w-full text-left px-3.5 py-3 flex items-center justify-between font-bold text-slate-800 dark:text-slate-200 text-xs hover:bg-slate-50 dark:hover:bg-[#142117] transition-colors">
+                            <span id="help-faq-q5">5. Köçib kiriş dalolatnomasi (Akt) nima uçun zarur?</span>
+                            <i id="help-faq-icon-5" data-lucide="chevron-down" class="w-4 h-4 text-slate-400 shrink-0 transition-transform duration-200"><svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></i>
+                        </button>
+                        <div id="help-faq-a5" class="hidden px-3.5 pb-3 pt-0 text-[11px] text-slate-600 dark:text-slate-400 leading-relaxed border-t border-slate-100 dark:border-[#17251a]">
+                            <p id="help-faq-ans-5">Uydagi mavjud nuqsonlar va hisoblagiç körsatkiçlarini fotodalil bilan qayd etiş uçun kerak. Bu keyinçalik köçib çiqayotganda depozit pulingiz asossiz ushlab qolinishining oldini oladi.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer note -->
+                <div class="p-3 bg-slate-50 dark:bg-[#121c15] rounded-xl text-center text-[10px] text-slate-400 dark:text-slate-500">
+                    RentTrust UZ · İşonçli ijara ekotizimi · Toshkent 2026
                 </div>
             </div>
         </div>
@@ -1174,6 +1299,25 @@
                 nav_add: "E'lon beriş",
                 nav_rules: "Qoidalar",
                 nav_help: "Yordam",
+                help_modal_title: "Yordam va Qöllab-quvvatlaş",
+                help_modal_sub: "24/7 tezkor yordam va savol-javoblar",
+                help_tg_title: "Telegram Operatorga Yoziş",
+                help_tg_sub: "24/7 onlayn konsultatsiya (@renttrust_admin)",
+                help_call_title: "Qaynoq liniya",
+                help_call_sub: "+998 (71) 200-00-00 (09:00 - 21:00)",
+                help_call_btn: "Qöng'iroq",
+                help_faq_title: "Köp beriladigan savollar (FAQ)",
+                help_faq_q1: "1. Himoyalangan tölov (Escrow) qanday işlaydi?",
+                help_faq_ans_1: "Siz tölagan mablag' tög'ridan-tög'ri uy egasiga ötmaydi. Xonadonga köçib kirib, dalolatnomani tasdiqlamaguningizça RentTrust hisobida xavfsiz saqlanadi.",
+                help_faq_q2: "2. Komissiya qança va nega maklerlardan arzon?",
+                help_faq_ans_2: "Ijaraçidan 2% va uy egasidan 2% (jami 4%). Bu oddiy maklerlarning 50% lik qimmat komissiyasiga nisbatan yuz minglab sömni çöntagingizda tejab qoladi.",
+                help_faq_q3: "3. Uy rasmga mos kelmasa pulim qaytariladimi?",
+                help_faq_ans_3: "Albatta! Agar uy e'londagi sharoitga tög'ri kelmasa yoki uy egasi kalitni bermasa, mablag' 100% töliq qaytariladi va vijdonsiz uy egasi platformadan bloklanadi.",
+                help_faq_q4: "4. Talabalarga 12% soliq imtiyozi qanday beriladi?",
+                help_faq_ans_4: "Soliq kodeksining 378-moddasi 19-bandiga muvofiq, talabalarga uy bergan mulk egalari ijara şartnomasini ijara.soliq.uz portalida röyxatdan ötkazganda daromad solig'idan (JŞODS 12%) töliq ozod qilinadi.",
+                help_faq_q5: "5. Köçib kiriş dalolatnomasi (Akt) nima uçun zarur?",
+                help_faq_ans_5: "Uydagi mavjud nuqsonlar va hisoblagiç körsatkiçlarini fotodalil bilan qayd etiş uçun kerak. Bu keyinçalik köçib çiqayotganda depozit pulingiz asossiz ushlab qolinishining oldini oladi.",
+
                 prop_rooms_label: "xona",
                 prop_floor_label: "-qavat",
                 prop_month: "/oy",
@@ -1344,6 +1488,25 @@
                 nav_add: "Разместить",
                 nav_rules: "Правила",
                 nav_help: "Помощь",
+                help_modal_title: "Помощь и поддержка",
+                help_modal_sub: "Быстрые ответы и круглосуточная поддержка",
+                help_tg_title: "Написать оператору в Telegram",
+                help_tg_sub: "Консультация 24/7 (@renttrust_admin)",
+                help_call_title: "Горячая линия",
+                help_call_sub: "+998 (71) 200-00-00 (09:00 - 21:00)",
+                help_call_btn: "Позвонить",
+                help_faq_title: "Часто задаваемые вопросы (FAQ)",
+                help_faq_q1: "1. Как работает безопасная оплата (Эскроу)?",
+                help_faq_ans_1: "Оплаченные вами средства не поступают владельцу сразу. Они хранятся под защитой RentTrust до вашего заселения и подписания акта осмотра.",
+                help_faq_q2: "2. Какова комиссия и почему она дешевле маклеров?",
+                help_faq_ans_2: "2% с арендатора и 2% с арендодателя (всего 4%). В отличие от маклеров, берущих 50% от месяца, вы экономите сотни тысяч сумов.",
+                help_faq_q3: "3. Что если квартира не совпадает с фото?",
+                help_faq_ans_3: "Если квартира не соответствует объявлению или хозяин не передал ключи, 100% средств немедленно возвращаются, а арендодатель блокируется.",
+                help_faq_q4: "4. Как получить 12% налоговую льготу для студентов?",
+                help_faq_ans_4: "Согласно ст. 378 НК РУз, при сдаче жилья студентам и регистрации договора на ijara.soliq.uz владелец полностью освобождается от 12% НДФЛ.",
+                help_faq_q5: "5. Зачем нужен акт заселения с фотофиксацией?",
+                help_faq_ans_5: "Он фиксирует имеющиеся дефекты и показания счетчиков при въезде, защищая вас от необоснованного удержания залога при выезде.",
+
                 prop_rooms_label: "комн.",
                 prop_floor_label: "-этаж",
                 prop_month: "/мес",
@@ -1514,6 +1677,25 @@
                 nav_add: "Post Ad",
                 nav_rules: "Terms",
                 nav_help: "Help",
+                help_modal_title: "Help & Support",
+                help_modal_sub: "24/7 instant answers and live support",
+                help_tg_title: "Chat with Telegram Support",
+                help_tg_sub: "Online consultation 24/7 (@renttrust_admin)",
+                help_call_title: "Hotline",
+                help_call_sub: "+998 (71) 200-00-00 (09:00 - 21:00)",
+                help_call_btn: "Call",
+                help_faq_title: "Frequently Asked Questions (FAQ)",
+                help_faq_q1: "1. How does Escrow protection work?",
+                help_faq_ans_1: "Your payment is not transferred to the landlord directly. It is safely held by RentTrust until you move in and confirm the inspection act.",
+                help_faq_q2: "2. What is the fee and why is it cheaper than agents?",
+                help_faq_ans_2: "2% tenant + 2% landlord (4% total). Compared to real estate agents charging up to 50% of monthly rent, you save hundreds of thousands of UZS.",
+                help_faq_q3: "3. What if the home does not match the photos?",
+                help_faq_ans_3: "If the property differs from the listing or the host fails to provide keys, 100% of your funds are refunded immediately and the host is banned.",
+                help_faq_q4: "4. How does the 12% student tax exemption work?",
+                help_faq_ans_4: "Under Article 378 of the Tax Code, landlords renting to verified students via ijara.soliq.uz are 100% exempt from personal income tax (12%).",
+                help_faq_q5: "5. Why is the Move-in Inspection Act required?",
+                help_faq_ans_5: "It records existing defects and utility meters with photo proof upon check-in, preventing unjustified deposit deductions when moving out.",
+
                 prop_rooms_label: "rooms",
                 prop_floor_label: "th floor",
                 prop_month: "/mo",
@@ -1810,6 +1992,25 @@
                 setTxt('insp-agree-label', t.insp_agree_lbl);
                 setTxt('insp-submit-text', t.insp_submit_btn);
 
+                                // Help Modal Translations
+                setTxt('help-modal-title', t.help_modal_title);
+                setTxt('help-modal-sub', t.help_modal_sub);
+                setTxt('help-tg-title', t.help_tg_title);
+                setTxt('help-tg-sub', t.help_tg_sub);
+                setTxt('help-call-title', t.help_call_title);
+                setTxt('help-call-sub', t.help_call_sub);
+                setTxt('help-call-btn', t.help_call_btn);
+                setTxt('help-faq-title', t.help_faq_title);
+                setTxt('help-faq-q1', t.help_faq_q1);
+                setTxt('help-faq-ans-1', t.help_faq_ans_1);
+                setTxt('help-faq-q2', t.help_faq_q2);
+                setTxt('help-faq-ans-2', t.help_faq_ans_2);
+                setTxt('help-faq-q3', t.help_faq_q3);
+                setTxt('help-faq-ans-3', t.help_faq_ans_3);
+                setTxt('help-faq-q4', t.help_faq_q4);
+                setTxt('help-faq-ans-4', t.help_faq_ans_4);
+                setTxt('help-faq-q5', t.help_faq_q5);
+                setTxt('help-faq-ans-5', t.help_faq_ans_5);
                 setTxt('terms-modal-title', t.terms_modal_title);
                 setTxt('terms-safe-title', t.terms_safe_title);
                 setTxt('terms-safe-desc', t.terms_safe_desc);
@@ -1990,6 +2191,7 @@
                     tg.BackButton.onClick(() => {
                         // Close any open modal
                         const modals = [
+                            { id: 'help-modal', close: closeHelpModal },
                             { id: 'property-modal', close: closeModal },
                             { id: 'escrow-modal', close: closeEscrowModal },
                             { id: 'add-modal', close: closeAddPropertyModal },
@@ -2973,6 +3175,53 @@
                 function openDepositRulesModal() {
             openTermsModal();
         }
+        // Help Modal Logic
+        function openHelpModal() {
+            const modal = document.getElementById('help-modal');
+            const container = document.getElementById('help-modal-container');
+            if (!modal || !container) return;
+            container.scrollTop = 0;
+            modal.classList.remove('hidden');
+            if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.BackButton) {
+                window.Telegram.WebApp.BackButton.show();
+            }
+            setTimeout(() => {
+                container.classList.remove('translate-y-full');
+            }, 10);
+            if (window.lucide) lucide.createIcons();
+        }
+
+        function closeHelpModal() {
+            const container = document.getElementById('help-modal-container');
+            const modal = document.getElementById('help-modal');
+            if (!container || !modal) return;
+            container.classList.add('translate-y-full');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+        function toggleFaqItem(num) {
+            const answer = document.getElementById('help-faq-a' + num);
+            const icon = document.getElementById('help-faq-icon-' + num);
+            if (!answer) return;
+            const isHidden = answer.classList.contains('hidden');
+            if (isHidden) {
+                answer.classList.remove('hidden');
+                if (icon) icon.classList.add('rotate-180');
+            } else {
+                answer.classList.add('hidden');
+                if (icon) icon.classList.remove('rotate-180');
+            }
+        }
+
+        function contactTelegramSupport(e) {
+            if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.openTelegramLink) {
+                if (e) e.preventDefault();
+                window.Telegram.WebApp.openTelegramLink('https://t.me/renttrust_admin');
+            }
+        }
+
         function openTermsModal() {
             const modal = document.getElementById('terms-modal');
             const container = document.getElementById('terms-modal-container');
