@@ -4,7 +4,7 @@ import datetime
 import urllib.request
 
 ALERTS_FILE = os.path.join(os.path.dirname(__file__), "property_alerts.json")
-BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN", "8909483662:AAFGrtJGPGSEVf5jr60ikamdGMCRLPM8XZc")
+BOT_TOKEN = os.environ.get("BOT_TOKEN") or os.environ.get("TELEGRAM_BOT_TOKEN", "8909483662:AAFGrtJGPGSEVf5jr60ikamdGMCRLPM8XZc")
 
 def _load_alerts():
     if not os.path.exists(ALERTS_FILE):

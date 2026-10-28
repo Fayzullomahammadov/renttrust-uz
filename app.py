@@ -11,6 +11,7 @@ from ai_search_engine import parse_ai_query, filter_properties_ai
 from referral_manager import record_referral, reward_referral_on_deal, get_user_referral_stats
 from alerts_manager import subscribe_alert, check_and_notify_subscribers
 from reviews_manager import get_property_reviews, add_property_review
+from roommates_manager import get_roommate_posts, create_roommate_post
 from fee_calculator import calculate_fees
 from payment_provider import get_payment_provider, ClickProvider, PaymeProvider, UzumProvider
 from database import DatabaseManager
@@ -147,6 +148,31 @@ def send_telegram_photo(chat_id, photo_url, caption="", reply_markup=None):
             return True
     except Exception as e:
         print(f"send_telegram_photo xatoligi ({chat_id}): {e}")
+        return False
+
+
+def send_telegram_media_group(chat_id, media_urls, caption=""):
+    if not chat_id or not BOT_TOKEN or not media_urls:
+        return False
+    try:
+        url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMediaGroup"
+        media = []
+        for i, m_url in enumerate(media_urls[:10]):
+            item = {"type": "photo", "media": m_url}
+            if i == 0 and caption:
+                item["caption"] = caption
+                item["parse_mode"] = "HTML"
+            media.append(item)
+        payload = {
+            "chat_id": chat_id,
+            "media": media
+        }
+        req_data = json.dumps(payload).encode("utf-8")
+        req = urllib.request.Request(url, data=req_data, headers={"Content-Type": "application/json"})
+        with urllib.request.urlopen(req, timeout=12) as resp:
+            return True
+    except Exception as e:
+        print(f"send_telegram_media_group xatoligi ({chat_id}): {e}")
         return False
 
 # Telegram PDF hujjat yuboruvchi yordamchi funksiya
@@ -318,6 +344,7 @@ def publish_property_to_channel(prop, landlord_name=None):
     floor = prop.get("floor", 1)
     total_floors = prop.get("total_floors", 5)
     monthly_rent = prop.get("monthly_rent_uzs", 0)
+    deposit = prop.get("deposit_uzs", 0)
     amenity_labels = {
         "ac": "❄️ Konditsioner",
         "wifi": "📶 Wi-Fi",
@@ -366,9 +393,14 @@ def publish_property_to_channel(prop, landlord_name=None):
         ]
     }
     
-    photos = prop.get("photos", [])
-    if photos and len(photos) > 0 and str(photos[0]).startswith("http"):
-        ok = send_telegram_photo(channel_id, photos[0], caption=caption, reply_markup=keyboard)
+    valid_photos = [p for p in prop.get("photos", []) if p and str(p).startswith("http")]
+    if len(valid_photos) > 1:
+        ok = send_telegram_media_group(channel_id, valid_photos[:5], caption=caption)
+        if ok:
+            send_telegram_notification(channel_id, "👇 <b>Ushbu xonadonni 24 soatga xavfsiz band qilish:</b>", reply_markup=keyboard)
+            return True
+    elif len(valid_photos) == 1:
+        ok = send_telegram_photo(channel_id, valid_photos[0], caption=caption, reply_markup=keyboard)
         if ok:
             return True
             
@@ -1627,6 +1659,40 @@ def api_add_review(property_id):
 # -------------------------------------------------------------
 # Telegram Webhook Endpoint (24/7 Cloud Bot & WebApp Controller)
 # -------------------------------------------------------------
+
+# ==============================================================================
+# ROOMMATES / XONADOSH QIDIRISH BO'LIMI (Matching & Student Support)
+# ==============================================================================
+
+@app.route("/api/roommates", methods=["GET"])
+def list_roommates():
+    """Xonadosh qidiruv e'lonlari ro'yxatini olish."""
+    district = request.args.get("district", "all")
+    gender = request.args.get("gender", "all")
+    student = request.args.get("student")
+    posts = get_roommate_posts(district=district, gender=gender, is_student=student)
+    return jsonify({"success": True, "data": posts})
+
+@app.route("/api/roommates", methods=["POST"])
+@require_telegram_auth
+def add_roommate_post():
+    """Yangi xonadosh qidirish e'lonini joylash."""
+    payload = request.json or {}
+    post = create_roommate_post(payload)
+    return jsonify({"success": True, "data": post})
+
+@app.route("/api/admin/channel/publish/<property_id>", methods=["POST"])
+def admin_publish_property_to_channel(property_id):
+    """Admin tomonidan ixtiyoriy xonadonni Telegram kanalga post qilish."""
+    try:
+        props = supabase_get(f"properties?id=eq.{property_id}")
+        if not props:
+            return jsonify({"success": False, "error": "Mulk topilmadi"}), 404
+        ok = publish_property_to_channel(props[0])
+        return jsonify({"success": ok, "channel": get_telegram_channel_id()})
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 500
+
 @app.route("/webhook", methods=["POST"])
 def telegram_webhook():
     try:

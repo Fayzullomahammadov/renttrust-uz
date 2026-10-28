@@ -308,6 +308,10 @@
                 <i data-lucide="bell" class="w-3.5 h-3.5 text-sky-600 dark:text-sky-400"><svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path></svg></i>
                 <span id="quick-alert-label">Eslatmalar</span>
             </button>
+            <button onclick="openRoommatesModal()" class="shrink-0 inline-flex items-center space-x-1.5 bg-white dark:bg-[#111a14] border border-[#dce3de] dark:border-[#1b2b20] text-slate-800 dark:text-slate-200 px-3.5 py-2.5 rounded-2xl text-xs font-bold active:scale-95 transition shadow-xs hover:border-purple-300">
+                <i data-lucide="users" class="w-3.5 h-3.5 text-purple-600 dark:text-purple-400"><svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></i>
+                <span id="quick-roommate-label">Xonadoshlar</span>
+            </button>
         </div>
 
         <!-- Full-width Referral Banner (1-rasmdagi "Döst taklif qiling" kartochkasi) -->
@@ -846,6 +850,121 @@
                     </p>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- Xonadosh Qidirish (Roommates Matching) Modal -->
+    <div id="roommates-modal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden flex flex-col justify-end">
+        <div class="bg-white dark:bg-[#0c140e] rounded-t-3xl max-h-[88vh] overflow-y-auto w-full max-w-lg mx-auto shadow-2xl transition-transform duration-300 transform translate-y-full flex flex-col border-t border-slate-200 dark:border-[#1a2d1f]" id="roommates-modal-container">
+            <!-- Sticky Modal Header -->
+            <div class="sticky top-0 bg-white/95 dark:bg-[#0c140e]/95 backdrop-blur-md px-4 py-3 border-b border-slate-100 dark:border-[#1a2d1f] flex items-center justify-between z-10 transition-colors">
+                <div class="flex items-center space-x-2.5">
+                    <div class="w-8 h-8 rounded-xl bg-purple-100 dark:bg-purple-950/70 text-purple-700 dark:text-purple-400 flex items-center justify-center">
+                        <i data-lucide="users" class="w-4 h-4"><svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></i>
+                    </div>
+                    <div>
+                        <span class="text-sm font-extrabold text-slate-900 dark:text-slate-100 block leading-tight" id="rm-modal-title">Xonadosh Qidiriş</span>
+                        <span class="text-[10px] text-slate-500 dark:text-slate-400" id="rm-modal-sub">Talabalar va yoshlar uçun ishonchli sherik</span>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <button onclick="openAddRoommateModal()" class="px-2.5 py-1 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] font-bold flex items-center space-x-1 active:scale-95 transition">
+                        <span>+ E'lon</span>
+                    </button>
+                    <button onclick="closeRoommatesModal()" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-[#1a291f] text-slate-500 dark:text-slate-300 flex items-center justify-center hover:bg-slate-200 dark:hover:bg-[#223528] transition-colors">
+                        <i data-lucide="x" class="w-4 h-4"><svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Body -->
+            <div class="p-4 space-y-3.5 text-xs">
+                <!-- Filters -->
+                <div class="flex items-center space-x-1.5 overflow-x-auto no-scrollbar pb-1">
+                    <button type="button" onclick="filterRoommates('all')" id="rm-filter-all" class="px-3 py-1.5 rounded-xl text-[11px] font-bold bg-slate-900 dark:bg-emerald-600 text-white shrink-0">Barchasi</button>
+                    <button type="button" onclick="filterRoommates('male')" id="rm-filter-male" class="px-3 py-1.5 rounded-xl text-[11px] font-bold bg-slate-100 dark:bg-[#16231a] text-slate-600 dark:text-slate-300 shrink-0">Yigitlar</button>
+                    <button type="button" onclick="filterRoommates('female')" id="rm-filter-female" class="px-3 py-1.5 rounded-xl text-[11px] font-bold bg-slate-100 dark:bg-[#16231a] text-slate-600 dark:text-slate-300 shrink-0">Qizlar</button>
+                    <button type="button" onclick="filterRoommates('student')" id="rm-filter-student" class="px-3 py-1.5 rounded-xl text-[11px] font-bold bg-slate-100 dark:bg-[#16231a] text-slate-600 dark:text-slate-300 shrink-0">🎓 Talabalar</button>
+                </div>
+
+                <!-- Roommate listings container -->
+                <div id="roommates-list" class="space-y-3">
+                    <div class="py-6 text-center text-slate-400">Yuklanmoqda...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Roommate Modal -->
+    <div id="add-roommate-modal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden flex flex-col justify-end">
+        <div class="bg-white dark:bg-[#0c140e] rounded-t-3xl max-h-[88vh] overflow-y-auto w-full max-w-lg mx-auto shadow-2xl transition-transform duration-300 transform translate-y-full flex flex-col border-t border-slate-200 dark:border-[#1a2d1f]" id="add-roommate-container">
+            <div class="sticky top-0 bg-white/95 dark:bg-[#0c140e]/95 backdrop-blur-md px-4 py-3 border-b border-slate-100 dark:border-[#1a2d1f] flex items-center justify-between z-10 transition-colors">
+                <span class="text-sm font-extrabold text-slate-900 dark:text-slate-100">Xonadosh e'loni qoldirish</span>
+                <button onclick="closeAddRoommateModal()" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-[#1a291f] text-slate-500 dark:text-slate-300 flex items-center justify-center">
+                    <i data-lucide="x" class="w-4 h-4"></i>
+                </button>
+            </div>
+            <form onsubmit="handleCreateRoommate(event)" class="p-4 space-y-3 text-xs">
+                <div>
+                    <label class="font-bold text-slate-700 dark:text-slate-300 block mb-1">Ismingiz *</label>
+                    <input type="text" id="rm-input-name" required placeholder="Masalan: Sardor" class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-[#1a2d1f] bg-slate-50 dark:bg-[#121c15] text-slate-800 dark:text-slate-100">
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="font-bold text-slate-700 dark:text-slate-300 block mb-1">Yoshingiz *</label>
+                        <input type="number" id="rm-input-age" value="21" class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-[#1a2d1f] bg-slate-50 dark:bg-[#121c15]">
+                    </div>
+                    <div>
+                        <label class="font-bold text-slate-700 dark:text-slate-300 block mb-1">Jinsingiz *</label>
+                        <select id="rm-input-gender" class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-[#1a2d1f] bg-slate-50 dark:bg-[#121c15]">
+                            <option value="male">O'g'il bola</option>
+                            <option value="female">Qiz bola</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="font-bold text-slate-700 dark:text-slate-300 block mb-1">Qidirilayotgan Tuman *</label>
+                        <select id="rm-input-district" class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-[#1a2d1f] bg-slate-50 dark:bg-[#121c15]">
+                            <option value="Chilonzor">Chilonzor</option>
+                            <option value="Yunusobod">Yunusobod</option>
+                            <option value="Mirzo Ulug'bek">Mirzo Ulug'bek</option>
+                            <option value="Olmazor">Olmazor</option>
+                            <option value="Yakkasaroy">Yakkasaroy</option>
+                            <option value="Mirobod">Mirobod</option>
+                            <option value="Shayxontohur">Shayxontohur</option>
+                            <option value="Uchtepa">Uchtepa</option>
+                            <option value="Yashnobod">Yashnobod</option>
+                            <option value="Sergeli">Sergeli</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="font-bold text-slate-700 dark:text-slate-300 block mb-1">Maksimal byudjet (so'm) *</label>
+                        <input type="number" id="rm-input-budget" value="1500000" step="100000" class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-[#1a2d1f] bg-slate-50 dark:bg-[#121c15]">
+                    </div>
+                </div>
+                <div>
+                    <label class="font-bold text-slate-700 dark:text-slate-300 block mb-1">O'qish yoki ish joyi</label>
+                    <input type="text" id="rm-input-univ" placeholder="Masalan: TATU 3-kurs talabasi" class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-[#1a2d1f] bg-slate-50 dark:bg-[#121c15]">
+                </div>
+                <div>
+                    <label class="font-bold text-slate-700 dark:text-slate-300 block mb-1">O'zingiz va talablaringiz haqida</label>
+                    <textarea id="rm-input-about" rows="2" placeholder="Masalan: Chekmayman, tinch yashayman. Sheriklar ham tartibli bo'lishi kerak..." class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-[#1a2d1f] bg-slate-50 dark:bg-[#121c15]"></textarea>
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="font-bold text-slate-700 dark:text-slate-300 block mb-1">Telegram username</label>
+                        <input type="text" id="rm-input-tg" placeholder="@username" class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-[#1a2d1f] bg-slate-50 dark:bg-[#121c15]">
+                    </div>
+                    <div>
+                        <label class="font-bold text-slate-700 dark:text-slate-300 block mb-1">Telefon raqam</label>
+                        <input type="text" id="rm-input-phone" placeholder="+998 90 123 45 67" class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-[#1a2d1f] bg-slate-50 dark:bg-[#121c15]">
+                    </div>
+                </div>
+                <button type="submit" id="btn-submit-rm" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-xl shadow-md active:scale-95 transition mt-2">
+                    E'lonni joylashtirish
+                </button>
+            </form>
         </div>
     </div>
 
@@ -2220,6 +2339,8 @@
                     tg.BackButton.onClick(() => {
                         // Close any open modal
                         const modals = [
+                            { id: 'roommates-modal', close: closeRoommatesModal },
+                            { id: 'add-roommate-modal', close: closeAddRoommateModal },
                             { id: 'help-modal', close: closeHelpModal },
                             { id: 'property-modal', close: closeModal },
                             { id: 'escrow-modal', close: closeEscrowModal },
@@ -3227,6 +3348,179 @@
                 function openDepositRulesModal() {
             openTermsModal();
         }
+                // Roommates (Xonadoshlar) Logic
+        let currentRoommatesFilter = 'all';
+
+        function openRoommatesModal() {
+            const modal = document.getElementById('roommates-modal');
+            const container = document.getElementById('roommates-modal-container');
+            if (!modal || !container) return;
+            container.scrollTop = 0;
+            modal.classList.remove('hidden');
+            if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.BackButton) {
+                window.Telegram.WebApp.BackButton.show();
+            }
+            setTimeout(() => {
+                container.classList.remove('translate-y-full');
+            }, 10);
+            loadRoommateList();
+            if (window.lucide) lucide.createIcons();
+        }
+
+        function closeRoommatesModal() {
+            const container = document.getElementById('roommates-modal-container');
+            const modal = document.getElementById('roommates-modal');
+            if (!container || !modal) return;
+            container.classList.add('translate-y-full');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+        function openAddRoommateModal() {
+            const modal = document.getElementById('add-roommate-modal');
+            const container = document.getElementById('add-roommate-container');
+            if (!modal || !container) return;
+            // Pre-fill Telegram data
+            if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe && window.Telegram.WebApp.initDataUnsafe.user) {
+                const u = window.Telegram.WebApp.initDataUnsafe.user;
+                const nameInp = document.getElementById('rm-input-name');
+                const tgInp = document.getElementById('rm-input-tg');
+                if (nameInp && !nameInp.value) nameInp.value = `${u.first_name || ''} ${u.last_name || ''}`.trim();
+                if (tgInp && !tgInp.value && u.username) tgInp.value = '@' + u.username;
+            }
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                container.classList.remove('translate-y-full');
+            }, 10);
+            if (window.lucide) lucide.createIcons();
+        }
+
+        function closeAddRoommateModal() {
+            const container = document.getElementById('add-roommate-container');
+            const modal = document.getElementById('add-roommate-modal');
+            if (!container || !modal) return;
+            container.classList.add('translate-y-full');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+        function filterRoommates(cat) {
+            currentRoommatesFilter = cat;
+            ['all', 'male', 'female', 'student'].forEach(c => {
+                const btn = document.getElementById('rm-filter-' + c);
+                if (btn) {
+                    if (c === cat) {
+                        btn.className = "px-3 py-1.5 rounded-xl text-[11px] font-bold bg-slate-900 dark:bg-emerald-600 text-white shrink-0";
+                    } else {
+                        btn.className = "px-3 py-1.5 rounded-xl text-[11px] font-bold bg-slate-100 dark:bg-[#16231a] text-slate-600 dark:text-slate-300 shrink-0";
+                    }
+                }
+            });
+            loadRoommateList();
+        }
+
+        async function loadRoommateList() {
+            const listEl = document.getElementById('roommates-list');
+            if (!listEl) return;
+            listEl.innerHTML = '<div class="py-6 text-center text-slate-400">Yuklanmoqda...</div>';
+
+            let url = '/api/roommates?';
+            if (currentRoommatesFilter === 'male') url += 'gender=male';
+            else if (currentRoommatesFilter === 'female') url += 'gender=female';
+            else if (currentRoommatesFilter === 'student') url += 'student=true';
+
+            try {
+                const res = await fetch(url);
+                const data = await res.json();
+                if (!data.success || !data.data || data.data.length === 0) {
+                    listEl.innerHTML = '<div class="py-8 text-center text-slate-400 text-xs">Ushbu toifada xonadoshlar topilmadi. Birinchi bo'lib e'lon qoldiring!</div>';
+                    return;
+                }
+
+                listEl.innerHTML = data.data.map(item => `
+                    <div class="p-3.5 bg-slate-50 dark:bg-[#121c15] border border-slate-200 dark:border-[#1c2e21] rounded-2xl space-y-2">
+                        <div class="flex items-start justify-between">
+                            <div>
+                                <div class="flex items-center space-x-2">
+                                    <span class="font-extrabold text-slate-900 dark:text-slate-100 text-xs">${item.name}, ${item.age} yosh</span>
+                                    ${item.is_student ? '<span class="px-1.5 py-0.5 rounded-md bg-purple-100 dark:bg-purple-950/70 text-purple-700 dark:text-purple-300 text-[10px] font-bold">Talaba</span>' : ''}
+                                    <span class="px-1.5 py-0.5 rounded-md ${item.gender === 'female' ? 'bg-rose-100 text-rose-700' : 'bg-blue-100 text-blue-700'} text-[10px] font-bold">${item.gender === 'female' ? 'Qiz bola' : 'O\'g\'il bola'}</span>
+                                </div>
+                                <div class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">${item.university || 'Ishlaydi'}</div>
+                            </div>
+                            <div class="text-right">
+                                <span class="text-xs font-black text-emerald-600 dark:text-emerald-400 block">${(item.budget_uzs || 1500000).toLocaleString('uz-UZ')} so'm</span>
+                                <span class="text-[9px] text-slate-400">oyiga byudjet</span>
+                            </div>
+                        </div>
+
+                        <div class="text-[11px] text-slate-600 dark:text-slate-300 leading-relaxed bg-white dark:bg-[#0c140e] p-2.5 rounded-xl border border-slate-100 dark:border-[#19271d]">
+                            📍 <b>${item.district}</b> tumani • ${item.about || 'Xonadosh qidiryapman.'}
+                        </div>
+
+                        <div class="pt-1 flex items-center justify-end space-x-2">
+                            ${item.telegram_username ? `
+                                <a href="https://t.me/${item.telegram_username}" target="_blank" class="px-3 py-1.5 rounded-xl bg-sky-500 hover:bg-sky-600 text-white font-bold text-[11px] flex items-center space-x-1 shadow-xs active:scale-95 transition">
+                                    <span>Telegram: @${item.telegram_username}</span>
+                                </a>
+                            ` : ''}
+                            ${item.phone_number ? `
+                                <a href="tel:${item.phone_number}" class="px-3 py-1.5 rounded-xl bg-slate-200 dark:bg-[#1a2d1f] text-slate-700 dark:text-slate-200 font-bold text-[11px] active:scale-95 transition">
+                                    Qo'ng'iroq
+                                </a>
+                            ` : ''}
+                        </div>
+                    </div>
+                `).join('');
+                if (window.lucide) lucide.createIcons();
+            } catch(e) {
+                console.error("loadRoommateList error:", e);
+                listEl.innerHTML = '<div class="py-6 text-center text-rose-500 text-xs">Xatolik yuz berdi.</div>';
+            }
+        }
+
+        async function handleCreateRoommate(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btn-submit-rm');
+            const orig = btn.innerText;
+            btn.innerText = 'Joylanmoqda...';
+
+            const payload = {
+                name: document.getElementById('rm-input-name').value,
+                age: parseInt(document.getElementById('rm-input-age').value) || 20,
+                gender: document.getElementById('rm-input-gender').value,
+                is_student: true,
+                district: document.getElementById('rm-input-district').value,
+                budget_uzs: parseInt(document.getElementById('rm-input-budget').value) || 1500000,
+                university: document.getElementById('rm-input-univ').value,
+                about: document.getElementById('rm-input-about').value,
+                telegram_username: document.getElementById('rm-input-tg').value,
+                phone_number: document.getElementById('rm-input-phone').value
+            };
+
+            try {
+                const res = await fetch('/api/roommates', {
+                    method: 'POST',
+                    headers: getAuthHeaders({ 'Content-Type': 'application/json' }),
+                    body: JSON.stringify(payload)
+                });
+                const d = await res.json();
+                if (d.success) {
+                    alert("🎉 Xonadosh e'loningiz muvaffaqiyatli joylashtirildi!");
+                    closeAddRoommateModal();
+                    loadRoommateList();
+                } else {
+                    alert("Xatolik: " + (d.error || 'Joylab bo'lmadi'));
+                }
+            } catch(err) {
+                alert("Server bilan aloqada xatolik.");
+            } finally {
+                btn.innerText = orig;
+            }
+        }
+
         // Help Modal Logic
         function openHelpModal() {
             const modal = document.getElementById('help-modal');
