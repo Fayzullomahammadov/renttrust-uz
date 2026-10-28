@@ -3435,7 +3435,7 @@
                 const res = await fetch(url);
                 const data = await res.json();
                 if (!data.success || !data.data || data.data.length === 0) {
-                    listEl.innerHTML = '<div class="py-8 text-center text-slate-400 text-xs">Ushbu toifada xonadoshlar topilmadi. Birinchi bo'lib e'lon qoldiring!</div>';
+                    listEl.innerHTML = `<div class="py-8 text-center text-slate-400 text-xs">Ushbu toifada xonadoshlar topilmadi. Birinchi bo'lib e'lon qoldiring!</div>`;
                     return;
                 }
 
@@ -3512,7 +3512,7 @@
                     closeAddRoommateModal();
                     loadRoommateList();
                 } else {
-                    alert("Xatolik: " + (d.error || 'Joylab bo'lmadi'));
+                    alert("Xatolik: " + (d.error || "Joylab bo'lmadi"));
                 }
             } catch(err) {
                 alert("Server bilan aloqada xatolik.");
