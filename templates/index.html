@@ -18,31 +18,31 @@
     <!-- Tailwind CSS with Dark Mode Class Support -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        rt: {
-                            darkbg: '#080f0b',
-                            darkcard: '#111a14',
-                            darkcard2: '#16231c',
-                            darkborder: '#1b2b20',
-                            darkgold: '#f4c979',
-                            darkgreen: '#10b981',
-                            lightbg: '#f4f7f5'
+        if (typeof tailwind !== 'undefined') {
+            tailwind.config = {
+                darkMode: 'class',
+                theme: {
+                    extend: {
+                        colors: {
+                            rt: {
+                                darkbg: '#080f0b',
+                                darkcard: '#111a14',
+                                darkcard2: '#16231c',
+                                darkborder: '#1b2b20',
+                                darkgold: '#f4c979',
+                                darkgreen: '#10b981',
+                                lightbg: '#f4f7f5'
+                            }
                         }
                     }
                 }
-            }
-        };
-    </script>
-    <!-- Lucide Icons: Local bundle (100% offline & Telegram WebApp reliable) with CDN fallbacks -->
-    <script src="/static/js/lucide.min.js"></script>
-    <script>
-        if (typeof lucide === 'undefined') {
-            document.write('<script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.min.js"><\/script>');
+            };
         }
+    </script>
+    <!-- Lucide Icons: Local bundle with CDN fallbacks -->
+    <script src="/static/js/lucide.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.min.js"></script>
+    <script>
         function renderLucideIcons() {
             if (typeof lucide !== 'undefined' && typeof lucide.createIcons === 'function') {
                 try { lucide.createIcons(); } catch(e) { console.warn("Lucide render error:", e); }
@@ -3190,7 +3190,7 @@
             document.getElementById('escrow-modal').classList.add('hidden');
         }
 
-        async         let currentSelectedPaymentProvider = 'click';
+        let currentSelectedPaymentProvider = 'click';
         function selectPaymentProvider(prov) {
             currentSelectedPaymentProvider = prov;
             ['click', 'payme', 'uzum'].forEach(p => {
@@ -3205,7 +3205,7 @@
             });
         }
 
-        function confirmEscrowPayment() {
+        async function confirmEscrowPayment() {
             if (!selectedProperty) return;
             const btn = document.getElementById('pay-btn');
             const originalContent = btn.innerHTML;
