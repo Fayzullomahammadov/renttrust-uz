@@ -15,8 +15,28 @@
     <meta property="og:title" content="RentTrust UZ - Toshkentda maklersiz uy ijarasi">
     <meta property="og:description" content="Toshkentda maklersiz uy ijarasi. Ijarachidan 2%, uy egasidan 2% xizmat haqi. Ko'chib kirib tasdiqlaguningizcha to'lov RentTrust nazoratida saqlanadi.">
     <meta property="og:image" content="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=1200">
-    <!-- Tailwind CSS -->
+    <!-- Tailwind CSS with Dark Mode Class Support -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        rt: {
+                            darkbg: '#080f0b',
+                            darkcard: '#111a14',
+                            darkcard2: '#16231c',
+                            darkborder: '#1b2b20',
+                            darkgold: '#f4c979',
+                            darkgreen: '#10b981',
+                            lightbg: '#f4f7f5'
+                        }
+                    }
+                }
+            }
+        };
+    </script>
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <!-- Telegram WebApp SDK -->
@@ -53,102 +73,145 @@
         }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-900 pb-24 antialiased selection:bg-emerald-500 selection:text-white">
+<body class="bg-[#f4f7f5] dark:bg-[#080f0b] text-slate-900 dark:text-slate-100 pb-24 antialiased selection:bg-emerald-500 selection:text-white transition-colors duration-200">
 
     <!-- Top App Bar -->
-    <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-100 px-4 py-3">
+    <header class="sticky top-0 z-40 bg-white/95 dark:bg-[#080f0b]/95 backdrop-blur-md border-b border-slate-200/80 dark:border-[#141f17] px-4 py-3 transition-colors duration-200">
         <div class="flex items-center justify-between max-w-lg mx-auto">
-            <div class="flex items-center space-x-2">
-                <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-500 flex items-center justify-center text-white shadow-md shadow-emerald-500/20">
+            <div class="flex items-center space-x-2.5">
+                <div class="w-9 h-9 rounded-2xl bg-[#059669] dark:bg-[#10b981] flex items-center justify-center text-white dark:text-slate-950 shadow-md shadow-emerald-600/20">
                     <i data-lucide="shield-check" class="w-5 h-5"></i>
                 </div>
                 <div>
                     <div class="flex items-center space-x-1">
-                        <span class="font-extrabold text-base tracking-tight text-slate-900">RentTrust</span>
-                        <span class="text-xs font-bold px-1.5 py-0.5 rounded-full bg-emerald-100 text-emerald-700">UZ</span>
+                        <span class="font-extrabold text-base tracking-tight text-slate-900 dark:text-white">RentTrust</span>
+                        <span class="text-[10px] font-extrabold px-1.5 py-0.5 rounded-full bg-emerald-100 dark:bg-[#221e10] text-emerald-800 dark:text-[#f4c979] dark:border dark:border-[#38311a]">UZ</span>
                     </div>
-                    <p class="text-[10px] text-slate-500 font-medium" id="header-slogan">Ishonch va Escrow tizimi</p>
+                    <p class="text-[10px] text-slate-500 dark:text-slate-400 font-medium" id="header-slogan">Ishonch va himoyalangan to'lov tizimi</p>
                 </div>
             </div>
 
             <div class="flex items-center space-x-1.5">
-                <button id="lang-toggle-btn" onclick="toggleLanguage()" class="px-2 py-1 rounded-lg text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 transition flex items-center space-x-0.5 active:scale-95" title="Tilni almashtirish / Сменить язык">
+                <!-- Theme Toggle Button -->
+                <button id="theme-toggle-btn" onclick="toggleTheme()" class="w-8 h-8 rounded-full bg-white dark:bg-[#121c16] border border-slate-200 dark:border-[#1f2e24] text-slate-700 dark:text-[#f4c979] flex items-center justify-center transition active:scale-95 shadow-xs" title="Mavzuni almashtirish">
+                    <i data-lucide="moon" id="theme-toggle-icon" class="w-4 h-4"></i>
+                </button>
+                <!-- Language Toggle -->
+                <button id="lang-toggle-btn" onclick="toggleLanguage()" class="px-2 py-1 rounded-lg text-xs font-bold bg-white dark:bg-[#121c16] border border-slate-200 dark:border-[#1f2e24] text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-[#18261e] transition flex items-center space-x-0.5 active:scale-95" title="Tilni almashtirish / Сменить язык">
                     <span id="lang-btn-text">UZ</span>
                 </button>
-                <button onclick="openFavoritesModal()" class="relative inline-flex items-center space-x-1 bg-rose-50 border border-rose-200/80 text-rose-700 px-2 py-1 rounded-lg text-xs font-bold active:scale-95 transition shadow-sm" title="Sevimlilar">
-                    <i data-lucide="heart" class="w-3.5 h-3.5 fill-rose-500 text-rose-500"></i>
-                    <span id="top-fav-badge" class="text-[11px] font-extrabold">0</span>
+                <!-- Favorites -->
+                <button onclick="openFavoritesModal()" class="relative w-8 h-8 rounded-full bg-white dark:bg-[#121c16] border border-slate-200 dark:border-[#1f2e24] text-rose-500 flex items-center justify-center active:scale-95 transition shadow-xs" title="Sevimlilar">
+                    <i data-lucide="heart" class="w-4 h-4"></i>
+                    <span id="top-fav-badge" class="absolute -top-1 -right-1 bg-rose-500 text-white text-[9px] font-black w-4 h-4 rounded-full flex items-center justify-center">0</span>
                 </button>
-                <button onclick="openReferralModal()" class="inline-flex items-center space-x-1 bg-amber-50 border border-amber-200/80 text-amber-700 px-2 py-1 rounded-lg text-xs font-bold active:scale-95 transition shadow-sm">
-                    <span>🎁 Do'st taklif qiling</span>
+                <!-- Referral Gift -->
+                <button onclick="openReferralModal()" class="w-8 h-8 rounded-full bg-white dark:bg-[#121c16] border border-slate-200 dark:border-[#1f2e24] text-amber-500 flex items-center justify-center active:scale-95 transition shadow-xs" title="Do'st taklif qiling">
+                    <i data-lucide="gift" class="w-4 h-4"></i>
                 </button>
-                <button onclick="openAddPropertyModal()" class="inline-flex items-center space-x-1 bg-emerald-50 border border-emerald-200 text-emerald-700 px-2.5 py-1 rounded-lg text-xs font-bold active:scale-95 transition">
-                    <i data-lucide="plus" class="w-3.5 h-3.5"></i>
-                    <span id="header-add-text">E'lon</span>
-                </button>
-                <div class="w-8 h-8 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-600 font-bold text-xs" id="user-avatar">
-                    U
-                </div>
             </div>
         </div>
     </header>
 
     <main class="max-w-lg mx-auto px-4 pt-3 space-y-3.5">
 
-        <!-- Value Proposition Escrow Banner -->
-        <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-slate-900 via-slate-800 to-emerald-950 text-white p-4 shadow-xl shadow-slate-900/10">
-            <div class="absolute -right-6 -bottom-6 w-32 h-32 bg-emerald-500/10 rounded-full blur-2xl"></div>
-            <div class="relative z-10 space-y-2">
-                <div class="inline-flex items-center space-x-1.5 bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 text-[11px] font-semibold px-2.5 py-0.5 rounded-full">
-                    <i data-lucide="lock" class="w-3 h-3"></i>
-                    <span id="banner-tag">Himoyalangan to'lov</span>
+        <!-- Hero Banner (1-rasm: Light Mode) -->
+        <div class="block dark:hidden bg-white border border-[#dce3de] rounded-3xl p-5 shadow-xs relative space-y-3">
+            <div class="flex items-center justify-between">
+                <div class="inline-flex items-center space-x-1.5 bg-[#e8f5ed] text-[#047857] text-[11px] font-bold px-3 py-1 rounded-full">
+                    <i data-lucide="lock" class="w-3.5 h-3.5"></i>
+                    <span>Himoyalangan to'lov</span>
                 </div>
-                <h1 class="text-base font-bold leading-tight" id="banner-title">Pul uy egasiga emas, platformaga tushadi</h1>
-                <p class="text-xs text-slate-300 leading-relaxed" id="banner-desc">
-                    Siz ko'chib kirib, uyni tasdiqlamaguningizcha mablag' RentTrust nazoratida saqlanadi. Xizmat haqi: ijarachidan 2%, uy egasidan 2%.
-                </p>
-                <div class="pt-1 flex items-center space-x-3 text-[11px] text-slate-400">
-                    <span class="flex items-center"><i data-lucide="check" class="w-3.5 h-3.5 text-emerald-400 mr-1"></i> <span id="banner-b2">Depozit dalolatnomasi</span></span>
+                <div class="w-8 h-8 rounded-full bg-[#e8f5ed] text-[#059669] flex items-center justify-center">
+                    <i data-lucide="shield-check" class="w-4 h-4"></i>
                 </div>
+            </div>
+            <h1 class="text-[17px] font-extrabold text-slate-900 leading-snug">
+                Siz ko'chib kirib, uyni tasdiqlamaguningizcha mablag' RentTrust nazoratida saqlanadi.
+            </h1>
+            <p class="text-xs text-slate-500 font-medium">
+                Xizmat haqi: ijarachidan 2%, uy egasidan 2%.
+            </p>
+            <div onclick="openDepositRulesModal()" class="pt-0.5 inline-flex items-center text-[#059669] text-xs font-bold hover:underline cursor-pointer">
+                <i data-lucide="file-check" class="w-4 h-4 mr-1.5"></i>
+                <span>Depozit dalolatnomasi</span>
             </div>
         </div>
 
-        <!-- AI Smart Natural Language Search Input (Pillar 3) -->
-        <div class="relative bg-white border border-emerald-200/80 rounded-2xl p-2.5 shadow-sm space-y-2">
+        <!-- Hero Banner (2-rasm: Dark Mode) -->
+        <div class="hidden dark:block bg-[#111a14] border border-[#1b2b20] rounded-3xl p-5 shadow-xl relative space-y-3.5">
+            <div class="text-[#10b981] font-bold text-[11px] tracking-wider flex items-center gap-1.5">
+                <i data-lucide="lock" class="w-3.5 h-3.5"></i>
+                <span>HIMOYALANGAN TO'LOV</span>
+            </div>
+            <h1 class="text-[18px] font-extrabold text-white leading-snug">
+                Siz ko'chib kirib, uyni tasdiqlamaguningizcha mablag' RentTrust nazoratida saqlanadi.
+            </h1>
+            <!-- 2 Fee Metric Boxes side by side -->
+            <div class="grid grid-cols-2 gap-2.5 pt-1">
+                <div class="bg-[#142319] border border-[#1d3524] rounded-2xl p-3 flex flex-col justify-between">
+                    <span class="text-[#6ee7b7] text-[11px] font-medium">Xizmat haqi · ijarachi</span>
+                    <span class="text-[#10b981] text-3xl font-extrabold mt-1">2%</span>
+                </div>
+                <div class="bg-[#222116] border border-[#38331d] rounded-2xl p-3 flex flex-col justify-between">
+                    <span class="text-[#fde68a] text-[11px] font-medium">Xizmat haqi · uy egasi</span>
+                    <span class="text-[#f4c979] text-3xl font-extrabold mt-1">2%</span>
+                </div>
+            </div>
+            <!-- Dalolatnoma Action Card -->
+            <div onclick="openDepositRulesModal()" class="bg-[#16221a] border border-[#203325] rounded-xl px-4 py-3 flex items-center justify-between text-xs font-semibold text-slate-200 hover:border-emerald-500/50 transition cursor-pointer">
+                <span class="flex items-center">
+                    <i data-lucide="file-check" class="w-4 h-4 text-emerald-400 mr-2"></i>
+                    <span>Depozit dalolatnomasi</span>
+                </span>
+                <i data-lucide="chevron-right" class="w-4 h-4 text-slate-400"></i>
+            </div>
+        </div>
+
+        <!-- AI Smart Natural Language Search Input -->
+        <div class="relative bg-white dark:bg-[#111a14] border border-[#dce3de] dark:border-[#1b2b20] rounded-2xl p-2 shadow-xs transition-colors">
             <div class="flex items-center space-x-2">
-                <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-400 text-white flex items-center justify-center shrink-0 shadow-sm">
+                <div class="w-8 h-8 rounded-xl bg-[#e8f5ed] dark:bg-[#16251c] text-[#059669] dark:text-[#10b981] flex items-center justify-center shrink-0">
                     <i data-lucide="sparkles" class="w-4 h-4"></i>
                 </div>
-                <input type="text" id="ai-search-input" placeholder="AI: masalan, 'Chilonzorda 2 xona 400$ gacha'..." class="w-full text-xs bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-800 placeholder-slate-400 focus:outline-none focus:border-emerald-500 focus:bg-white transition" onkeydown="if(event.key === 'Enter') handleAiSearch()">
-                <button onclick="handleAiSearch()" id="btn-ai-search" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs px-3.5 py-2 rounded-xl shrink-0 transition active:scale-95 shadow-sm flex items-center space-x-1">
-                    <i data-lucide="search" class="w-3.5 h-3.5"></i>
+                <input type="text" id="ai-search-input" placeholder="AI: masalan, 'Chilonzorda 2 xona 400$ gacha'..." class="w-full text-xs bg-transparent border-none text-slate-800 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-0 transition" onkeydown="if(event.key === 'Enter') handleAiSearch()">
+                <button onclick="handleAiSearch()" id="btn-ai-search" class="bg-[#059669] hover:bg-[#047857] dark:bg-[#10b981] dark:hover:bg-[#059669] text-white dark:text-slate-950 font-extrabold text-xs px-4 py-2 rounded-xl shrink-0 transition active:scale-95 shadow-xs flex items-center space-x-1">
                     <span id="ai-btn-text">Topish</span>
                 </button>
             </div>
             <!-- AI Result Indicator Chip -->
-            <div id="ai-search-status" class="hidden bg-emerald-50 border border-emerald-100 rounded-xl p-2.5 text-[11px] text-emerald-900 flex items-start justify-between">
+            <div id="ai-search-status" class="hidden bg-emerald-50 dark:bg-[#142319] border border-emerald-100 dark:border-[#1d3524] rounded-xl p-2.5 text-[11px] text-emerald-900 dark:text-emerald-300 flex items-start justify-between mt-2">
                 <div class="flex-1 pr-2">
-                    <span id="ai-search-summary-text" class="leading-relaxed text-slate-700 block"></span>
+                    <span id="ai-search-summary-text" class="leading-relaxed text-slate-700 dark:text-slate-300 block"></span>
                 </div>
-                <button onclick="resetAiSearch()" class="text-rose-600 font-bold hover:underline text-[11px] shrink-0 bg-white/70 px-2 py-0.5 rounded-md border border-rose-100 shadow-xs">Tozalash</button>
+                <button onclick="resetAiSearch()" class="text-rose-600 font-bold hover:underline text-[11px] shrink-0 bg-white/70 dark:bg-[#1a2b20] px-2 py-0.5 rounded-md border border-rose-100 dark:border-rose-900 shadow-xs">Tozalash</button>
             </div>
         </div>
 
-        <!-- Quick Action Toolbar: Favorites, Calculator, Smart Alerts -->
+        <!-- Quick Action Toolbar: 3 Buttons -->
         <div class="flex items-center space-x-2 overflow-x-auto no-scrollbar py-0.5">
-            <button onclick="openFavoritesModal()" class="shrink-0 inline-flex items-center space-x-1.5 bg-white border border-rose-200/90 text-rose-700 px-3 py-1.5 rounded-xl text-xs font-bold active:scale-95 transition shadow-sm hover:bg-rose-50">
-                <i data-lucide="heart" class="w-3.5 h-3.5 fill-rose-500 text-rose-500"></i>
-                <span id="quick-fav-label">Sevimlilar</span>
-                <span id="quick-fav-badge" class="bg-rose-100 text-rose-700 text-[10px] px-1.5 py-0.2 rounded-full font-extrabold">0</span>
+            <button onclick="openFavoritesModal()" class="shrink-0 inline-flex items-center space-x-1.5 bg-white dark:bg-[#111a14] border border-[#dce3de] dark:border-[#1b2b20] text-slate-800 dark:text-slate-200 px-3.5 py-2.5 rounded-2xl text-xs font-bold active:scale-95 transition shadow-xs hover:border-rose-300">
+                <i data-lucide="heart" class="w-3.5 h-3.5 text-rose-500 fill-rose-500"></i>
+                <span>Sevimlilar · </span>
+                <span id="quick-fav-badge">0</span>
             </button>
-            <button onclick="openCalculatorModal()" class="shrink-0 inline-flex items-center space-x-1.5 bg-white border border-emerald-200/90 text-emerald-800 px-3 py-1.5 rounded-xl text-xs font-bold active:scale-95 transition shadow-sm hover:bg-emerald-50">
-                <i data-lucide="calculator" class="w-3.5 h-3.5 text-emerald-600"></i>
-                <span id="quick-calc-label">🧮 Tejamkorlik</span>
+            <button onclick="openCalculatorModal()" class="shrink-0 inline-flex items-center space-x-1.5 bg-white dark:bg-[#111a14] border border-[#dce3de] dark:border-[#1b2b20] text-slate-800 dark:text-slate-200 px-3.5 py-2.5 rounded-2xl text-xs font-bold active:scale-95 transition shadow-xs hover:border-emerald-300">
+                <i data-lucide="calculator" class="w-3.5 h-3.5 text-emerald-600 dark:text-[#10b981]"></i>
+                <span id="quick-calc-label">Tejamkorlik</span>
             </button>
-            <button onclick="openAlertModal()" class="shrink-0 inline-flex items-center space-x-1.5 bg-white border border-sky-200/90 text-sky-800 px-3 py-1.5 rounded-xl text-xs font-bold active:scale-95 transition shadow-sm hover:bg-sky-50">
-                <i data-lucide="bell" class="w-3.5 h-3.5 text-sky-600"></i>
-                <span id="quick-alert-label">🔔 Uylarga obuna</span>
+            <button onclick="openAlertModal()" class="shrink-0 inline-flex items-center space-x-1.5 bg-white dark:bg-[#111a14] border border-[#dce3de] dark:border-[#1b2b20] text-slate-800 dark:text-slate-200 px-3.5 py-2.5 rounded-2xl text-xs font-bold active:scale-95 transition shadow-xs hover:border-sky-300">
+                <i data-lucide="bell" class="w-3.5 h-3.5 text-sky-600 dark:text-sky-400"></i>
+                <span id="quick-alert-label">Eslatmalar</span>
             </button>
+        </div>
+
+        <!-- Full-width Referral Banner (1-rasmdagi "Do'st taklif qiling" kartochkasi) -->
+        <div onclick="openReferralModal()" class="bg-[#fef9eb] dark:bg-[#1b1911] border border-[#e6c975] dark:border-[#38311a] text-[#92600b] dark:text-[#f4c979] rounded-2xl p-3 px-4 flex items-center justify-between cursor-pointer shadow-xs active:scale-[0.99] transition">
+            <div class="flex items-center space-x-2.5">
+                <i data-lucide="gift" class="w-4 h-4 text-amber-600 dark:text-[#f4c979]"></i>
+                <span class="font-bold text-xs">Do'st taklif qiling</span>
+            </div>
+            <span class="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-amber-200/70 dark:bg-[#2b2512] text-amber-900 dark:text-[#f4c979]">30% Keshbek</span>
         </div>
 
         <!-- View Mode Switcher & Filter Triggers -->
@@ -207,9 +270,9 @@
                 <span class="text-[11px] text-emerald-600 font-semibold" id="properties-count">Yuklanmoqda...</span>
             </div>
             <div id="district-pills-container" class="flex items-center space-x-2 overflow-x-auto hide-scrollbar py-1 text-xs">
-                <button onclick="filterDistrict('Barchasi')" class="district-btn px-3 py-1.5 rounded-full font-bold bg-emerald-600 text-white shrink-0 transition active:scale-95 shadow-sm" id="district-pill-all">Barchasi</button>
+                <button onclick="filterDistrict('Barchasi')" class="district-btn px-3 py-1.5 rounded-full font-bold bg-[#059669] dark:bg-[#10b981] text-white dark:text-slate-950 shrink-0 transition active:scale-95 shadow-xs" id="district-pill-all">Barchasi</button>
                 {% for d in districts %}
-                <button onclick="filterDistrict('{{ d }}')" class="district-btn px-3 py-1.5 rounded-full font-medium bg-white text-slate-700 hover:bg-slate-100 shrink-0 transition active:scale-95 border border-slate-200/60">{{ d }}</button>
+                <button onclick="filterDistrict('{{ d }}')" class="district-btn px-3 py-1.5 rounded-full font-medium bg-white dark:bg-[#111a14] text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-[#16231c] shrink-0 transition active:scale-95 border border-slate-200/80 dark:border-[#1b2b20]">{{ d }}</button>
                 {% endfor %}
             </div>
         </div>
@@ -459,29 +522,30 @@
         </div>
     </div>
 
-    <!-- Bottom Navigation Bar -->
-    <nav class="fixed bottom-0 left-0 right-0 z-30 bg-white/95 backdrop-blur-md border-t border-slate-100 py-2">
+    <!-- Bottom Navigation Bar (1 & 2-rasm dizayni) -->
+    <nav class="fixed bottom-0 left-0 right-0 z-30 bg-white/95 dark:bg-[#09110c]/95 backdrop-blur-md border-t border-slate-200/80 dark:border-[#17241b] py-2 transition-colors">
         <div class="max-w-lg mx-auto flex items-center justify-around px-4">
-            <button onclick="scrollToTop()" class="flex flex-col items-center text-emerald-600 space-y-1">
+            <button onclick="scrollToTop()" class="flex flex-col items-center text-[#059669] dark:text-[#10b981] space-y-1">
                 <i data-lucide="home" class="w-5 h-5"></i>
                 <span class="text-[10px] font-bold" id="nav-home">Uylar</span>
             </button>
-            <button onclick="showMyBookings()" class="flex flex-col items-center text-slate-400 hover:text-slate-700 space-y-1 relative">
+            <button onclick="showMyBookings()" class="flex flex-col items-center text-slate-400 dark:text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 space-y-1 relative">
                 <i data-lucide="calendar" class="w-5 h-5"></i>
                 <span class="text-[10px] font-medium" id="nav-bookings">Arizalarim</span>
                 <span id="badge-booking" class="hidden absolute top-0 right-3 w-2 h-2 rounded-full bg-emerald-500"></span>
             </button>
-            <button onclick="openAddPropertyModal()" class="flex flex-col items-center text-emerald-600 hover:text-emerald-700 space-y-1">
-                <div class="w-6 h-6 rounded-full bg-emerald-600 text-white flex items-center justify-center shadow-sm">
-                    <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+            <!-- Center Floating "+" Button (Light: Emerald, Dark: Glowing Gold #f4c979) -->
+            <button onclick="openAddPropertyModal()" class="flex flex-col items-center space-y-1 -mt-4 active:scale-95 transition-transform" title="E'lon berish">
+                <div class="w-12 h-12 rounded-full bg-[#059669] dark:bg-[#f4c979] text-white dark:text-slate-950 flex items-center justify-center shadow-lg shadow-[#059669]/30 dark:shadow-[#f4c979]/30">
+                    <i data-lucide="plus" class="w-6 h-6 stroke-[2.5]"></i>
                 </div>
-                <span class="text-[10px] font-bold" id="nav-add">E'lon berish</span>
+                <span class="text-[10px] font-bold text-[#059669] dark:text-[#f4c979]" id="nav-add">E'lon berish</span>
             </button>
-            <button onclick="openTermsModal()" class="flex flex-col items-center text-slate-400 hover:text-slate-700 space-y-1">
+            <button onclick="openTermsModal()" class="flex flex-col items-center text-slate-400 dark:text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 space-y-1">
                 <i data-lucide="scale" class="w-5 h-5"></i>
                 <span class="text-[10px] font-medium" id="nav-rules">Qoidalar</span>
             </button>
-            <button onclick="alert('RentTrust UZ Qo\'llab-quvvatlash xizmati: @renttrust_admin')" class="flex flex-col items-center text-slate-400 hover:text-slate-700 space-y-1">
+            <button onclick="alert('RentTrust UZ Qo\'llab-quvvatlash xizmati: @renttrust_admin')" class="flex flex-col items-center text-slate-400 dark:text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 space-y-1">
                 <i data-lucide="help-circle" class="w-5 h-5"></i>
                 <span class="text-[10px] font-medium" id="nav-help">Yordam</span>
             </button>
@@ -1582,21 +1646,21 @@
                 const savedMakler = (item.monthly_rent_uzs * 0.5) - splitFee;
 
                 return `
-                    <div onclick="openPropertyModal('${item.id}')" class="bg-white rounded-2xl overflow-hidden border border-slate-100 shadow-sm hover:shadow-md transition active:scale-[0.99] cursor-pointer">
-                        <div class="relative h-48 w-full bg-slate-100">
+                    <div onclick="openPropertyModal('${item.id}')" class="bg-white dark:bg-[#111a14] rounded-2xl overflow-hidden border border-slate-200/80 dark:border-[#1b2b20] shadow-xs hover:shadow-md transition active:scale-[0.99] cursor-pointer">
+                        <div class="relative h-48 w-full bg-slate-100 dark:bg-[#16231c]">
                             <img src="${photo}" alt="${item.title}" class="w-full h-full object-cover">
                             <!-- Favorite Heart Button (Top-Right) -->
-                            <button onclick="event.stopPropagation(); toggleFavorite('${item.id}', this)" class="absolute top-2.5 right-2.5 w-8 h-8 rounded-full bg-white/90 backdrop-blur-md flex items-center justify-center shadow-md active:scale-90 transition z-10 hover:bg-white" title="${t.quick_fav}">
-                                <i data-lucide="heart" class="w-4 h-4 ${isFavorited(item.id) ? 'fill-rose-500 text-rose-500' : 'text-slate-600'}"></i>
+                            <button onclick="event.stopPropagation(); toggleFavorite('${item.id}', this)" class="absolute top-2.5 right-2.5 w-8 h-8 rounded-full bg-white/90 dark:bg-[#111a14]/90 backdrop-blur-md flex items-center justify-center shadow-md active:scale-90 transition z-10 hover:bg-white dark:hover:bg-[#16231c]" title="${t.quick_fav}">
+                                <i data-lucide="heart" class="w-4 h-4 ${isFavorited(item.id) ? 'fill-rose-500 text-rose-500' : 'text-slate-600 dark:text-slate-300'}"></i>
                             </button>
                             <div class="absolute top-2.5 left-2.5 flex flex-wrap gap-1.5">
                                 ${item.is_verified ? `
-                                    <span class="inline-flex items-center text-[10px] font-bold px-2 py-0.5 rounded-md bg-emerald-600/90 text-white backdrop-blur-sm shadow-sm">
+                                    <span class="inline-flex items-center text-[10px] font-bold px-2 py-0.5 rounded-md bg-[#059669]/90 text-white backdrop-blur-sm shadow-xs">
                                         <i data-lucide="badge-check" class="w-3 h-3 mr-1"></i> ${t.prop_verified_badge}
                                     </span>
                                 ` : ''}
                                 ${item.for_students ? `
-                                    <span class="inline-flex items-center text-[10px] font-bold px-2 py-0.5 rounded-md bg-indigo-600/90 text-white backdrop-blur-sm shadow-sm">
+                                    <span class="inline-flex items-center text-[10px] font-bold px-2 py-0.5 rounded-md bg-indigo-600/90 text-white backdrop-blur-sm shadow-xs">
                                         <i data-lucide="graduation-cap" class="w-3 h-3 mr-1"></i> ${t.prop_student_badge}
                                     </span>
                                 ` : ''}
@@ -1605,7 +1669,7 @@
                                 </span>
                             </div>
                             ${(item.photos && item.photos.length > 1) ? `
-                                <div class="absolute bottom-2.5 left-2.5 bg-black/60 backdrop-blur-md px-2 py-0.5 rounded-md text-white text-[10px] font-bold flex items-center shadow-sm">
+                                <div class="absolute bottom-2.5 left-2.5 bg-black/60 backdrop-blur-md px-2 py-0.5 rounded-md text-white text-[10px] font-bold flex items-center shadow-xs">
                                     <i data-lucide="camera" class="w-3 h-3 mr-1 inline"></i> ${item.photos.length} rasm
                                 </div>
                             ` : ''}
@@ -1616,25 +1680,25 @@
 
                         <div class="p-3.5 space-y-2.5">
                             <div>
-                                <h2 class="font-bold text-sm text-slate-900 line-clamp-1">${item.title}</h2>
-                                <p class="text-xs text-slate-500 flex items-center mt-0.5">
+                                <h2 class="font-bold text-sm text-slate-900 dark:text-white line-clamp-1">${item.title}</h2>
+                                <p class="text-xs text-slate-500 dark:text-slate-400 flex items-center mt-0.5">
                                     <i data-lucide="map-pin" class="w-3.5 h-3.5 text-slate-400 mr-1 shrink-0"></i>
                                     <span class="truncate">${item.address}</span>
                                 </p>
                             </div>
 
-                            <div class="flex items-center space-x-3 text-xs text-slate-600 bg-slate-50 rounded-xl p-2">
-                                <span class="flex items-center"><i data-lucide="door-open" class="w-3.5 h-3.5 text-emerald-600 mr-1"></i> ${item.rooms} ${t.prop_rooms_label}</span>
-                                <span class="flex items-center"><i data-lucide="maximize-2" class="w-3.5 h-3.5 text-emerald-600 mr-1"></i> ${item.area_sqm} m²</span>
-                                <span class="flex items-center"><i data-lucide="layers" class="w-3.5 h-3.5 text-emerald-600 mr-1"></i> ${item.floor}/${item.total_floors}${t.prop_floor_label}</span>
+                            <div class="flex items-center space-x-3 text-xs text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-[#16231c] rounded-xl p-2">
+                                <span class="flex items-center"><i data-lucide="door-open" class="w-3.5 h-3.5 text-emerald-600 dark:text-[#10b981] mr-1"></i> ${item.rooms} ${t.prop_rooms_label}</span>
+                                <span class="flex items-center"><i data-lucide="maximize-2" class="w-3.5 h-3.5 text-emerald-600 dark:text-[#10b981] mr-1"></i> ${item.area_sqm} m²</span>
+                                <span class="flex items-center"><i data-lucide="layers" class="w-3.5 h-3.5 text-emerald-600 dark:text-[#10b981] mr-1"></i> ${item.floor}/${item.total_floors}${t.prop_floor_label}</span>
                             </div>
 
-                            <div class="flex items-center justify-between text-[11px] bg-emerald-50 border border-emerald-100 rounded-lg px-2.5 py-1.5 text-emerald-900">
+                            <div class="flex items-center justify-between text-[11px] bg-emerald-50 dark:bg-[#142319] border border-emerald-100 dark:border-[#1d3524] rounded-lg px-2.5 py-1.5 text-emerald-900 dark:text-emerald-300">
                                 <div>
                                     <span class="font-semibold">${t.prop_fee_label}</span>
-                                    <span class="font-bold text-emerald-700">${formatMoney(splitFee)}</span>
+                                    <span class="font-bold text-emerald-700 dark:text-[#10b981]">${formatMoney(splitFee)}</span>
                                 </div>
-                                <div class="text-[10px] text-emerald-600 font-medium">
+                                <div class="text-[10px] text-emerald-600 dark:text-emerald-400 font-medium">
                                     ${t.prop_saved_label}${formatMoney(savedMakler)}
                                 </div>
                             </div>
@@ -3349,8 +3413,66 @@
             }
         }
 
+        // Theme Switcher Logic (Light & Dark Mode)
+        function initTheme() {
+            try {
+                const saved = localStorage.getItem('renttrust_theme');
+                const tgScheme = window.Telegram?.WebApp?.colorScheme;
+                const systemDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+                let isDark = false;
+                if (saved === 'dark') {
+                    isDark = true;
+                } else if (saved === 'light') {
+                    isDark = false;
+                } else if (tgScheme === 'dark' || (!tgScheme && systemDark)) {
+                    isDark = true;
+                }
+
+                applyTheme(isDark);
+            } catch(e) {
+                console.error("Theme init error:", e);
+            }
+        }
+
+        function applyTheme(isDark) {
+            const html = document.documentElement;
+            const icon = document.getElementById('theme-toggle-icon');
+
+            if (isDark) {
+                html.classList.add('dark');
+                html.classList.remove('light');
+                localStorage.setItem('renttrust_theme', 'dark');
+                if (icon) icon.setAttribute('data-lucide', 'sun');
+            } else {
+                html.classList.remove('dark');
+                html.classList.add('light');
+                localStorage.setItem('renttrust_theme', 'light');
+                if (icon) icon.setAttribute('data-lucide', 'moon');
+            }
+
+            if (window.Telegram?.WebApp) {
+                try {
+                    if (window.Telegram.WebApp.setHeaderColor) {
+                        window.Telegram.WebApp.setHeaderColor(isDark ? '#080f0b' : '#ffffff');
+                    }
+                    if (window.Telegram.WebApp.setBackgroundColor) {
+                        window.Telegram.WebApp.setBackgroundColor(isDark ? '#080f0b' : '#f4f7f5');
+                    }
+                } catch(e){}
+            }
+
+            if (window.lucide) lucide.createIcons();
+        }
+
+        function toggleTheme() {
+            const isDark = document.documentElement.classList.contains('dark');
+            applyTheme(!isDark);
+        }
+
         // Safe Initial Load
         function initApp() {
+            try { initTheme(); } catch(e){ console.error("Theme init error:", e); }
             try { if (window.lucide) lucide.createIcons(); } catch(e){ console.error("Lucide init error:", e); }
             try { setupTelegramNavigation(); } catch(e){ console.error("Nav init error:", e); }
             try { renderDistrictOptions(); } catch(e){ console.error("Districts init error:", e); }
