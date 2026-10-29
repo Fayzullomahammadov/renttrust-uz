@@ -824,28 +824,28 @@
                 </div>
 
                 <div class="space-y-1">
-                    <h4 class="font-bold text-slate-800 text-xs">1. Split Komissiya (2% + 2%)</h4>
-                    <p>Xizmat haqi: ijarachidan 2% + uy egasidan 2% = jami 4%. Maklerlarning ko'pincha oylik ijaraning yarmigacha bo'lgan qimmat to'lovlariga muqobil.</p>
+                    <h4 class="font-bold text-slate-800 dark:text-slate-100 text-xs" id="terms-sec1-title">1. Split Komissiya (2% + 2%)</h4>
+                    <p id="terms-sec1-desc">Xizmat haqi: ijarachidan 2% + uy egasidan 2% = jami 4%. Maklerlarning ko'pincha oylik ijaraning yarmigacha bo'lgan qimmat to'lovlariga muqobil.</p>
                 </div>
 
                 <div class="space-y-1">
-                    <h4 class="font-bold text-slate-800 text-xs">2. Bekor qilish va Pulni qaytarish (Refund)</h4>
-                    <p>• <strong>Ko'chishdan 3 kun (72 soat) oldin:</strong> bekor qilinsa, to'lov to'liq ijarachiga qaytariladi.<br>
+                    <h4 class="font-bold text-slate-800 dark:text-slate-100 text-xs" id="terms-sec2-title">2. Bekor qilish va Pulni qaytarish (Refund)</h4>
+                    <p id="terms-sec2-desc">• <strong>Ko'chishdan 3 kun (72 soat) oldin:</strong> bekor qilinsa, to'lov to'liq ijarachiga qaytariladi.<br>
                     • <strong>72 soatdan kam vaqt qolganda:</strong> bekor qilinsa, hold to'lovi uy egasiga bo'sh turgan vaqt uchun kompensatsiya sifatida o'tkaziladi.<br>
                     • <strong>Uy egasi aybi bilan (feyk rasm, kalit berilmasa):</strong> mablag' zudlik bilan to'liq qaytariladi va uy egasi bloklanadi.</p>
                 </div>
 
                 <div class="space-y-1">
-                    <h4 class="font-bold text-slate-800 text-xs">3. ijara.soliq.uz va 12% Soliq Imtiyozi</h4>
-                    <p>Barcha ijara bitimlari Soliq Qo'mitasi portalida rasmiylashtirilishi shart. <strong>Faqat talabalarga ijaraga bergan uy egalari</strong> uchun: shartnoma soliq organida ro'yxatdan o'tkazilsa va ijarachi talaba ekanligini tasdiqlasa, 12% daromad solig'idan (JSHODS) ozod bo'lish mumkin (Soliq kodeksi, 378-modda 19-band). Shartnoma shablonini platforma taqdim etadi, davlat ro'yxatidan o'tkazish tomonlar majburiyatidir.</p>
+                    <h4 class="font-bold text-slate-800 dark:text-slate-100 text-xs" id="terms-sec3-title">3. ijara.soliq.uz va 12% Soliq Imtiyozi</h4>
+                    <p id="terms-sec3-desc">Barcha ijara bitimlari Soliq Qo'mitasi portalida rasmiylashtirilishi shart. <strong>Faqat talabalarga ijaraga bergan uy egalari</strong> uchun: shartnoma soliq organida ro'yxatdan o'tkazilsa va ijarachi talaba ekanligini tasdiqlasa, 12% daromad solig'idan (JSHODS) ozod bo'lish mumkin (Soliq kodeksi, 378-modda 19-band). Shartnoma shablonini platforma taqdim etadi, davlat ro'yxatidan o'tkazish tomonlar majburiyatidir.</p>
                 </div>
 
                 <div class="space-y-1 bg-amber-50/70 border border-amber-200/60 rounded-xl p-2.5">
-                    <h4 class="font-bold text-amber-900 text-xs flex items-center">
+                    <h4 class="font-bold text-amber-900 dark:text-amber-300 text-xs flex items-center">
                         <i data-lucide="scale" class="w-3.5 h-3.5 mr-1 text-amber-600"></i>
-                        4. Dalolatnoma va Nizolarni Hal Qilish Tartibi
+                        <span id="terms-sec4-title">4. Dalolatnoma va Nizolarni Hal Qilish Tartibi</span>
                     </h4>
-                    <p class="text-[11px] text-amber-950 leading-relaxed">
+                    <p class="text-[11px] text-amber-950 dark:text-amber-100 leading-relaxed" id="terms-sec4-desc">
                         Ko'chib kirish dalolatnomasi ikki tomonlama amal qiladi: ijarachi fotodalillar yuklab imzolaydi, uy egasi bot orqali rasmlar bilan tanishadi. Nizo yuzaga kelsa, pul platformada <strong>muzlatiladi (DISPUTE)</strong>. Tomonlar 48 soat ichida dalillarni taqdim etadi, RentTrust arbitraj operatori xolis tekshirib qaror qabul qiladi.
                     </p>
                 </div>
@@ -869,7 +869,7 @@
                 </div>
                 <div class="flex items-center space-x-2">
                     <button onclick="openAddRoommateModal()" class="px-2.5 py-1 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] font-bold flex items-center space-x-1 active:scale-95 transition">
-                        <span>+ E'lon</span>
+                        <span id="rm-btn-post">+ E'lon</span>
                     </button>
                     <button onclick="closeRoommatesModal()" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-[#1a291f] text-slate-500 dark:text-slate-300 flex items-center justify-center hover:bg-slate-200 dark:hover:bg-[#223528] transition-colors">
                         <i data-lucide="x" class="w-4 h-4"><svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></i>
@@ -899,32 +899,32 @@
     <div id="add-roommate-modal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden flex flex-col justify-end">
         <div class="bg-white dark:bg-[#0c140e] rounded-t-3xl max-h-[88vh] overflow-y-auto w-full max-w-lg mx-auto shadow-2xl transition-transform duration-300 transform translate-y-full flex flex-col border-t border-slate-200 dark:border-[#1a2d1f]" id="add-roommate-container">
             <div class="sticky top-0 bg-white/95 dark:bg-[#0c140e]/95 backdrop-blur-md px-4 py-3 border-b border-slate-100 dark:border-[#1a2d1f] flex items-center justify-between z-10 transition-colors">
-                <span class="text-sm font-extrabold text-slate-900 dark:text-slate-100">Xonadosh e'loni qoldirish</span>
+                <span class="text-sm font-extrabold text-slate-900 dark:text-slate-100" id="add-rm-title">Xonadosh e'loni qoldirish</span>
                 <button onclick="closeAddRoommateModal()" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-[#1a291f] text-slate-500 dark:text-slate-300 flex items-center justify-center">
                     <i data-lucide="x" class="w-4 h-4"></i>
                 </button>
             </div>
             <form onsubmit="handleCreateRoommate(event)" class="p-4 space-y-3 text-xs">
                 <div>
-                    <label class="font-bold text-slate-700 dark:text-slate-300 block mb-1">Ismingiz *</label>
+                    <label class="font-bold text-slate-700 dark:text-slate-300 block mb-1" id="add-rm-lbl-name">Ismingiz *</label>
                     <input type="text" id="rm-input-name" required placeholder="Masalan: Sardor" class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-[#1a2d1f] bg-slate-50 dark:bg-[#121c15] text-slate-800 dark:text-slate-100">
                 </div>
                 <div class="grid grid-cols-2 gap-2">
                     <div>
-                        <label class="font-bold text-slate-700 dark:text-slate-300 block mb-1">Yoshingiz *</label>
+                        <label class="font-bold text-slate-700 dark:text-slate-300 block mb-1" id="add-rm-lbl-age">Yoshingiz *</label>
                         <input type="number" id="rm-input-age" value="21" class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-[#1a2d1f] bg-slate-50 dark:bg-[#121c15]">
                     </div>
                     <div>
-                        <label class="font-bold text-slate-700 dark:text-slate-300 block mb-1">Jinsingiz *</label>
+                        <label class="font-bold text-slate-700 dark:text-slate-300 block mb-1" id="add-rm-lbl-gender">Jinsingiz *</label>
                         <select id="rm-input-gender" class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-[#1a2d1f] bg-slate-50 dark:bg-[#121c15]">
-                            <option value="male">O'g'il bola</option>
-                            <option value="female">Qiz bola</option>
+                            <option value="male" id="add-rm-opt-male">O'g'il bola</option>
+                            <option value="female" id="add-rm-opt-female">Qiz bola</option>
                         </select>
                     </div>
                 </div>
                 <div class="grid grid-cols-2 gap-2">
                     <div>
-                        <label class="font-bold text-slate-700 dark:text-slate-300 block mb-1">Qidirilayotgan Tuman *</label>
+                        <label class="font-bold text-slate-700 dark:text-slate-300 block mb-1" id="add-rm-lbl-district">Qidirilayotgan Tuman *</label>
                         <select id="rm-input-district" class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-[#1a2d1f] bg-slate-50 dark:bg-[#121c15]">
                             <option value="Chilonzor">Chilonzor</option>
                             <option value="Yunusobod">Yunusobod</option>
@@ -939,30 +939,30 @@
                         </select>
                     </div>
                     <div>
-                        <label class="font-bold text-slate-700 dark:text-slate-300 block mb-1">Maksimal byudjet (so'm) *</label>
+                        <label class="font-bold text-slate-700 dark:text-slate-300 block mb-1" id="add-rm-lbl-budget">Maksimal byudjet (so'm) *</label>
                         <input type="number" id="rm-input-budget" value="1500000" step="100000" class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-[#1a2d1f] bg-slate-50 dark:bg-[#121c15]">
                     </div>
                 </div>
                 <div>
-                    <label class="font-bold text-slate-700 dark:text-slate-300 block mb-1">O'qish yoki ish joyi</label>
+                    <label class="font-bold text-slate-700 dark:text-slate-300 block mb-1" id="add-rm-lbl-univ">O'qish yoki ish joyi</label>
                     <input type="text" id="rm-input-univ" placeholder="Masalan: TATU 3-kurs talabasi" class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-[#1a2d1f] bg-slate-50 dark:bg-[#121c15]">
                 </div>
                 <div>
-                    <label class="font-bold text-slate-700 dark:text-slate-300 block mb-1">O'zingiz va talablaringiz haqida</label>
+                    <label class="font-bold text-slate-700 dark:text-slate-300 block mb-1" id="add-rm-lbl-about">O'zingiz va talablaringiz haqida</label>
                     <textarea id="rm-input-about" rows="2" placeholder="Masalan: Chekmayman, tinch yashayman. Sheriklar ham tartibli bo'lishi kerak..." class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-[#1a2d1f] bg-slate-50 dark:bg-[#121c15]"></textarea>
                 </div>
                 <div class="grid grid-cols-2 gap-2">
                     <div>
-                        <label class="font-bold text-slate-700 dark:text-slate-300 block mb-1">Telegram username</label>
+                        <label class="font-bold text-slate-700 dark:text-slate-300 block mb-1" id="add-rm-lbl-tg">Telegram username</label>
                         <input type="text" id="rm-input-tg" placeholder="@username" class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-[#1a2d1f] bg-slate-50 dark:bg-[#121c15]">
                     </div>
                     <div>
-                        <label class="font-bold text-slate-700 dark:text-slate-300 block mb-1">Telefon raqam</label>
+                        <label class="font-bold text-slate-700 dark:text-slate-300 block mb-1" id="add-rm-lbl-phone">Telefon raqam</label>
                         <input type="text" id="rm-input-phone" placeholder="+998 90 123 45 67" class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-[#1a2d1f] bg-slate-50 dark:bg-[#121c15]">
                     </div>
                 </div>
                 <button type="submit" id="btn-submit-rm" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-xl shadow-md active:scale-95 transition mt-2">
-                    E'lonni joylashtirish
+                    <span id="add-rm-submit-text">E'lonni joylashtirish</span>
                 </button>
             </form>
         </div>
@@ -1531,6 +1531,39 @@
                 terms_modal_title: "Foydalaniş Qoidalari va Oferta",
                 terms_safe_title: "🛡️ Himoyalangan tölov",
                 terms_safe_desc: "Siz tölagan ijara va depozit tög'ridan-tög'ri uy egasiga ötmaydi. Köçib kirib, uyni tasdiqlamaguningizça RentTrust nazoratidagi hisobda turadi. Töliq tartib ofertada yozilgan.",
+                terms_sec1_title: "1. Split Komissiya (2% + 2%)",
+                terms_sec1_desc: "Xizmat haqi: ijarachidan 2% + uy egasidan 2% = jami 4%. Maklerlarning ko'pincha oylik ijaraning yarmigacha bo'lgan qimmat to'lovlariga muqobil.",
+                terms_sec2_title: "2. Bekor qilish va Pulni qaytarish (Refund)",
+                terms_sec2_desc: "• <strong>Ko'chishdan 3 kun (72 soat) oldin:</strong> bekor qilinsa, to'lov to'liq ijarachiga qaytariladi.<br>• <strong>72 soatdan kam vaqt qolganda:</strong> bekor qilinsa, hold to'lovi uy egasiga bo'sh turgan vaqt uchun kompensatsiya sifatida o'tkaziladi.<br>• <strong>Uy egasi aybi bilan (feyk rasm, kalit berilmasa):</strong> mablag' zudlik bilan to'liq qaytariladi va uy egasi bloklanadi.",
+                terms_sec3_title: "3. ijara.soliq.uz va 12% Soliq Imtiyozi",
+                terms_sec3_desc: "Barcha ijara bitimlari Soliq Qo'mitasi portalida rasmiylashtirilishi shart. <strong>Faqat talabalarga ijaraga bergan uy egalari</strong> uchun: shartnoma soliq organida ro'yxatdan o'tkazilsa va ijarachi talaba ekanligini tasdiqlasa, 12% daromad solig'idan (JSHODS) ozod bo'lish mumkin (Soliq kodeksi, 378-modda 19-band). Shartnoma shablonini platforma taqdim etadi, davlat ro'yxatidan o'tkazish tomonlar majburiyatidir.",
+                terms_sec4_title: "4. Dalolatnoma va Nizolarni Hal Qilish Tartibi",
+                terms_sec4_desc: "Ko'chib kirish dalolatnomasi ikki tomonlama amal qiladi: ijarachi fotodalillar yuklab imzolaydi, uy egasi bot orqali rasmlar bilan tanishadi. Nizo yuzaga kelsa, pul platformada <strong>muzlatiladi (DISPUTE)</strong>. Tomonlar 48 soat ichida dalillarni taqdim etadi, RentTrust arbitraj operatori xolis tekshirib qaror qabul qiladi.",
+                rm_modal_title: "Xonadosh Qidirish",
+                rm_modal_sub: "Talabalar va yoshlar uchun ishonchli sherik",
+                rm_btn_post: "+ E'lon",
+                rm_filter_all: "Barchasi",
+                rm_filter_male: "Yigitlar",
+                rm_filter_female: "Qizlar",
+                rm_filter_student: "🎓 Talabalar",
+                add_rm_title: "Xonadosh e'loni qoldirish",
+                add_rm_lbl_name: "Ismingiz *",
+                add_rm_lbl_age: "Yoshingiz *",
+                add_rm_lbl_gender: "Jinsingiz *",
+                add_rm_opt_male: "O'g'il bola",
+                add_rm_opt_female: "Qiz bola",
+                add_rm_lbl_district: "Qidirilayotgan Tuman *",
+                add_rm_lbl_budget: "Maksimal byudjet (so'm) *",
+                add_rm_lbl_univ: "O'qish yoki ish joyi",
+                add_rm_lbl_about: "O'zingiz va talablaringiz haqida",
+                add_rm_lbl_tg: "Telegram username",
+                add_rm_lbl_phone: "Telefon raqam",
+                add_rm_submit_text: "E'lonni joylashtirish",
+                alert_lbl_dist: "Qaysi tumandan qidiryapsiz?",
+                alert_lbl_rooms: "Xonalar soni:",
+                alert_lbl_budget: "Maksimal oylik byudjet:",
+                alert_lbl_name: "Ismingiz *",
+                alert_lbl_contact: "Telegram ID yoki Telefon *",
                 ref_modal_title: "Döst taklif qiling: komissiyaning 30% i sizga",
                 ref_banner_title: "Döst taklif qiling: komissiyaning 30% i sizga",
                 ref_banner_desc: "Keşbek döstingiz köçib kirişni tasdiqlab, nizo muddati tugagaç hisoblanadi.",
@@ -1720,6 +1753,40 @@
                 terms_modal_title: "Правила сервиса и Оферта",
                 terms_safe_title: "🛡️ Защищенная оплата",
                 terms_safe_desc: "Защищенная оплата: деньги хранятся под контролем RentTrust до подтверждения заселения обеими сторонами. Комиссия: 2% с арендатора, 2% с арендодателя.",
+                terms_sec1_title: "1. Сплит-комиссия (2% + 2%)",
+                terms_sec1_desc: "Сервисный сбор: 2% с арендатора + 2% с арендодателя = всего 4%. Выгодная альтернатива дорогим комиссиям риелторов (до 50% от месячной аренды).",
+                terms_sec2_title: "2. Отмена и возврат средств (Refund)",
+                terms_sec2_desc: "• <strong>За 3 дня (72 часа) до заселения:</strong> при отмене средства возвращаются арендатору в полном объеме.<br>• <strong>Менее чем за 72 часа:</strong> сумма бронирования переводится владельцу жилья в качестве компенсации за простой.<br>• <strong>По вине арендодателя (фейковые фото, отказ в заселении):</strong> средства немедленно возвращаются арендатору, а аккаунт арендодателя блокируется.",
+                terms_sec3_title: "3. ijara.soliq.uz и 12% налоговая льгота",
+                terms_sec3_desc: "Все договоры аренды подлежат обязательной регистрации на портале Налогового комитета (ijara.soliq.uz). <strong>Для арендодателей, сдающих жилье студентам:</strong> при регистрации договора и подтверждении статуса студента владелец полностью освобождается от уплаты 12% подоходного налога (НДФЛ) (Налоговый кодекс РУз, ст. 378, п. 19). Шаблон договора предоставляет RentTrust, регистрация в налоговой — обязанность сторон.",
+                terms_sec4_title: "4. Акт осмотра и порядок разрешения споров",
+                terms_sec4_desc: "Цифровой акт осмотра действует двусторонне: арендатор при заселении прикрепляет фото и подписывает акт, арендодатель проверяет его в боте. При возникновении разногласий средства на платформе <strong>замораживаются (DISPUTE)</strong>. Стороны предоставляют доказательства в течение 48 часов, после чего независимый арбитр RentTrust выносит объективное решение.",
+                rm_modal_title: "Поиск сожителей",
+                rm_modal_sub: "Надежные соседи для студентов и молодежи",
+                rm_btn_post: "+ Объявление",
+                rm_filter_all: "Все",
+                rm_filter_male: "Парни",
+                rm_filter_female: "Девушки",
+                rm_filter_student: "🎓 Студенты",
+                add_rm_title: "Подать объявление о поиске сожителя",
+                add_rm_lbl_name: "Ваше имя *",
+                add_rm_lbl_age: "Ваш возраст *",
+                add_rm_lbl_gender: "Ваш пол *",
+                add_rm_opt_male: "Парень",
+                add_rm_opt_female: "Девушка",
+                add_rm_lbl_district: "Интересующий район *",
+                add_rm_lbl_budget: "Максимальный бюджет (сум) *",
+                add_rm_lbl_univ: "Место учебы или работы",
+                add_rm_lbl_about: "О себе и пожеланиях",
+                add_rm_lbl_tg: "Telegram username",
+                add_rm_lbl_phone: "Номер телефона",
+                add_rm_submit_text: "Опубликовать объявление",
+                alert_lbl_dist: "В каком районе вы ищете?",
+                alert_lbl_rooms: "Количество комнат:",
+                alert_lbl_budget: "Максимальный месячный бюджет:",
+                alert_lbl_name: "Ваше имя *",
+                alert_lbl_contact: "Telegram ID или телефон *",
+                escrow_provider_lbl: "Выберите платежную систему:",
                 ref_modal_title: "Пригласите друга: 30% комиссии вам",
                 ref_banner_title: "Пригласите друга: 30% комиссии вам",
                 ref_banner_desc: "Кэшбэк начисляется после подтверждения заселения вашим другом и истечения срока спора.",
@@ -1909,6 +1976,40 @@
                 terms_modal_title: "Terms of Service and Public Offer",
                 terms_safe_title: "🛡️ Protected Payment",
                 terms_safe_desc: "Your rent and deposit do not go directly to the landlord. They remain safely in RentTrust's escrow account until move-in is confirmed.",
+                terms_sec1_title: "1. Split Commission (2% + 2%)",
+                terms_sec1_desc: "Service fee: 2% from tenant + 2% from landlord = 4% total. A transparent alternative to expensive realtor commissions (often up to 50% of monthly rent).",
+                terms_sec2_title: "2. Cancellation and Refund Policy",
+                terms_sec2_desc: "• <strong>3 days (72 hours) before move-in:</strong> upon cancellation, the payment is fully refunded to the tenant.<br>• <strong>Less than 72 hours remaining:</strong> the hold amount is transferred to the landlord as vacancy compensation.<br>• <strong>Landlord fault (fake photos, refusing keys):</strong> funds are refunded immediately and the landlord is banned.",
+                terms_sec3_title: "3. ijara.soliq.uz and 12% Tax Exemption",
+                terms_sec3_desc: "All lease agreements must be registered on the State Tax Committee portal (ijara.soliq.uz). <strong>For landlords renting to students:</strong> by registering the lease and confirming student status, landlords are exempt from 12% income tax (Tax Code of Uzbekistan, Art. 378, item 19). RentTrust provides standard contracts; official tax registration is the parties' responsibility.",
+                terms_sec4_title: "4. Move-in Inspection Act & Dispute Resolution",
+                terms_sec4_desc: "The digital move-in inspection act is bilateral: the tenant uploads photo evidence upon check-in, and the landlord reviews them in the bot. In case of disagreement, funds are <strong>frozen in escrow (DISPUTE)</strong>. Both parties submit evidence within 48 hours, and an impartial RentTrust arbitrator resolves the issue.",
+                rm_modal_title: "Roommate Matching",
+                rm_modal_sub: "Verified roommates for students and youth",
+                rm_btn_post: "+ Post Ad",
+                rm_filter_all: "All",
+                rm_filter_male: "Male",
+                rm_filter_female: "Female",
+                rm_filter_student: "🎓 Students",
+                add_rm_title: "Post Roommate Ad",
+                add_rm_lbl_name: "Your Name *",
+                add_rm_lbl_age: "Your Age *",
+                add_rm_lbl_gender: "Your Gender *",
+                add_rm_opt_male: "Male",
+                add_rm_opt_female: "Female",
+                add_rm_lbl_district: "Target District *",
+                add_rm_lbl_budget: "Max Budget (UZS) *",
+                add_rm_lbl_univ: "University or Workplace",
+                add_rm_lbl_about: "About yourself and preferences",
+                add_rm_lbl_tg: "Telegram username",
+                add_rm_lbl_phone: "Phone Number",
+                add_rm_submit_text: "Submit Listing",
+                alert_lbl_dist: "Which district are you looking in?",
+                alert_lbl_rooms: "Number of rooms:",
+                alert_lbl_budget: "Maximum monthly budget:",
+                alert_lbl_name: "Your Name *",
+                alert_lbl_contact: "Telegram ID or Phone *",
+                escrow_provider_lbl: "Select payment provider:",
                 ref_modal_title: "Invite a Friend: Get 30% of the commission",
                 ref_banner_title: "Invite a Friend: Get 30% of the commission",
                 ref_banner_desc: "Cashback is credited after your friend confirms move-in and the dispute window closes.",
@@ -2162,6 +2263,47 @@
                 setTxt('terms-modal-title', t.terms_modal_title);
                 setTxt('terms-safe-title', t.terms_safe_title);
                 setTxt('terms-safe-desc', t.terms_safe_desc);
+                setTxt('terms-sec1-title', t.terms_sec1_title);
+                setHtml('terms-sec1-desc', t.terms_sec1_desc);
+                setTxt('terms-sec2-title', t.terms_sec2_title);
+                setHtml('terms-sec2-desc', t.terms_sec2_desc);
+                setTxt('terms-sec3-title', t.terms_sec3_title);
+                setHtml('terms-sec3-desc', t.terms_sec3_desc);
+                setTxt('terms-sec4-title', t.terms_sec4_title);
+                setHtml('terms-sec4-desc', t.terms_sec4_desc);
+
+                // Roommates Modal
+                setTxt('rm-modal-title', t.rm_modal_title);
+                setTxt('rm-modal-sub', t.rm_modal_sub);
+                setTxt('rm-btn-post', t.rm_btn_post);
+                setTxt('rm-filter-all', t.rm_filter_all);
+                setTxt('rm-filter-male', t.rm_filter_male);
+                setTxt('rm-filter-female', t.rm_filter_female);
+                setTxt('rm-filter-student', t.rm_filter_student);
+
+                // Add Roommate Modal
+                setTxt('add-rm-title', t.add_rm_title);
+                setTxt('add-rm-lbl-name', t.add_rm_lbl_name);
+                setTxt('add-rm-lbl-age', t.add_rm_lbl_age);
+                setTxt('add-rm-lbl-gender', t.add_rm_lbl_gender);
+                setTxt('add-rm-opt-male', t.add_rm_opt_male);
+                setTxt('add-rm-opt-female', t.add_rm_opt_female);
+                setTxt('add-rm-lbl-district', t.add_rm_lbl_district);
+                setTxt('add-rm-lbl-budget', t.add_rm_lbl_budget);
+                setTxt('add-rm-lbl-univ', t.add_rm_lbl_univ);
+                setTxt('add-rm-lbl-about', t.add_rm_lbl_about);
+                setTxt('add-rm-lbl-tg', t.add_rm_lbl_tg);
+                setTxt('add-rm-lbl-phone', t.add_rm_lbl_phone);
+                setTxt('add-rm-submit-text', t.add_rm_submit_text);
+
+                // Alert Modal
+                setTxt('alert-modal-title', t.alert_modal_title);
+                setTxt('alert-modal-subtitle', t.alert_modal_subtitle);
+                setTxt('alert-lbl-dist', t.alert_lbl_dist);
+                setTxt('alert-lbl-rooms', t.alert_lbl_rooms);
+                setTxt('alert-lbl-budget', t.alert_lbl_budget);
+                setTxt('alert-lbl-name', t.alert_lbl_name);
+                setTxt('alert-lbl-contact', t.alert_lbl_contact);
 
                 setTxt('ref-modal-title', t.ref_modal_title);
                 setTxt('ref-banner-title', t.ref_banner_title);
